@@ -147,7 +147,7 @@ class Platform {
     }.bind(this)
     ).on("set", function (position, callback, context) {
       const realPosition = this._position(100 - position);
-      this.log(`Set TargetPosition to ${realPosition}`);
+      this.log(`Set TargetPosition ${item} to ${realPosition}`);
       const status = this.blinds[index];
       if (!status) return;
 
@@ -196,12 +196,12 @@ class Platform {
         };
         // Update service
         if (state.position != this.blinds[item].position) {
+          this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
           const service = this.blindAccessories[item].getService(Service.WindowCovering);
           if (service)
-            service.getCharacteristic(Characteristic.CurrentPosition).setValue(state.position);
+            service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(100 - state.position));
         }
         this.blinds[item] = state;
-        //this.log.debug(item, state);
       }
     }).catch(error => {
       this.log.error(error);
