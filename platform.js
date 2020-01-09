@@ -12,6 +12,7 @@ class Platform {
     this.updater = null;
     this.blindPostioner = null;
     this.blinds = {};
+    this.blindAccessories = {};
     this.targetPositions = {};
     this.blindsTargetPositions = null;
 
@@ -168,19 +169,12 @@ class Platform {
       else callback(null, PositionState.STOPPED);
     }.bind(this));
 
-    service.getCharacteristic(Characteristic.HoldPosition).on("get", function (callback) {
-      this.log(`HoldPosition ${index}`);
-    }.bind(this));
-
-    service.getCharacteristic(Characteristic.HoldPosition).on("set", function (callback) {
-      this.log(`Set HoldPosition ${index}`);
-    }.bind(this));
-
     if (!(uuid in this.accessories)) {
       this.log(`Registering ${name}`);
       this.accessories[uuid] = accessory;
       this.api.registerPlatformAccessories(PluginName, PlatformName, [accessory]);
     }
+    this.blindAccessories[index] = accessory;
   }
 
   _getStatus() {
@@ -200,6 +194,12 @@ class Platform {
           sumState: parseInt(sumState[3]),
           slotRotationalArea: parseInt(sumState[4])
         };
+        // Update service
+        if (state.position != this.blinds[item].position) {
+          const service = this.blindAccessories[item].getService(Service.WindowCovering);
+          if (service)
+            service.getCharacteristic(Characteristic.CurrentPosition).setValue(state.position);
+        }
         this.blinds[item] = state;
         //this.log.debug(item, state);
       }
