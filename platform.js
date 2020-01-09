@@ -147,7 +147,7 @@ class Platform {
     }.bind(this)
     ).on("set", function (position, callback, context) {
       const realPosition = this._position(100 - position);
-      this.log(`Set TargetPosition ${item} to ${realPosition}`);
+      this.log(`Set TargetPosition ${index} to ${realPosition}`);
       const status = this.blinds[index];
       if (!status) return;
 
