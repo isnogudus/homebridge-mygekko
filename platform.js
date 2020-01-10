@@ -1,6 +1,5 @@
 const http = require("http");
 const url = require("url");
-const _ = require("lodash");
 const axios = require("axios");
 const PluginName = "homebridge-mygekko";
 const PlatformName = "mygekko";
