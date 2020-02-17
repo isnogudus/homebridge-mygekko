@@ -25,6 +25,11 @@ class Platform {
       this.host = config["host"];
       this.url = `http://${this.host}/api/v1/var`;
       this.accessories = {};
+      this.blindAdjustmentUp = config["adjustmentUp"];
+      if (!Array.isArray(this.blindAdjustmentUp)) this.blindAdjustmentUp = [this.blindAdjustmentUp];
+
+      this.blindAdjustmentDown = config["adjustmentDown"];
+      if (!Array.isArray(this.blindAdjustmentDown)) this.blindAdjustmentDown = [this.blindAdjustmentDown];
 
       this.log("Starting MyGEKKO Platform using homebridge API", api.version);
       if (api) {
@@ -129,7 +134,7 @@ class Platform {
         return;
       }
 
-      const position = this._position(status.position);
+      const position = this._position(index, status.position);
 
       this.log.debug(position);
       callback(null, 100 - position);
@@ -139,13 +144,13 @@ class Platform {
       this.log(`TargetPosition ${index}`);
       const status = this.blinds[index];
 
-      const position = this._position(status.targetPosition == null ? status.position : status.targetPosition);
+      const position = this._position(index, status.targetPosition == null ? status.position : status.targetPosition);
 
       this.log.debug(position);
       callback(null, 100 - position);
     }.bind(this)
     ).on("set", function (position, callback, context) {
-      const realPosition = this._position(100 - position);
+      const realPosition = this._position(index, 100 - position);
       this.log(`Set TargetPosition ${index} to ${realPosition}`);
       const status = this.blinds[index];
       if (!status) return;
@@ -198,7 +203,7 @@ class Platform {
           this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
           const service = this.blindAccessories[item].getService(Service.WindowCovering);
           if (service)
-            service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(100 - state.position));
+            service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(item, 100 - state.position));
         }
         this.blinds[item] = state;
       }
@@ -208,7 +213,8 @@ class Platform {
     this.updater = setTimeout(this._getStatus.bind(this), 5000);
   }
 
-  _position(position) {
+  _position(name, position) {
+    this.log("Position: ", name);
     const pos = Math.round(position);
     if (pos <= 2) return 0;
     if (pos >= 98) return 100;
