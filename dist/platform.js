@@ -100,10 +100,10 @@ var Platform = /*#__PURE__*/function () {
         _this2.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
 
 
-        _send("/blinds/".concat(index, "/scmd/set"), "0").then(function () {
+        _this2._send("/blinds/".concat(index, "/scmd/set"), "0").then(function () {
           _this2.log.debug("Stop signal send -> ".concat(index));
 
-          _send("/blinds/".concat(index, "/scmd/set"), "P".concat(newPosition)).then(function (request) {
+          _this2._send("/blinds/".concat(index, "/scmd/set"), "P".concat(newPosition)).then(function (request) {
             _this2.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
 
             callback(null);
@@ -146,7 +146,7 @@ var Platform = /*#__PURE__*/function () {
 
       this.log.debug("Fetch the devices");
 
-      _send().then(function (response) {
+      this._send().then(function (response) {
         var blinds = response.data.blinds;
 
         for (var index in blinds) {
@@ -241,7 +241,7 @@ var Platform = /*#__PURE__*/function () {
     value: function _getStatus() {
       var _this4 = this;
 
-      _send("/status").then(function (request) {
+      this._send("/status").then(function (request) {
         var blinds = request.data.blinds;
 
         for (var item in blinds) {

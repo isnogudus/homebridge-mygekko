@@ -55,10 +55,10 @@ class Platform {
       this.log.debug(`_callBlindsTargetPositions ${index} to ${newPosition}`);
 
       // Send stop
-      _send(`/blinds/${index}/scmd/set`, "0")
+      this._send(`/blinds/${index}/scmd/set`, "0")
         .then(() => {
           this.log.debug(`Stop signal send -> ${index}`);
-          _send(`/blinds/${index}/scmd/set`, `P${newPosition}`)
+          this._send(`/blinds/${index}/scmd/set`, `P${newPosition}`)
             .then(request => {
               this.log.debug(`New position send -> ${index} to ${newPosition}`);
               callback(null);
@@ -87,7 +87,7 @@ class Platform {
 
   _fetchDevices() {
     this.log.debug("Fetch the devices");
-    _send().then(response => {
+    this._send().then(response => {
       const { blinds } = response.data;
       for (const index in blinds) {
         const blind = blinds[index];
@@ -177,7 +177,7 @@ class Platform {
   }
 
   _getStatus() {
-    _send("/status").then(request => {
+    this._send("/status").then(request => {
       const { blinds } = request.data;
       for (const item in blinds) {
         const sumState = blinds[item].sumstate.value.split(";");
