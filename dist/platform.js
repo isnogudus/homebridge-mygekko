@@ -246,7 +246,7 @@ var Platform = /*#__PURE__*/function () {
 
         for (var item in blinds) {
           var sumState = blinds[item].sumstate.value.split(";");
-          var position = Math.round(parseFloat(sumState[1]));
+          var position = parseFloat(sumState[1]);
           var state = {
             state: parseInt(sumState[0]),
             position: position < 50 ? Math.floor(position) : Math.ceil(position),

@@ -181,7 +181,7 @@ class Platform {
       const { blinds } = request.data;
       for (const item in blinds) {
         const sumState = blinds[item].sumstate.value.split(";");
-        const position = Math.round(parseFloat(sumState[1]));
+        const position = parseFloat(sumState[1]);
         const state = {
           state: parseInt(sumState[0]),
           position: position < 50 ? Math.floor(position) : Math.ceil(position),
