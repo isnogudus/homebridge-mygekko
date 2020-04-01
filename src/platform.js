@@ -189,7 +189,7 @@ class Platform {
           sumState: parseInt(sumState[3]),
           slotRotationalArea: parseInt(sumState[4])
         };
-        this.log("Status position " + item + " " + position + " " + state.position);
+        this.log(`Status position ${item} ${position} ${state.position}`);
         // Update service
         if (state.position != this.blinds[item].position) {
           const { Service, Characteristic } = this.api.hap;
@@ -207,9 +207,9 @@ class Platform {
   }
 
   _position(name, position) {
-    this.log("Position: " + name + " " + position);
+    this.log(`Position: ${name} ${position}`);
     const pos = Math.round(position);
-    const { min, "max } = this.blinds[name];
+    const { min, max } = this.blinds[name];
     if (pos <= min) return 0;
     if (pos >= max) return 100;
 

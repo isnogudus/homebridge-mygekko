@@ -255,7 +255,7 @@ var Platform = /*#__PURE__*/function () {
             slotRotationalArea: parseInt(sumState[4])
           };
 
-          _this4.log("Status position", item, position, state.position); // Update service
+          _this4.log("Status position ".concat(item, " ").concat(position, " ").concat(state.position)); // Update service
 
 
           if (state.position != _this4.blinds[item].position) {
@@ -281,7 +281,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_position",
     value: function _position(name, position) {
-      this.log("Position: ", name, position);
+      this.log("Position: ".concat(name, " ").concat(position));
       var pos = Math.round(position);
       var _this$blinds$name = this.blinds[name],
           min = _this$blinds$name.min,
