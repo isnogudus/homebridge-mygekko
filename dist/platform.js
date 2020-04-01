@@ -155,7 +155,7 @@ var Platform = /*#__PURE__*/function () {
       var _this$api$hap = this.api.hap,
           Service = _this$api$hap.Service,
           Characteristic = _this$api$hap.Characteristic;
-      this.log("Creating Blind ".concat(name));
+      this.log("Creating Blind ".concat(index, " as ").concat(name));
       var uuid = this.api.hap.uuid.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
       this.blinds[index] = {
