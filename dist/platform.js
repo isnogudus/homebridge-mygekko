@@ -197,8 +197,7 @@ var Platform = /*#__PURE__*/function () {
         var position = this._position(index, status.position);
 
         this.log.debug("getCurrentPosition on ".concat(index, " pos: ").concat(position, " target: ").concat(status.targetPosition));
-        if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1) callback(null, 100 - status.targetPosition);
-        callback(null, 100 - position);
+        if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1) callback(null, 100 - status.targetPosition);else callback(null, 100 - position);
       }.bind(this));
       service.getCharacteristic(Characteristic.TargetPosition).on("get", function (callback) {
         this.log("TargetPosition ".concat(index));

@@ -134,8 +134,8 @@ class Platform {
 
       if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1)
         callback(null, 100 - status.targetPosition);
-
-      callback(null, 100 - position);
+      else
+        callback(null, 100 - position);
     }.bind(this));
 
     service.getCharacteristic(Characteristic.TargetPosition).on("get", function (callback) {
