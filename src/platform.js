@@ -100,7 +100,7 @@ class Platform {
 
   _registerBlind(index, name) {
     this.log(`Creating Blind ${name}`);
-    const uuid = UUIDGen.generate(name);
+    const uuid = this.api.hap.UUIDGen.generate(name);
     this.log(`Cached : ${uuid in this.accessories}`);
 
     this.blinds[index] = {

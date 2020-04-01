@@ -13,8 +13,8 @@ var _default = function _default(homebridge) {
   var Accessory = homebridge.platformAccessory;
   var _homebridge$hap = homebridge.hap,
       Service = _homebridge$hap.Service,
-      Characteristic = _homebridge$hap.Characteristic;
-  var UUIDGen = homebridge.hap.uuid;
+      Characteristic = _homebridge$hap.Characteristic,
+      UUIDGen = _homebridge$hap.UUIDGen;
   var PluginName = "homebridge-mygekko";
   var PlatformName = "mygekko";
   homebridge.registerPlatform(PluginName, PlatformName, _platform["default"], true);
