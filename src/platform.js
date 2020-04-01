@@ -20,9 +20,11 @@ class Platform {
       return;
     }
 
-    this.user = config.user;
-    this.password = config.password;
-    this.host = config.host;
+    const { user, password, host, blindAdjustment } = config;
+    this.username = user;
+    this.password = password;
+    this.host = host;
+    this.blindAdjustment = blindAdjustment || {};
     this.url = `http://${this.host}/api/v1/var`;
     this.accessories = {};
 
@@ -40,6 +42,11 @@ class Platform {
     }
   }
 
+  _send(path = "", value = undefined) {
+    const { url, username, password } = this;
+    const params = (value === undefined) ? { username, password } : { username, password, value };
+    return axios.get(url + path, { params });
+  }
   _callBlindsTargetPositions() {
     const target = this.blindsTargetPositions;
     this.blindsTargetPositions = {};
@@ -48,10 +55,10 @@ class Platform {
       this.log.debug(`_callBlindsTargetPositions ${index} to ${newPosition}`);
 
       // Send stop
-      axios.get(`${this.url}/blinds/${index}/scmd/set`, { params: { username: this.user, password: this.password, value: "0" } })
+      _send(`/blinds/${index}/scmd/set`, "0")
         .then(() => {
           this.log.debug(`Stop signal send -> ${index}`);
-          axios.get(`${this.url}/blinds/${index}/scmd/set`, { params: { username: this.user, password: this.password, value: `P${newPosition}` } })
+          _send(`/blinds/${index}/scmd/set`, `P${newPosition}`)
             .then(request => {
               this.log.debug(`New position send -> ${index} to ${newPosition}`);
               callback(null);
@@ -80,17 +87,16 @@ class Platform {
 
   _fetchDevices() {
     this.log.debug("Fetch the devices");
-    axios.get(`${this.url}?username=${this.user}&password=${this.password}`)
-      .then(response => {
-        const { blinds } = response.data;
-        for (const index in blinds) {
-          const blind = blinds[index];
-          this._registerBlind(index, blind.name);
-        }
-        this._getStatus();
+    _send().then(response => {
+      const { blinds } = response.data;
+      for (const index in blinds) {
+        const blind = blinds[index];
+        this._registerBlind(index, blind.name);
+      }
+      this._getStatus();
 
-        //this.log.debug(response.data.blinds)
-      }).catch(error => { console.log(error); });
+      //this.log.debug(response.data.blinds)
+    }).catch(error => { console.log(error); });
   }
 
   _registerBlind(index, name) {
@@ -102,8 +108,8 @@ class Platform {
     this.blinds[index] = {
       position: 0,
       targetPosition: null,
-      min: Math.max(0, parseInt(this.config?.blindAdjustment?.[index]?.min ?? "0")),
-      max: Math.min(100, parseInt(this.config?.blindAdjustment?.[index]?.max ?? "100")),
+      min: Math.max(0, parseInt(this.blindAdjustment[index]?.min ?? "0")),
+      max: Math.min(100, parseInt(this.blindAdjustment[index]?.max ?? "100")),
     };
 
     const accessory = this.accessories[uuid] || new Accessory(name, uuid);
@@ -171,12 +177,7 @@ class Platform {
   }
 
   _getStatus() {
-    axios.get(`${this.url}/status`, {
-      params: {
-        username: this.user,
-        password: this.password
-      }
-    }).then(request => {
+    _send("/status").then(request => {
       const { blinds } = request.data;
       for (const item in blinds) {
         const sumState = blinds[item].sumstate.value.split(";");

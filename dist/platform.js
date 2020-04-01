@@ -41,9 +41,14 @@ var Platform = /*#__PURE__*/function () {
       return;
     }
 
-    this.user = config.user;
-    this.password = config.password;
-    this.host = config.host;
+    var user = config.user,
+        password = config.password,
+        host = config.host,
+        blindAdjustment = config.blindAdjustment;
+    this.username = user;
+    this.password = password;
+    this.host = host;
+    this.blindAdjustment = blindAdjustment || {};
     this.url = "http://".concat(this.host, "/api/v1/var");
     this.accessories = {};
     this.log("Starting MyGEKKO Platform using homebridge API", api.version);
@@ -60,6 +65,26 @@ var Platform = /*#__PURE__*/function () {
   }
 
   _createClass(Platform, [{
+    key: "_send",
+    value: function _send() {
+      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+      var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+      var url = this.url,
+          username = this.username,
+          password = this.password;
+      var params = value === undefined ? {
+        username: username,
+        password: password
+      } : {
+        username: username,
+        password: password,
+        value: value
+      };
+      return axios.get(url + path, {
+        params: params
+      });
+    }
+  }, {
     key: "_callBlindsTargetPositions",
     value: function _callBlindsTargetPositions() {
       var _this2 = this;
@@ -75,22 +100,10 @@ var Platform = /*#__PURE__*/function () {
         _this2.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
 
 
-        axios.get("".concat(_this2.url, "/blinds/").concat(index, "/scmd/set"), {
-          params: {
-            username: _this2.user,
-            password: _this2.password,
-            value: "0"
-          }
-        }).then(function () {
+        _send("/blinds/".concat(index, "/scmd/set"), "0").then(function () {
           _this2.log.debug("Stop signal send -> ".concat(index));
 
-          axios.get("".concat(_this2.url, "/blinds/").concat(index, "/scmd/set"), {
-            params: {
-              username: _this2.user,
-              password: _this2.password,
-              value: "P".concat(newPosition)
-            }
-          }).then(function (request) {
+          _send("/blinds/".concat(index, "/scmd/set"), "P".concat(newPosition)).then(function (request) {
             _this2.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
 
             callback(null);
@@ -132,7 +145,8 @@ var Platform = /*#__PURE__*/function () {
       var _this3 = this;
 
       this.log.debug("Fetch the devices");
-      axios.get("".concat(this.url, "?username=").concat(this.user, "&password=").concat(this.password)).then(function (response) {
+
+      _send().then(function (response) {
         var blinds = response.data.blinds;
 
         for (var index in blinds) {
@@ -150,7 +164,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_registerBlind",
     value: function _registerBlind(index, name) {
-      var _this$config$blindAdj, _this$config, _this$config$blindAdj2, _this$config$blindAdj3, _this$config$blindAdj4, _this$config2, _this$config2$blindAd, _this$config2$blindAd2;
+      var _this$blindAdjustment, _this$blindAdjustment2, _this$blindAdjustment3, _this$blindAdjustment4;
 
       var _this$api$hap = this.api.hap,
           Service = _this$api$hap.Service,
@@ -162,8 +176,8 @@ var Platform = /*#__PURE__*/function () {
       this.blinds[index] = {
         position: 0,
         targetPosition: null,
-        min: Math.max(0, parseInt((_this$config$blindAdj = (_this$config = this.config) === null || _this$config === void 0 ? void 0 : (_this$config$blindAdj2 = _this$config.blindAdjustment) === null || _this$config$blindAdj2 === void 0 ? void 0 : (_this$config$blindAdj3 = _this$config$blindAdj2[index]) === null || _this$config$blindAdj3 === void 0 ? void 0 : _this$config$blindAdj3.min) !== null && _this$config$blindAdj !== void 0 ? _this$config$blindAdj : "0")),
-        max: Math.min(100, parseInt((_this$config$blindAdj4 = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : (_this$config2$blindAd = _this$config2.blindAdjustment) === null || _this$config2$blindAd === void 0 ? void 0 : (_this$config2$blindAd2 = _this$config2$blindAd[index]) === null || _this$config2$blindAd2 === void 0 ? void 0 : _this$config2$blindAd2.max) !== null && _this$config$blindAdj4 !== void 0 ? _this$config$blindAdj4 : "100"))
+        min: Math.max(0, parseInt((_this$blindAdjustment = (_this$blindAdjustment2 = this.blindAdjustment[index]) === null || _this$blindAdjustment2 === void 0 ? void 0 : _this$blindAdjustment2.min) !== null && _this$blindAdjustment !== void 0 ? _this$blindAdjustment : "0")),
+        max: Math.min(100, parseInt((_this$blindAdjustment3 = (_this$blindAdjustment4 = this.blindAdjustment[index]) === null || _this$blindAdjustment4 === void 0 ? void 0 : _this$blindAdjustment4.max) !== null && _this$blindAdjustment3 !== void 0 ? _this$blindAdjustment3 : "100"))
       };
       var accessory = this.accessories[uuid] || new Accessory(name, uuid);
       accessory.on("identify", function (paired, callback) {
@@ -227,12 +241,7 @@ var Platform = /*#__PURE__*/function () {
     value: function _getStatus() {
       var _this4 = this;
 
-      axios.get("".concat(this.url, "/status"), {
-        params: {
-          username: this.user,
-          password: this.password
-        }
-      }).then(function (request) {
+      _send("/status").then(function (request) {
         var blinds = request.data.blinds;
 
         for (var item in blinds) {
@@ -262,6 +271,7 @@ var Platform = /*#__PURE__*/function () {
       })["catch"](function (error) {
         _this4.log.error(error);
       });
+
       this.updater = setTimeout(this._getStatus.bind(this), 5000);
     }
   }, {
