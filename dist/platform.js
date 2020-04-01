@@ -253,7 +253,10 @@ var Platform = /*#__PURE__*/function () {
             angle: parseFloat(sumState[2]),
             sumState: parseInt(sumState[3]),
             slotRotationalArea: parseInt(sumState[4])
-          }; // Update service
+          };
+
+          _this4.log.debug("Status position", item, position, state.position); // Update service
+
 
           if (state.position != _this4.blinds[item].position) {
             var _this4$api$hap = _this4.api.hap,
