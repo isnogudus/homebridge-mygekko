@@ -1,13 +1,23 @@
 "use strict";
 
-var Platform = require("./platform");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
 
-module.exports = function (homebridge) {
-  Accessory = homebridge.platformAccessory;
-  Service = homebridge.hap.Service;
-  Characteristic = homebridge.hap.Characteristic;
-  UUIDGen = homebridge.hap.uuid;
+var _platform = _interopRequireDefault(require("./platform"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _default = function _default(homebridge) {
+  var Accessory = homebridge.platformAccessory;
+  var _homebridge$hap = homebridge.hap,
+      Service = _homebridge$hap.Service,
+      Characteristic = _homebridge$hap.Characteristic;
+  var UUIDGen = homebridge.hap.uuid;
   var PluginName = "homebridge-mygekko";
   var PlatformName = "mygekko";
-  homebridge.registerPlatform(PluginName, PlatformName, Platform, true);
+  homebridge.registerPlatform(PluginName, PlatformName, _platform["default"], true);
 };
+
+exports["default"] = _default;
