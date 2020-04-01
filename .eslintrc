@@ -3,16 +3,19 @@
         "node": true
     },
     "parserOptions": {
-        "ecmaVersion": 2019,
+        "ecmaVersion": 2020,
         "sourceType": "module",
         "ecmaFeatures": {
             "impliedStrict": true
         }
     },
     "plugins": [
-        "node"
+        "node",
+        "babel"
     ],
     "rules": {
+        "no-unused-expressions": 0,
+        "babel/no-unused-expressions": 1,
         "prefer-destructuring": [
             "error",
             {

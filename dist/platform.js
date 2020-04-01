@@ -150,7 +150,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_registerBlind",
     value: function _registerBlind(index, name) {
-      var _this$config$adjustme, _this$config$adjustme2, _this$config$adjustme3, _this$config$adjustme4;
+      var _this$config$adjustme, _this$config, _this$config$adjustme2, _this$config$adjustme3, _this$config$adjustme4, _this$config2, _this$config2$adjustm, _this$config2$adjustm2;
 
       this.log("Creating Blind ".concat(name));
       var uuid = this.api.hap.uuid.generate(name);
@@ -160,8 +160,8 @@ var Platform = /*#__PURE__*/function () {
         targetPosition: null
       };
       this.blindAdjustment[index] = {
-        min: Math.max(0, parseInt((_this$config$adjustme = (_this$config$adjustme2 = this.config.adjustment[index]) === null || _this$config$adjustme2 === void 0 ? void 0 : _this$config$adjustme2.min) !== null && _this$config$adjustme !== void 0 ? _this$config$adjustme : "0")),
-        max: Math.min(100, parseInt((_this$config$adjustme3 = (_this$config$adjustme4 = this.config.adjustment[index]) === null || _this$config$adjustme4 === void 0 ? void 0 : _this$config$adjustme4.max) !== null && _this$config$adjustme3 !== void 0 ? _this$config$adjustme3 : "100"))
+        min: Math.max(0, parseInt((_this$config$adjustme = (_this$config = this.config) === null || _this$config === void 0 ? void 0 : (_this$config$adjustme2 = _this$config.adjustment) === null || _this$config$adjustme2 === void 0 ? void 0 : (_this$config$adjustme3 = _this$config$adjustme2[index]) === null || _this$config$adjustme3 === void 0 ? void 0 : _this$config$adjustme3.min) !== null && _this$config$adjustme !== void 0 ? _this$config$adjustme : "0")),
+        max: Math.min(100, parseInt((_this$config$adjustme4 = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : (_this$config2$adjustm = _this$config2.adjustment) === null || _this$config2$adjustm === void 0 ? void 0 : (_this$config2$adjustm2 = _this$config2$adjustm[index]) === null || _this$config2$adjustm2 === void 0 ? void 0 : _this$config2$adjustm2.max) !== null && _this$config$adjustme4 !== void 0 ? _this$config$adjustme4 : "100"))
       };
       var accessory = this.accessories[uuid] || new Accessory(name, uuid);
       accessory.on("identify", function (paired, callback) {

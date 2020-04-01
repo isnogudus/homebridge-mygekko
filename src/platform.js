@@ -109,8 +109,8 @@ class Platform {
     };
 
     this.blindAdjustment[index] = {
-      min: Math.max(0, parseInt(this.config.adjustment[index]?.min ?? "0")),
-      max: Math.min(100, parseInt(this.config.adjustment[index]?.max ?? "100")),
+      min: Math.max(0, parseInt(this.config?.adjustment?.[index]?.min ?? "0")),
+      max: Math.min(100, parseInt(this.config?.adjustment?.[index]?.max ?? "100")),
     };
 
 
