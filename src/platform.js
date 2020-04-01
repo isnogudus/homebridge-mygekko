@@ -198,8 +198,9 @@ class Platform {
         };
         // Update service
         if (state.position != this.blinds[item].position) {
+          const { Service, Characteristic } = this.api.hap;
           this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
-          const service = this.blindAccessories[item].getService(this.api.hap.Service.WindowCovering);
+          const service = this.blindAccessories[item].getService(Service.WindowCovering);
           if (service)
             service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(item, 100 - state.position));
         }

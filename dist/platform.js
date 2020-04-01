@@ -247,9 +247,13 @@ var Platform = /*#__PURE__*/function () {
           }; // Update service
 
           if (state.position != _this3.blinds[item].position) {
+            var _this3$api$hap = _this3.api.hap,
+                Service = _this3$api$hap.Service,
+                Characteristic = _this3$api$hap.Characteristic;
+
             _this3.log.debug("Update position ".concat(item, " from ").concat(_this3.blinds[item].position, " to ").concat(state.position));
 
-            var service = _this3.blindAccessories[item].getService(_this3.api.hap.Service.WindowCovering);
+            var service = _this3.blindAccessories[item].getService(Service.WindowCovering);
 
             if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this3._position(item, 100 - state.position));
           }
