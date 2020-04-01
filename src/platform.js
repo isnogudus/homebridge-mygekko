@@ -15,21 +15,16 @@ class Platform {
     this.targetPositions = {};
     this.blindsTargetPositions = null;
 
-    if (!config || !config["user"] || !config["password"] || !config["host"]) {
+    if (!config || !config.user || !config.password || !config.host) {
       this.log.error("Platform config incorrect or missing. Check the config.json file.");
     }
     else {
-
-      this.user = config["user"];
-      this.password = config["password"];
-      this.host = config["host"];
+      this.user = config.user;
+      this.password = config.password;
+      this.host = config.host;
       this.url = `http://${this.host}/api/v1/var`;
       this.accessories = {};
-      this.blindAdjustmentUp = config["adjustmentUp"];
-      if (!Array.isArray(this.blindAdjustmentUp)) this.blindAdjustmentUp = [this.blindAdjustmentUp];
-
-      this.blindAdjustmentDown = config["adjustmentDown"];
-      if (!Array.isArray(this.blindAdjustmentDown)) this.blindAdjustmentDown = [this.blindAdjustmentDown];
+      this.blindAdjustment = {};
 
       this.log("Starting MyGEKKO Platform using homebridge API", api.version);
       if (api) {
@@ -45,12 +40,6 @@ class Platform {
 
         }.bind(this));
       }
-    }
-  }
-
-  _fetch(type, item, callback) {
-    if (_isCacheActive()) {
-      this.log.debug(`Answer ${type}:${item} from cache.`);
     }
   }
 
@@ -85,9 +74,10 @@ class Platform {
     clearTimeout(this.blindPostioner);
 
     // correct the blinds
+    const { min, max } = this.blindAdjustment[index]
     let newPosition = position;
-    if (position == 100) newPosition = 99;
-    if (position == 0) newPosition = 1;
+    if (position == 100) newPosition = max;
+    if (position == 0) newPosition = min;
 
     this.blindsTargetPositions = { ...this.blindsTargetPositions, [index]: { newPosition, callback } };
     this.blindPostioner = setTimeout(this._callBlindsTargetPositions.bind(this), 500);
@@ -117,6 +107,13 @@ class Platform {
       position: 0,
       targetPosition: null
     };
+
+    this.blindAdjustment[index] = {
+      min: Math.max(0, parseInt(config.adjustment[index]?.min ?? "0")),
+      max: Math.min(100, parseInt(config.adjustment[index]?.max ?? "100")),
+    };
+
+
     const accessory = this.accessories[uuid] || new Accessory(name, uuid);
 
     accessory.on("identify", function (paired, callback) {
@@ -216,8 +213,9 @@ class Platform {
   _position(name, position) {
     this.log("Position: ", name);
     const pos = Math.round(position);
-    if (pos <= 2) return 0;
-    if (pos >= 98) return 100;
+    const { min, max } = this.blindAdjustment[name];
+    if (pos <= min) return 0;
+    if (pos >= max) return 100;
     return pos;
   }
 
