@@ -249,7 +249,7 @@ var Platform = /*#__PURE__*/function () {
           if (state.position != _this3.blinds[item].position) {
             _this3.log.debug("Update position ".concat(item, " from ").concat(_this3.blinds[item].position, " to ").concat(state.position));
 
-            var service = _this3.blindAccessories[item].getService(Service.WindowCovering);
+            var service = _this3.blindAccessories[item].getService(_this3.api.hap.Service.WindowCovering);
 
             if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this3._position(item, 100 - state.position));
           }
