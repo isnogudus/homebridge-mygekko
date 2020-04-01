@@ -17,29 +17,26 @@ class Platform {
 
     if (!config || !config.user || !config.password || !config.host) {
       this.log.error("Platform config incorrect or missing. Check the config.json file.");
+      return;
     }
-    else {
-      this.user = config.user;
-      this.password = config.password;
-      this.host = config.host;
-      this.url = `http://${this.host}/api/v1/var`;
-      this.accessories = {};
-      this.blindAdjustment = {};
 
-      this.log("Starting MyGEKKO Platform using homebridge API", api.version);
-      if (api) {
+    this.user = config.user;
+    this.password = config.password;
+    this.host = config.host;
+    this.url = `http://${this.host}/api/v1/var`;
+    this.accessories = {};
 
-        // save the api for use later
-        this.api = api;
+    this.log("Starting MyGEKKO Platform using homebridge API", api.version);
+    if (api) {
 
-        // if finished loading cache accessories
-        this.api.on("didFinishLaunching", function () {
+      // save the api for use later
+      this.api = api;
 
-          // Fetch the devices
-          this._fetchDevices();
-
-        }.bind(this));
-      }
+      // if finished loading cache accessories
+      this.api.on("didFinishLaunching", () => {
+        // Fetch the devices
+        this._fetchDevices();
+      });
     }
   }
 
@@ -74,10 +71,8 @@ class Platform {
     clearTimeout(this.blindPostioner);
 
     // correct the blinds
-    const { min, max } = this.blindAdjustment[index];
-    let newPosition = position;
-    if (position == 100) newPosition = max;
-    if (position == 0) newPosition = min;
+    const { min, max } = this.blinds[index];
+    const newPosition = Math.min(max, Math.max(min, position));
 
     this.blindsTargetPositions = { ...this.blindsTargetPositions, [index]: { newPosition, callback } };
     this.blindPostioner = setTimeout(this._callBlindsTargetPositions.bind(this), 500);
@@ -99,21 +94,17 @@ class Platform {
   }
 
   _registerBlind(index, name) {
-    const { Service, Characteristic } = this.api.hap;
+    const { Service, Characteristic, uuid: UUIDGen } = this.api.hap;
     this.log(`Creating Blind ${index} as ${name}`);
-    const uuid = this.api.hap.uuid.generate(name);
+    const uuid = UUIDGen.generate(name);
     this.log(`Cached : ${uuid in this.accessories}`);
 
     this.blinds[index] = {
       position: 0,
-      targetPosition: null
-    };
-
-    this.blindAdjustment[index] = {
+      targetPosition: null,
       min: Math.max(0, parseInt(this.config?.blindAdjustment?.[index]?.min ?? "0")),
       max: Math.min(100, parseInt(this.config?.blindAdjustment?.[index]?.max ?? "100")),
     };
-
 
     const accessory = this.accessories[uuid] || new Accessory(name, uuid);
 
@@ -215,7 +206,7 @@ class Platform {
   _position(name, position) {
     this.log("Position: ", name);
     const pos = Math.round(position);
-    const { min, max } = this.blindAdjustment[name];
+    const { min, max } = this.blinds[name];
     if (pos <= min) return 0;
     if (pos >= max) return 100;
     return pos;

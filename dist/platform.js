@@ -23,6 +23,8 @@ var PlatformName = "mygekko";
 
 var Platform = /*#__PURE__*/function () {
   function Platform(log, config, api) {
+    var _this = this;
+
     _classCallCheck(this, Platform);
 
     this.log = log;
@@ -36,31 +38,31 @@ var Platform = /*#__PURE__*/function () {
 
     if (!config || !config.user || !config.password || !config.host) {
       this.log.error("Platform config incorrect or missing. Check the config.json file.");
-    } else {
-      this.user = config.user;
-      this.password = config.password;
-      this.host = config.host;
-      this.url = "http://".concat(this.host, "/api/v1/var");
-      this.accessories = {};
-      this.blindAdjustment = {};
-      this.log("Starting MyGEKKO Platform using homebridge API", api.version);
+      return;
+    }
 
-      if (api) {
-        // save the api for use later
-        this.api = api; // if finished loading cache accessories
+    this.user = config.user;
+    this.password = config.password;
+    this.host = config.host;
+    this.url = "http://".concat(this.host, "/api/v1/var");
+    this.accessories = {};
+    this.log("Starting MyGEKKO Platform using homebridge API", api.version);
 
-        this.api.on("didFinishLaunching", function () {
-          // Fetch the devices
-          this._fetchDevices();
-        }.bind(this));
-      }
+    if (api) {
+      // save the api for use later
+      this.api = api; // if finished loading cache accessories
+
+      this.api.on("didFinishLaunching", function () {
+        // Fetch the devices
+        _this._fetchDevices();
+      });
     }
   }
 
   _createClass(Platform, [{
     key: "_callBlindsTargetPositions",
     value: function _callBlindsTargetPositions() {
-      var _this = this;
+      var _this2 = this;
 
       var target = this.blindsTargetPositions;
       this.blindsTargetPositions = {};
@@ -70,37 +72,37 @@ var Platform = /*#__PURE__*/function () {
             newPosition = _target$index.newPosition,
             callback = _target$index.callback;
 
-        _this.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
+        _this2.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
 
 
-        axios.get("".concat(_this.url, "/blinds/").concat(index, "/scmd/set"), {
+        axios.get("".concat(_this2.url, "/blinds/").concat(index, "/scmd/set"), {
           params: {
-            username: _this.user,
-            password: _this.password,
+            username: _this2.user,
+            password: _this2.password,
             value: "0"
           }
         }).then(function () {
-          _this.log.debug("Stop signal send -> ".concat(index));
+          _this2.log.debug("Stop signal send -> ".concat(index));
 
-          axios.get("".concat(_this.url, "/blinds/").concat(index, "/scmd/set"), {
+          axios.get("".concat(_this2.url, "/blinds/").concat(index, "/scmd/set"), {
             params: {
-              username: _this.user,
-              password: _this.password,
+              username: _this2.user,
+              password: _this2.password,
               value: "P".concat(newPosition)
             }
           }).then(function (request) {
-            _this.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
+            _this2.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
 
             callback(null);
           })["catch"](function (error) {
             callback(new Error("Error in SetTargetPosition"));
 
-            _this.log.error(error);
+            _this2.log.error(error);
           });
         })["catch"](function (error) {
           callback(new Error("Error in SetTargetPosition"));
 
-          _this.log.error(error);
+          _this2.log.error(error);
         });
       };
 
@@ -114,12 +116,10 @@ var Platform = /*#__PURE__*/function () {
       this.log("_setBlindTargetPosition");
       clearTimeout(this.blindPostioner); // correct the blinds
 
-      var _this$blindAdjustment = this.blindAdjustment[index],
-          min = _this$blindAdjustment.min,
-          max = _this$blindAdjustment.max;
-      var newPosition = position;
-      if (position == 100) newPosition = max;
-      if (position == 0) newPosition = min;
+      var _this$blinds$index = this.blinds[index],
+          min = _this$blinds$index.min,
+          max = _this$blinds$index.max;
+      var newPosition = Math.min(max, Math.max(min, position));
       this.blindsTargetPositions = _objectSpread({}, this.blindsTargetPositions, _defineProperty({}, index, {
         newPosition: newPosition,
         callback: callback
@@ -129,7 +129,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_fetchDevices",
     value: function _fetchDevices() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.log.debug("Fetch the devices");
       axios.get("".concat(this.url, "?username=").concat(this.user, "&password=").concat(this.password)).then(function (response) {
@@ -138,10 +138,10 @@ var Platform = /*#__PURE__*/function () {
         for (var index in blinds) {
           var blind = blinds[index];
 
-          _this2._registerBlind(index, blind.name);
+          _this3._registerBlind(index, blind.name);
         }
 
-        _this2._getStatus(); //this.log.debug(response.data.blinds)
+        _this3._getStatus(); //this.log.debug(response.data.blinds)
 
       })["catch"](function (error) {
         console.log(error);
@@ -154,15 +154,14 @@ var Platform = /*#__PURE__*/function () {
 
       var _this$api$hap = this.api.hap,
           Service = _this$api$hap.Service,
-          Characteristic = _this$api$hap.Characteristic;
+          Characteristic = _this$api$hap.Characteristic,
+          UUIDGen = _this$api$hap.uuid;
       this.log("Creating Blind ".concat(index, " as ").concat(name));
-      var uuid = this.api.hap.uuid.generate(name);
+      var uuid = UUIDGen.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
       this.blinds[index] = {
         position: 0,
-        targetPosition: null
-      };
-      this.blindAdjustment[index] = {
+        targetPosition: null,
         min: Math.max(0, parseInt((_this$config$blindAdj = (_this$config = this.config) === null || _this$config === void 0 ? void 0 : (_this$config$blindAdj2 = _this$config.blindAdjustment) === null || _this$config$blindAdj2 === void 0 ? void 0 : (_this$config$blindAdj3 = _this$config$blindAdj2[index]) === null || _this$config$blindAdj3 === void 0 ? void 0 : _this$config$blindAdj3.min) !== null && _this$config$blindAdj !== void 0 ? _this$config$blindAdj : "0")),
         max: Math.min(100, parseInt((_this$config$blindAdj4 = (_this$config2 = this.config) === null || _this$config2 === void 0 ? void 0 : (_this$config2$blindAd = _this$config2.blindAdjustment) === null || _this$config2$blindAd === void 0 ? void 0 : (_this$config2$blindAd2 = _this$config2$blindAd[index]) === null || _this$config2$blindAd2 === void 0 ? void 0 : _this$config2$blindAd2.max) !== null && _this$config$blindAdj4 !== void 0 ? _this$config$blindAdj4 : "100"))
       };
@@ -226,7 +225,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_getStatus",
     value: function _getStatus() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("".concat(this.url, "/status"), {
         params: {
@@ -246,22 +245,22 @@ var Platform = /*#__PURE__*/function () {
             slotRotationalArea: parseInt(sumState[4])
           }; // Update service
 
-          if (state.position != _this3.blinds[item].position) {
-            var _this3$api$hap = _this3.api.hap,
-                Service = _this3$api$hap.Service,
-                Characteristic = _this3$api$hap.Characteristic;
+          if (state.position != _this4.blinds[item].position) {
+            var _this4$api$hap = _this4.api.hap,
+                Service = _this4$api$hap.Service,
+                Characteristic = _this4$api$hap.Characteristic;
 
-            _this3.log.debug("Update position ".concat(item, " from ").concat(_this3.blinds[item].position, " to ").concat(state.position));
+            _this4.log.debug("Update position ".concat(item, " from ").concat(_this4.blinds[item].position, " to ").concat(state.position));
 
-            var service = _this3.blindAccessories[item].getService(Service.WindowCovering);
+            var service = _this4.blindAccessories[item].getService(Service.WindowCovering);
 
-            if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this3._position(item, 100 - state.position));
+            if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this4._position(item, 100 - state.position));
           }
 
-          _this3.blinds[item] = state;
+          _this4.blinds[item] = state;
         }
       })["catch"](function (error) {
-        _this3.log.error(error);
+        _this4.log.error(error);
       });
       this.updater = setTimeout(this._getStatus.bind(this), 5000);
     }
@@ -270,9 +269,9 @@ var Platform = /*#__PURE__*/function () {
     value: function _position(name, position) {
       this.log("Position: ", name);
       var pos = Math.round(position);
-      var _this$blindAdjustment2 = this.blindAdjustment[name],
-          min = _this$blindAdjustment2.min,
-          max = _this$blindAdjustment2.max;
+      var _this$blinds$name = this.blinds[name],
+          min = _this$blinds$name.min,
+          max = _this$blinds$name.max;
       if (pos <= min) return 0;
       if (pos >= max) return 100;
       return pos;
