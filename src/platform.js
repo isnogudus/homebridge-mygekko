@@ -205,11 +205,15 @@ class Platform {
   }
 
   _position(name, position) {
-    this.log("Position: ", name);
+    this.log("Position: ", name, position);
     const pos = Math.round(position);
     const { min, max } = this.blinds[name];
     if (pos <= min) return 0;
     if (pos >= max) return 100;
+
+    if (pos != position)
+      this.log("Position corrected to : ", name, position);
+
     return pos;
   }
 

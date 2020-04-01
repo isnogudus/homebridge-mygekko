@@ -277,13 +277,14 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_position",
     value: function _position(name, position) {
-      this.log("Position: ", name);
+      this.log("Position: ", name, position);
       var pos = Math.round(position);
       var _this$blinds$name = this.blinds[name],
           min = _this$blinds$name.min,
           max = _this$blinds$name.max;
       if (pos <= min) return 0;
       if (pos >= max) return 100;
+      if (pos != position) this.log("Position corrected to : ", name, position);
       return pos;
     }
   }, {
