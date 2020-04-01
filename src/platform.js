@@ -181,9 +181,10 @@ class Platform {
       const { blinds } = request.data;
       for (const item in blinds) {
         const sumState = blinds[item].sumstate.value.split(";");
+        const position = Math.round(parseFloat(sumState[1]));
         const state = {
           state: parseInt(sumState[0]),
-          position: Math.round(parseFloat(sumState[1])),
+          position: position < 50 ? Math.floor(position) : Math.ceil(position),
           angle: parseFloat(sumState[2]),
           sumState: parseInt(sumState[3]),
           slotRotationalArea: parseInt(sumState[4])
@@ -210,9 +211,6 @@ class Platform {
     const { min, max } = this.blinds[name];
     if (pos <= min) return 0;
     if (pos >= max) return 100;
-
-    if (pos != position)
-      this.log("Position corrected to : ", name, position);
 
     return pos;
   }

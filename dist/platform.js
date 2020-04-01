@@ -246,9 +246,10 @@ var Platform = /*#__PURE__*/function () {
 
         for (var item in blinds) {
           var sumState = blinds[item].sumstate.value.split(";");
+          var position = Math.round(parseFloat(sumState[1]));
           var state = {
             state: parseInt(sumState[0]),
-            position: Math.round(parseFloat(sumState[1])),
+            position: position < 50 ? Math.floor(position) : Math.ceil(position),
             angle: parseFloat(sumState[2]),
             sumState: parseInt(sumState[3]),
             slotRotationalArea: parseInt(sumState[4])
@@ -284,7 +285,6 @@ var Platform = /*#__PURE__*/function () {
           max = _this$blinds$name.max;
       if (pos <= min) return 0;
       if (pos >= max) return 100;
-      if (pos != position) this.log("Position corrected to : ", name, position);
       return pos;
     }
   }, {
