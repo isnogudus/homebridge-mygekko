@@ -126,7 +126,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_setBlindTargetPosition",
     value: function _setBlindTargetPosition(index, position, callback) {
-      this.log("_setBlindTargetPosition");
+      this.log("_setBlindTargetPosition ".concat(index, " ").concat(position));
       clearTimeout(this.blindPostioner); // correct the blinds
 
       var _this$blinds$index = this.blinds[index],

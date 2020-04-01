@@ -74,7 +74,7 @@ class Platform {
   }
 
   _setBlindTargetPosition(index, position, callback) {
-    this.log("_setBlindTargetPosition");
+    this.log(`_setBlindTargetPosition ${index} ${position}`);
     clearTimeout(this.blindPostioner);
 
     // correct the blinds
