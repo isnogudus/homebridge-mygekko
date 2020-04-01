@@ -152,7 +152,9 @@ var Platform = /*#__PURE__*/function () {
     value: function _registerBlind(index, name) {
       var _this$config$adjustme, _this$config, _this$config$adjustme2, _this$config$adjustme3, _this$config$adjustme4, _this$config2, _this$config2$adjustm, _this$config2$adjustm2;
 
-      var Service = this.api.hap.Service;
+      var _this$api$hap = this.api.hap,
+          Service = _this$api$hap.Service,
+          Characteristic = _this$api$hap.Characteristic;
       this.log("Creating Blind ".concat(name));
       var uuid = this.api.hap.uuid.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
