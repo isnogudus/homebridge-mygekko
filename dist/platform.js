@@ -150,11 +150,9 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_registerBlind",
     value: function _registerBlind(index, name) {
-      var _config$adjustment$in, _config$adjustment$in2, _config$adjustment$in3, _config$adjustment$in4;
+      var _this$config$adjustme, _this$config$adjustme2, _this$config$adjustme3, _this$config$adjustme4;
 
       this.log("Creating Blind ".concat(name));
-      this.log("HAP", this.api.hap);
-      this.log("UUID", this.api.hap.uuid.generate);
       var uuid = this.api.hap.uuid.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
       this.blinds[index] = {
@@ -162,8 +160,8 @@ var Platform = /*#__PURE__*/function () {
         targetPosition: null
       };
       this.blindAdjustment[index] = {
-        min: Math.max(0, parseInt((_config$adjustment$in = (_config$adjustment$in2 = config.adjustment[index]) === null || _config$adjustment$in2 === void 0 ? void 0 : _config$adjustment$in2.min) !== null && _config$adjustment$in !== void 0 ? _config$adjustment$in : "0")),
-        max: Math.min(100, parseInt((_config$adjustment$in3 = (_config$adjustment$in4 = config.adjustment[index]) === null || _config$adjustment$in4 === void 0 ? void 0 : _config$adjustment$in4.max) !== null && _config$adjustment$in3 !== void 0 ? _config$adjustment$in3 : "100"))
+        min: Math.max(0, parseInt((_this$config$adjustme = (_this$config$adjustme2 = this.config.adjustment[index]) === null || _this$config$adjustme2 === void 0 ? void 0 : _this$config$adjustme2.min) !== null && _this$config$adjustme !== void 0 ? _this$config$adjustme : "0")),
+        max: Math.min(100, parseInt((_this$config$adjustme3 = (_this$config$adjustme4 = this.config.adjustment[index]) === null || _this$config$adjustme4 === void 0 ? void 0 : _this$config$adjustme4.max) !== null && _this$config$adjustme3 !== void 0 ? _this$config$adjustme3 : "100"))
       };
       var accessory = this.accessories[uuid] || new Accessory(name, uuid);
       accessory.on("identify", function (paired, callback) {

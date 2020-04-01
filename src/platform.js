@@ -100,8 +100,6 @@ class Platform {
 
   _registerBlind(index, name) {
     this.log(`Creating Blind ${name}`);
-    this.log("HAP", this.api.hap)
-    this.log("UUID", this.api.hap.uuid.generate)
     const uuid = this.api.hap.uuid.generate(name);
     this.log(`Cached : ${uuid in this.accessories}`);
 
@@ -111,8 +109,8 @@ class Platform {
     };
 
     this.blindAdjustment[index] = {
-      min: Math.max(0, parseInt(config.adjustment[index]?.min ?? "0")),
-      max: Math.min(100, parseInt(config.adjustment[index]?.max ?? "100")),
+      min: Math.max(0, parseInt(this.config.adjustment[index]?.min ?? "0")),
+      max: Math.min(100, parseInt(this.config.adjustment[index]?.max ?? "100")),
     };
 
 
