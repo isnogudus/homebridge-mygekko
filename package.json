@@ -2,7 +2,7 @@
   "name": "homebridge-mygekko",
   "version": "0.0.1",
   "description": "Homebridge <-> MyGEKKO platform",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Markus Teichmann",
   "license": "MIT",
   "engines": {
