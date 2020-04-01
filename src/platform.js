@@ -100,7 +100,7 @@ class Platform {
 
   _registerBlind(index, name) {
     const { Service, Characteristic } = this.api.hap;
-    this.log(`Creating Blind ${name}`);
+    this.log(`Creating Blind ${index} as ${name}`);
     const uuid = this.api.hap.uuid.generate(name);
     this.log(`Cached : ${uuid in this.accessories}`);
 
