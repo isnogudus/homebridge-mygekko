@@ -74,7 +74,7 @@ class Platform {
     clearTimeout(this.blindPostioner);
 
     // correct the blinds
-    const { min, max } = this.blindAdjustment[index]
+    const { min, max } = this.blindAdjustment[index];
     let newPosition = position;
     if (position == 100) newPosition = max;
     if (position == 0) newPosition = min;
@@ -99,6 +99,7 @@ class Platform {
   }
 
   _registerBlind(index, name) {
+    const { Service } = this.api.hap;
     this.log(`Creating Blind ${name}`);
     const uuid = this.api.hap.uuid.generate(name);
     this.log(`Cached : ${uuid in this.accessories}`);
