@@ -189,7 +189,7 @@ class Platform {
           sumState: parseInt(sumState[3]),
           slotRotationalArea: parseInt(sumState[4])
         };
-        this.log.debug("Status position", item, position, state.position);
+        this.log("Status position", item, position, state.position);
         // Update service
         if (state.position != this.blinds[item].position) {
           const { Service, Characteristic } = this.api.hap;

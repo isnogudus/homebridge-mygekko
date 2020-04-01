@@ -255,7 +255,7 @@ var Platform = /*#__PURE__*/function () {
             slotRotationalArea: parseInt(sumState[4])
           };
 
-          _this4.log.debug("Status position", item, position, state.position); // Update service
+          _this4.log("Status position", item, position, state.position); // Update service
 
 
           if (state.position != _this4.blinds[item].position) {
