@@ -1,10 +1,9 @@
-const Platform = require("./platform");
+import Platform from "./platform";
 
-module.exports = (homebridge) => {
-  Accessory = homebridge.platformAccessory;
-  Service = homebridge.hap.Service;
-  Characteristic = homebridge.hap.Characteristic;
-  UUIDGen = homebridge.hap.uuid;
+export default (homebridge) => {
+  const Accessory = homebridge.platformAccessory;
+  const { Service, Characteristic } = homebridge.hap;
+  const UUIDGen = homebridge.hap.uuid;
   const PluginName = "homebridge-mygekko";
   const PlatformName = "mygekko";
 
