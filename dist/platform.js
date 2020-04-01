@@ -187,7 +187,6 @@ var Platform = /*#__PURE__*/function () {
       }.bind(this));
       var service = accessory.getService(Service.WindowCovering) || accessory.addService(Service.WindowCovering, name);
       service.getCharacteristic(Characteristic.CurrentPosition).on("get", function (callback) {
-        this.log("CurrentPosition ".concat(index));
         var status = this.blinds[index];
 
         if (!status) {
@@ -197,7 +196,8 @@ var Platform = /*#__PURE__*/function () {
 
         var position = this._position(index, status.position);
 
-        this.log.debug(position);
+        this.log.debug("getCurrentPosition on ".concat(index, " pos: ").concat(position, " target: ").concat(status.targetPosition));
+        if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1) callback(null, 100 - status.targetPosition);
         callback(null, 100 - position);
       }.bind(this));
       service.getCharacteristic(Characteristic.TargetPosition).on("get", function (callback) {
@@ -246,10 +246,11 @@ var Platform = /*#__PURE__*/function () {
         var blinds = request.data.blinds;
 
         for (var item in blinds) {
+          var oldState = _this4.blinds[item];
           var sumState = blinds[item].sumstate.value.split(";");
           var position = parseFloat(sumState[1]);
 
-          var state = _objectSpread({}, _this4.blinds[item], {
+          var state = _objectSpread({}, oldState, {
             state: parseInt(sumState[0]),
             position: position < 50 ? Math.floor(position) : Math.ceil(position),
             angle: parseFloat(sumState[2]),
@@ -258,7 +259,7 @@ var Platform = /*#__PURE__*/function () {
           }); // Update service
 
 
-          if (state.position != _this4.blinds[item].position) {
+          if (state.position != oldState.position) {
             _this4.log("Status position ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
 
             var _this4$api$hap = _this4.api.hap,

@@ -123,7 +123,6 @@ class Platform {
     const service = accessory.getService(Service.WindowCovering) || accessory.addService(Service.WindowCovering, name);
 
     service.getCharacteristic(Characteristic.CurrentPosition).on("get", function (callback) {
-      this.log(`CurrentPosition ${index}`);
       const status = this.blinds[index];
       if (!status) {
         this.log.error(`No status for ${index}`);
@@ -131,8 +130,11 @@ class Platform {
       }
 
       const position = this._position(index, status.position);
+      this.log.debug(`getCurrentPosition on ${index} pos: ${position} target: ${status.targetPosition}`);
 
-      this.log.debug(position);
+      if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1)
+        callback(null, 100 - status.targetPosition);
+
       callback(null, 100 - position);
     }.bind(this));
 
@@ -181,10 +183,11 @@ class Platform {
     this._send("/status").then(request => {
       const { blinds } = request.data;
       for (const item in blinds) {
+        const oldState = this.blinds[item];
         const sumState = blinds[item].sumstate.value.split(";");
         const position = parseFloat(sumState[1]);
         const state = {
-          ...this.blinds[item],
+          ...oldState,
           state: parseInt(sumState[0]),
           position: position < 50 ? Math.floor(position) : Math.ceil(position),
           angle: parseFloat(sumState[2]),
@@ -192,7 +195,7 @@ class Platform {
           slotRotationalArea: parseInt(sumState[4])
         };
         // Update service
-        if (state.position != this.blinds[item].position) {
+        if (state.position != oldState.position) {
           this.log(`Status position ${item} ${sumState[1]} ${position} ${state.position}`);
           const { Service, Characteristic } = this.api.hap;
           this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
