@@ -133,6 +133,7 @@ var Platform = /*#__PURE__*/function () {
           min = _this$blinds$index.min,
           max = _this$blinds$index.max;
       var newPosition = Math.min(max, Math.max(min, position));
+      this.log("_setBlindTargetPosition ".concat(newPosition, " ").concat(min, " ").concat(max));
       this.blindsTargetPositions = _objectSpread({}, this.blindsTargetPositions, _defineProperty({}, index, {
         newPosition: newPosition,
         callback: callback

@@ -80,6 +80,7 @@ class Platform {
     // correct the blinds
     const { min, max } = this.blinds[index];
     const newPosition = Math.min(max, Math.max(min, position));
+    this.log(`_setBlindTargetPosition ${newPosition} ${min} ${max}`);
 
     this.blindsTargetPositions = { ...this.blindsTargetPositions, [index]: { newPosition, callback } };
     this.blindPostioner = setTimeout(this._callBlindsTargetPositions.bind(this), 500);
