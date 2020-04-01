@@ -153,6 +153,8 @@ var Platform = /*#__PURE__*/function () {
       var _config$adjustment$in, _config$adjustment$in2, _config$adjustment$in3, _config$adjustment$in4;
 
       this.log("Creating Blind ".concat(name));
+      this.log("HAP", this.api.hap);
+      this.log("UUID", this.api.hap.UUIDGen);
       var uuid = this.api.hap.UUIDGen.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
       this.blinds[index] = {
