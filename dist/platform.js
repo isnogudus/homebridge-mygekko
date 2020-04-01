@@ -248,13 +248,15 @@ var Platform = /*#__PURE__*/function () {
         for (var item in blinds) {
           var sumState = blinds[item].sumstate.value.split(";");
           var position = parseFloat(sumState[1]);
-          var state = {
+
+          var state = _objectSpread({}, _this4.blinds[item], {
             state: parseInt(sumState[0]),
             position: position < 50 ? Math.floor(position) : Math.ceil(position),
             angle: parseFloat(sumState[2]),
             sumState: parseInt(sumState[3]),
             slotRotationalArea: parseInt(sumState[4])
-          }; // Update service
+          }); // Update service
+
 
           if (state.position != _this4.blinds[item].position) {
             _this4.log("Status position ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
