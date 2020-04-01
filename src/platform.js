@@ -189,9 +189,9 @@ class Platform {
           sumState: parseInt(sumState[3]),
           slotRotationalArea: parseInt(sumState[4])
         };
-        this.log(`Status position ${item} ${sumState[1]} ${position} ${state.position}`);
         // Update service
         if (state.position != this.blinds[item].position) {
+          this.log(`Status position ${item} ${sumState[1]} ${position} ${state.position}`);
           const { Service, Characteristic } = this.api.hap;
           this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
           const service = this.blindAccessories[item].getService(Service.WindowCovering);
