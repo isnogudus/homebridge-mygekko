@@ -82,7 +82,7 @@ class Platform {
     this.blindPostioner = setTimeout(this._callBlindsTargetPositions.bind(this), 500);
   }
 
-  async _fetchDevices() {
+  _fetchDevices() {
     this.log.debug("Fetch the devices");
     try {
       const { data: { blinds } } = this._send();

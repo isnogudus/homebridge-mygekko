@@ -171,45 +171,25 @@ var Platform = /*#__PURE__*/function () {
     }
   }, {
     key: "_fetchDevices",
-    value: function () {
-      var _fetchDevices2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var _this$_send, blinds, index, blind;
+    value: function _fetchDevices() {
+      this.log.debug("Fetch the devices");
 
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                this.log.debug("Fetch the devices");
+      try {
+        var _this$_send = this._send(),
+            blinds = _this$_send.data.blinds;
 
-                try {
-                  _this$_send = this._send(), blinds = _this$_send.data.blinds;
+        for (var index in blinds) {
+          var blind = blinds[index];
 
-                  for (index in blinds) {
-                    blind = blinds[index];
+          this._registerBlind(index, blind.name);
+        }
 
-                    this._registerBlind(index, blind.name);
-                  }
-
-                  this._getStatus();
-                } //this.log.debug(response.data.blinds)
-                catch (error) {
-                  console.log(error);
-                }
-
-              case 2:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-
-      function _fetchDevices() {
-        return _fetchDevices2.apply(this, arguments);
+        this._getStatus();
+      } //this.log.debug(response.data.blinds)
+      catch (error) {
+        console.log(error);
       }
-
-      return _fetchDevices;
-    }()
+    }
   }, {
     key: "_registerBlind",
     value: function _registerBlind(index, name) {
@@ -287,19 +267,19 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_getStatus",
     value: function () {
-      var _getStatus2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+      var _getStatus2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
         var request, blinds, item, oldState, sumState, position, state, _this$api$hap2, Service, Characteristic, service;
 
-        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context3.prev = 0;
-                _context3.next = 3;
+                _context2.prev = 0;
+                _context2.next = 3;
                 return this._send("/status");
 
               case 3:
-                request = _context3.sent;
+                request = _context2.sent;
                 blinds = request.data.blinds;
 
                 for (item in blinds) {
@@ -325,13 +305,13 @@ var Platform = /*#__PURE__*/function () {
                   this.blinds[item] = state;
                 }
 
-                _context3.next = 11;
+                _context2.next = 11;
                 break;
 
               case 8:
-                _context3.prev = 8;
-                _context3.t0 = _context3["catch"](0);
-                this.log.error(_context3.t0);
+                _context2.prev = 8;
+                _context2.t0 = _context2["catch"](0);
+                this.log.error(_context2.t0);
 
               case 11:
                 ;
@@ -339,10 +319,10 @@ var Platform = /*#__PURE__*/function () {
 
               case 13:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3, this, [[0, 8]]);
+        }, _callee2, this, [[0, 8]]);
       }));
 
       function _getStatus() {
