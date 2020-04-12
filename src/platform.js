@@ -179,8 +179,9 @@ class Platform {
     this.blindAccessories[index] = accessory;
   }
 
-  _getStatus() {
-    this._send("/status").then(request => {
+  async _getStatus() {
+    try {
+      const request = await this._send("/status");
       const { blinds } = request.data;
       for (const item in blinds) {
         const oldState = this.blinds[item];
@@ -205,9 +206,10 @@ class Platform {
         }
         this.blinds[item] = state;
       }
-    }).catch(error => {
+    }
+    catch (error) {
       this.log.error(error);
-    });
+    };
     this.updater = setTimeout(this._getStatus.bind(this), 5000);
   }
 

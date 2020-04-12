@@ -1,5 +1,9 @@
 "use strict";
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -238,48 +242,71 @@ var Platform = /*#__PURE__*/function () {
     }
   }, {
     key: "_getStatus",
-    value: function _getStatus() {
-      var _this4 = this;
+    value: function () {
+      var _getStatus2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var request, blinds, item, oldState, sumState, position, state, _this$api$hap2, Service, Characteristic, service;
 
-      this._send("/status").then(function (request) {
-        var blinds = request.data.blinds;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return this._send("/status");
 
-        for (var item in blinds) {
-          var oldState = _this4.blinds[item];
-          var sumState = blinds[item].sumstate.value.split(";");
-          var position = parseFloat(sumState[1]);
+              case 3:
+                request = _context.sent;
+                blinds = request.data.blinds;
 
-          var state = _objectSpread({}, oldState, {
-            state: parseInt(sumState[0]),
-            position: position < 50 ? Math.floor(position) : Math.ceil(position),
-            angle: parseFloat(sumState[2]),
-            sumState: parseInt(sumState[3]),
-            slotRotationalArea: parseInt(sumState[4])
-          }); // Update service
+                for (item in blinds) {
+                  oldState = this.blinds[item];
+                  sumState = blinds[item].sumstate.value.split(";");
+                  position = parseFloat(sumState[1]);
+                  state = _objectSpread({}, oldState, {
+                    state: parseInt(sumState[0]),
+                    position: position < 50 ? Math.floor(position) : Math.ceil(position),
+                    angle: parseFloat(sumState[2]),
+                    sumState: parseInt(sumState[3]),
+                    slotRotationalArea: parseInt(sumState[4])
+                  }); // Update service
 
+                  if (state.position != oldState.position) {
+                    this.log("Status position ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
+                    _this$api$hap2 = this.api.hap, Service = _this$api$hap2.Service, Characteristic = _this$api$hap2.Characteristic;
+                    this.log.debug("Update position ".concat(item, " from ").concat(this.blinds[item].position, " to ").concat(state.position));
+                    service = this.blindAccessories[item].getService(Service.WindowCovering);
+                    if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(item, 100 - state.position));
+                  }
 
-          if (state.position != oldState.position) {
-            _this4.log("Status position ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
+                  this.blinds[item] = state;
+                }
 
-            var _this4$api$hap = _this4.api.hap,
-                Service = _this4$api$hap.Service,
-                Characteristic = _this4$api$hap.Characteristic;
+                _context.next = 11;
+                break;
 
-            _this4.log.debug("Update position ".concat(item, " from ").concat(_this4.blinds[item].position, " to ").concat(state.position));
+              case 8:
+                _context.prev = 8;
+                _context.t0 = _context["catch"](0);
+                this.log.error(_context.t0);
 
-            var service = _this4.blindAccessories[item].getService(Service.WindowCovering);
+              case 11:
+                ;
+                this.updater = setTimeout(this._getStatus.bind(this), 5000);
 
-            if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this4._position(item, 100 - state.position));
+              case 13:
+              case "end":
+                return _context.stop();
+            }
           }
+        }, _callee, this, [[0, 8]]);
+      }));
 
-          _this4.blinds[item] = state;
-        }
-      })["catch"](function (error) {
-        _this4.log.error(error);
-      });
+      function _getStatus() {
+        return _getStatus2.apply(this, arguments);
+      }
 
-      this.updater = setTimeout(this._getStatus.bind(this), 5000);
-    }
+      return _getStatus;
+    }()
   }, {
     key: "_position",
     value: function _position(name, position) {

@@ -1,0 +1,582 @@
+{
+	"globals":	{
+		"network":	{
+			"gekkoname":	{
+				"value":	"Hostname of myGEKKO",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1
+			},
+			"language":	{
+				"value":	"Language of myGEKKO [0=DE|1=IT|2=EN|3=NL|4=ES|5=FR|6=CS]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	2
+			},
+			"version":	{
+				"value":	"Software version of myGEKKO",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	3
+			},
+			"hardware":	{
+				"value":	"Hardware version of myGEKKO",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	4
+			}
+		},
+		"alarm":	{
+			"sumstate":	{
+				"value":	"State[0=OK|2=ACKNOWLEDGED|3=ALARM]",
+				"type":	"INT",
+				"permission":	"READ",
+				"index":	101
+			}
+		},
+		"meteo":	{
+			"twilight":	{
+				"value":	"Act.Value",
+				"type":	"REAL",
+				"unit":	"lx",
+				"permission":	"READ",
+				"index":	201
+			},
+			"temperature":	{
+				"value":	"Act.Value",
+				"type":	"REAL",
+				"unit":	"°C",
+				"permission":	"READ",
+				"index":	205
+			}
+		}
+	},
+	"blinds":	{
+		"item0":	{
+			"name":	"HWR",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200000
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200001
+			}
+		},
+		"item1":	{
+			"name":	"WC",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200100
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200101
+			}
+		},
+		"item2":	{
+			"name":	"Küche 1",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200200
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200201
+			}
+		},
+		"item3":	{
+			"name":	"Küche 2",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200300
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200301
+			}
+		},
+		"item4":	{
+			"name":	"Essen Notfenster",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200400
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200401
+			}
+		},
+		"item5":	{
+			"name":	"Essen ",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200500
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200501
+			}
+		},
+		"item6":	{
+			"name":	"Wohnen 1",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200600
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200601
+			}
+		},
+		"item7":	{
+			"name":	"Wohnen 2",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200700
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200701
+			}
+		},
+		"item8":	{
+			"name":	"Wohnen 3",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200800
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200801
+			}
+		},
+		"item9":	{
+			"name":	"Gast",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	200900
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	200901
+			}
+		},
+		"item10":	{
+			"name":	"Flur DG",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201000
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201001
+			}
+		},
+		"item11":	{
+			"name":	"Eltern",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201100
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201101
+			}
+		},
+		"item12":	{
+			"name":	"Arbeiten klein",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201200
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201201
+			}
+		},
+		"item13":	{
+			"name":	"Arbeiten Notfenster",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201300
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201301
+			}
+		},
+		"item14":	{
+			"name":	"Kind 1 gross",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201400
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201401
+			}
+		},
+		"item15":	{
+			"name":	"Kind 1 klein",
+			"sumstate":	{
+				"value":	"State[-2=Hold_down|-1=Down|0=Stop|1=Up|2=Hold_up];Position[%];Angle[°];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SlatRotationArea[°]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	201500
+			},
+			"scmd":	{
+				"value":	"-2|-1|0|1|2|T|P55.4|S32.4 (Hold_down|Down|Stop|Up|Hold_up|Toggle|Position|Angle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	201501
+			}
+		}
+	},
+	"vents":	{
+		"item0":	{
+			"name":	"Wohnraumlüftung",
+			"sumstate":	{
+				"value":	"Level[0-4];Type;Mode;Bypassstate;MaxLevel[0-4];Humidity[%rH];Quality[%];CO2[ppm];TempSupplyAir[°C];TempExhaustAir[°C];TempOutsideAir[°C];TempOutgoingAir[°C];LevelIn[%];LevelOut[%];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];SubType",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	300000
+			},
+			"scmd":	{
+				"value":	"-1|1|2|3|4|T|BY0|BY1|BY2|C0|C1 (Off|Level1|Level2|Level3|Level4|Toggle|BypassAuto|BypassManual|BypassSummer|CoolingOff|CoolingOn)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	300001
+			}
+		}
+	},
+	"roomtemps":	{
+		"item0":	{
+			"name":	"WOHNEN",
+			"sumstate":	{
+				"value":	"Act.Temp[°C];SetpointTemp[°C];Valve[%];Mode[1=Off|8=Comfort|16=Reduced|64=Manual|256=Standby];Reserved;TempAdjustment[°C];Cooling[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];Humidity[%rF];AirQuality[ppm|%];FloorTemp[°C]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	500000
+			},
+			"scmd":	{
+				"value":	"M1|M8|M16|M64|M256|K2.4|S22.5 (Mode_Off|Mode_Comfort|Mode_Reduced|Mode_Manual|Mode_Standby|TempAdjustment[°C]|Setpoint[°C])",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	500001
+			}
+		},
+		"item1":	{
+			"name":	"ARBEITEN",
+			"sumstate":	{
+				"value":	"Act.Temp[°C];SetpointTemp[°C];Valve[%];Mode[1=Off|8=Comfort|16=Reduced|64=Manual|256=Standby];Reserved;TempAdjustment[°C];Cooling[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];Humidity[%rF];AirQuality[ppm|%];FloorTemp[°C]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	500100
+			},
+			"scmd":	{
+				"value":	"M1|M8|M16|M64|M256|K2.4|S22.5 (Mode_Off|Mode_Comfort|Mode_Reduced|Mode_Manual|Mode_Standby|TempAdjustment[°C]|Setpoint[°C])",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	500101
+			}
+		},
+		"item2":	{
+			"name":	"GAST",
+			"sumstate":	{
+				"value":	"Act.Temp[°C];SetpointTemp[°C];Valve[%];Mode[1=Off|8=Comfort|16=Reduced|64=Manual|256=Standby];Reserved;TempAdjustment[°C];Cooling[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];Humidity[%rF];AirQuality[ppm|%];FloorTemp[°C]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	500200
+			},
+			"scmd":	{
+				"value":	"M1|M8|M16|M64|M256|K2.4|S22.5 (Mode_Off|Mode_Comfort|Mode_Reduced|Mode_Manual|Mode_Standby|TempAdjustment[°C]|Setpoint[°C])",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	500201
+			}
+		},
+		"item4":	{
+			"name":	"SCHLAFEN",
+			"sumstate":	{
+				"value":	"Act.Temp[°C];SetpointTemp[°C];Valve[%];Mode[1=Off|8=Comfort|16=Reduced|64=Manual|256=Standby];Reserved;TempAdjustment[°C];Cooling[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];Humidity[%rF];AirQuality[ppm|%];FloorTemp[°C]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	500400
+			},
+			"scmd":	{
+				"value":	"M1|M8|M16|M64|M256|K2.4|S22.5 (Mode_Off|Mode_Comfort|Mode_Reduced|Mode_Manual|Mode_Standby|TempAdjustment[°C]|Setpoint[°C])",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	500401
+			}
+		},
+		"item6":	{
+			"name":	"KIND 1",
+			"sumstate":	{
+				"value":	"Act.Temp[°C];SetpointTemp[°C];Valve[%];Mode[1=Off|8=Comfort|16=Reduced|64=Manual|256=Standby];Reserved;TempAdjustment[°C];Cooling[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];Humidity[%rF];AirQuality[ppm|%];FloorTemp[°C]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	500600
+			},
+			"scmd":	{
+				"value":	"M1|M8|M16|M64|M256|K2.4|S22.5 (Mode_Off|Mode_Comfort|Mode_Reduced|Mode_Manual|Mode_Standby|TempAdjustment[°C]|Setpoint[°C])",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	500601
+			}
+		}
+	},
+	"energycosts":	{
+		"item0":	{
+			"name":	"Netzbezug",
+			"sumstate":	{
+				"value":	"Act.power;EnergyToday;EnergyMonth;EnergySum;PowerMax;UnitEnergy;UnitPower;EnergyToday.0-6;EnergyToday.6-12;EnergyToday.12-18;EnergyToday.18-24;EnergyYesterd.0-6;EnergyYesterd.6-12;EnergyYesterd.12-18;EnergyYesterd.18-24;SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	800000
+			}
+		}
+	},
+	"accessdoors":	{
+		"item0":	{
+			"name":	"HAUSTUER",
+			"sumstate":	{
+				"value":	"State[0=Lock|1=Open|2=KeepOpen];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];DoorState[0=Closed|1=Open];DoorRuntime[%]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1000000
+			}
+		}
+	},
+	"energymanager":	{
+		"item0":	{
+			"name":	"Energiemanager",
+			"sumstate":	{
+				"value":	"SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm];NetState[0=NotOk|1=Ok];SolarState[0=NotOk|1=Ok];BatState[0=NotOk|1=Ok];PNet[W];PExport[W];PSolar[W];PBat[W];PBatCharge[W];PHome[W];PAlternate[W];EImport[Wh];EExport[Wh];ESolar[Wh];EBat[Wh];EBatCharge[Wh];EHome[Wh];LoadShedding(0=Off|1=On);EMS[0=Off|1=On];BatType;BatSoc[%];EMS[0=Disabled|1=Enabled];PMaxNet[kW];PNetExportMax[kW]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1100000
+			}
+		}
+	},
+	"alarmsystem":	{
+		"item0":	{
+			"name":	"Alarmanlage",
+			"sumstate":	{
+				"value":	"State[1=Alarm|0=Ok];Z1Type;Z1Sharp[0=Unsharp|1=Sharp];Z1State[0=Ok|2=AlarmButUnsharp|3=Alarm];Z2Type;Z2Sharp[0=Unsharp|1=Sharp];Z2State[0=Ok|2=AlarmButUnsharp|3=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1200000
+			},
+			"scmd":	{
+				"value":	"1|2 (Zone 1 Sharp|Zone 2 Sharp)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1200001
+			}
+		}
+	},
+	"multirooms":	{
+		"item0":	{
+			"name":	"Display",
+			"sumstate":	{
+				"value":	"State[1=On|0=Off];Volume[%];Time[sec];Title;Act.Playlist[0-15];Playlist0;Playlist1;Playlist2;Playlist3;Playlist4;Playlist5;Playlist6;Playlist7;Playlist8;Playlist9;Playlist10;Playlist11;Playlist12;Playlist13;Playlist14;Playlist15",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1300000
+			},
+			"scmd":	{
+				"value":	"PLAY|STOP|T|N+1|C1|V24.5 (Play|Stop|Toggle|ChangeSong|ChangePlaylist|ChangeVolume)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1300001
+			}
+		}
+	},
+	"cams":	{
+		"item0":	{
+			"name":	"Kronplatz",
+			"sumstate":	{
+				"value":	"NewRecordsAvailable[0=No|1=Yes]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1400000
+			}
+		},
+		"item7":	{
+			"name":	"Videosprechstelle",
+			"sumstate":	{
+				"value":	"NewRecordsAvailable[0=No|1=Yes]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1400700
+			}
+		}
+	},
+	"smsemail":	{
+		"item0":	{
+			"name":	"SMS/EMAIL",
+			"sumstate":	{
+				"value":	"Status[0=Off|1=On]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1500000
+			},
+			"scmd":	{
+				"value":	"-1|1 (Off|On)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1500001
+			}
+		}
+	},
+	"actions":	{
+		"item0":	{
+			"name":	"Heizung AUS",
+			"sumstate":	{
+				"value":	"State[0=Off|1=On];Startcondition[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1600000
+			},
+			"scmd":	{
+				"value":	"-1|1|T (Stop|Start|Toggle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1600001
+			}
+		},
+		"item1":	{
+			"name":	"Heizung EIN",
+			"sumstate":	{
+				"value":	"State[0=Off|1=On];Startcondition[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1600100
+			},
+			"scmd":	{
+				"value":	"-1|1|T (Stop|Start|Toggle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1600101
+			}
+		},
+		"item3":	{
+			"name":	"Alle Rollo AUF",
+			"sumstate":	{
+				"value":	"State[0=Off|1=On];Startcondition[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1600300
+			},
+			"scmd":	{
+				"value":	"-1|1|T (Stop|Start|Toggle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1600301
+			}
+		},
+		"item4":	{
+			"name":	"Alle Rollo AB",
+			"sumstate":	{
+				"value":	"State[0=Off|1=On];Startcondition[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1600400
+			},
+			"scmd":	{
+				"value":	"-1|1|T (Stop|Start|Toggle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1600401
+			}
+		},
+		"item5":	{
+			"name":	"Türöffner",
+			"sumstate":	{
+				"value":	"State[0=Off|1=On];Startcondition[0=Off|1=On];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	1600500
+			},
+			"scmd":	{
+				"value":	"-1|1|T (Stop|Start|Toggle)",
+				"type":	"STRING",
+				"permission":	"WRITE",
+				"index":	1600501
+			}
+		}
+	},
+	"hotwater_systems":	{
+		"item0":	{
+			"name":	"WW Boiler",
+			"sumstate":	{
+				"value":	"Type;Cooling[0=Off|1=On];SetpointTemp[°C];TopTemp[°C];BottomTemp[°C];CollectorTemp[°C];State[1=On|0=Off];SumState[0=Ok|1=ManualOff|2=ManualOn|3=Locked|4=Alarm]",
+				"type":	"STRING",
+				"permission":	"READ",
+				"index":	4000000
+			}
+		}
+	}
+}
