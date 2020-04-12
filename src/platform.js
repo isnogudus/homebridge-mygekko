@@ -47,7 +47,8 @@ class Platform {
     const params = (value === undefined) ? { username, password } : { username, password, value };
     return axios.get(url + path, { params });
   }
-  _callBlindsTargetPositions() {
+
+  async _callBlindsTargetPositions() {
     const target = this.blindsTargetPositions;
     this.blindsTargetPositions = {};
     for (const index in target) {
@@ -55,21 +56,16 @@ class Platform {
       this.log.debug(`_callBlindsTargetPositions ${index} to ${newPosition}`);
 
       // Send stop
-      this._send(`/blinds/${index}/scmd/set`, "0")
-        .then(() => {
-          this.log.debug(`Stop signal send -> ${index}`);
-          this._send(`/blinds/${index}/scmd/set`, `P${newPosition}`)
-            .then(request => {
-              this.log.debug(`New position send -> ${index} to ${newPosition}`);
-              callback(null);
-            }).catch(error => {
-              callback(new Error("Error in SetTargetPosition"));
-              this.log.error(error);
-            });
-        }).catch(error => {
-          callback(new Error("Error in SetTargetPosition"));
-          this.log.error(error);
-        });
+      try {
+        await this._send(`/blinds/${index}/scmd/set`, "0");
+        this.log.debug(`Stop signal send -> ${index}`);
+        await this._send(`/blinds/${index}/scmd/set`, `P${newPosition}`);
+        this.log.debug(`New position send -> ${index} to ${newPosition}`);
+        callback(null);
+      } catch (error) {
+        callback(new Error("Error in SetTargetPosition"));
+        this.log.error(error);
+      };
     }
   }
 
@@ -86,18 +82,18 @@ class Platform {
     this.blindPostioner = setTimeout(this._callBlindsTargetPositions.bind(this), 500);
   }
 
-  _fetchDevices() {
+  async _fetchDevices() {
     this.log.debug("Fetch the devices");
-    this._send().then(response => {
-      const { blinds } = response.data;
+    try {
+      const { data: { blinds } } = this._send();
       for (const index in blinds) {
         const blind = blinds[index];
         this._registerBlind(index, blind.name);
       }
       this._getStatus();
-
-      //this.log.debug(response.data.blinds)
-    }).catch(error => { console.log(error); });
+    }
+    //this.log.debug(response.data.blinds)
+    catch (error) { console.log(error); }
   }
 
   _registerBlind(index, name) {
