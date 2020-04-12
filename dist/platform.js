@@ -1,14 +1,14 @@
 "use strict";
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -90,43 +90,68 @@ var Platform = /*#__PURE__*/function () {
     }
   }, {
     key: "_callBlindsTargetPositions",
-    value: function _callBlindsTargetPositions() {
-      var _this2 = this;
+    value: function () {
+      var _callBlindsTargetPositions2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var target, index, _target$index, newPosition, callback;
 
-      var target = this.blindsTargetPositions;
-      this.blindsTargetPositions = {};
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                target = this.blindsTargetPositions;
+                this.blindsTargetPositions = {};
+                _context.t0 = regeneratorRuntime.keys(target);
 
-      var _loop = function _loop(index) {
-        var _target$index = target[index],
-            newPosition = _target$index.newPosition,
-            callback = _target$index.callback;
+              case 3:
+                if ((_context.t1 = _context.t0()).done) {
+                  _context.next = 24;
+                  break;
+                }
 
-        _this2.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
+                index = _context.t1.value;
+                _target$index = target[index], newPosition = _target$index.newPosition, callback = _target$index.callback;
+                this.log.debug("_callBlindsTargetPositions ".concat(index, " to ").concat(newPosition)); // Send stop
 
+                _context.prev = 7;
+                _context.next = 10;
+                return this._send("/blinds/".concat(index, "/scmd/set"), "0");
 
-        _this2._send("/blinds/".concat(index, "/scmd/set"), "0").then(function () {
-          _this2.log.debug("Stop signal send -> ".concat(index));
+              case 10:
+                this.log.debug("Stop signal send -> ".concat(index));
+                _context.next = 13;
+                return this._send("/blinds/".concat(index, "/scmd/set"), "P".concat(newPosition));
 
-          _this2._send("/blinds/".concat(index, "/scmd/set"), "P".concat(newPosition)).then(function (request) {
-            _this2.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
+              case 13:
+                this.log.debug("New position send -> ".concat(index, " to ").concat(newPosition));
+                callback(null);
+                _context.next = 21;
+                break;
 
-            callback(null);
-          })["catch"](function (error) {
-            callback(new Error("Error in SetTargetPosition"));
+              case 17:
+                _context.prev = 17;
+                _context.t2 = _context["catch"](7);
+                callback(new Error("Error in SetTargetPosition"));
+                this.log.error(_context.t2);
 
-            _this2.log.error(error);
-          });
-        })["catch"](function (error) {
-          callback(new Error("Error in SetTargetPosition"));
+              case 21:
+                ;
+                _context.next = 3;
+                break;
 
-          _this2.log.error(error);
-        });
-      };
+              case 24:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[7, 17]]);
+      }));
 
-      for (var index in target) {
-        _loop(index);
+      function _callBlindsTargetPositions() {
+        return _callBlindsTargetPositions2.apply(this, arguments);
       }
-    }
+
+      return _callBlindsTargetPositions;
+    }()
   }, {
     key: "_setBlindTargetPosition",
     value: function _setBlindTargetPosition(index, position, callback) {
@@ -146,26 +171,45 @@ var Platform = /*#__PURE__*/function () {
     }
   }, {
     key: "_fetchDevices",
-    value: function _fetchDevices() {
-      var _this3 = this;
+    value: function () {
+      var _fetchDevices2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var _this$_send, blinds, index, blind;
 
-      this.log.debug("Fetch the devices");
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                this.log.debug("Fetch the devices");
 
-      this._send().then(function (response) {
-        var blinds = response.data.blinds;
+                try {
+                  _this$_send = this._send(), blinds = _this$_send.data.blinds;
 
-        for (var index in blinds) {
-          var blind = blinds[index];
+                  for (index in blinds) {
+                    blind = blinds[index];
 
-          _this3._registerBlind(index, blind.name);
-        }
+                    this._registerBlind(index, blind.name);
+                  }
 
-        _this3._getStatus(); //this.log.debug(response.data.blinds)
+                  this._getStatus();
+                } //this.log.debug(response.data.blinds)
+                catch (error) {
+                  console.log(error);
+                }
 
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    }
+              case 2:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function _fetchDevices() {
+        return _fetchDevices2.apply(this, arguments);
+      }
+
+      return _fetchDevices;
+    }()
   }, {
     key: "_registerBlind",
     value: function _registerBlind(index, name) {
@@ -243,19 +287,19 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "_getStatus",
     value: function () {
-      var _getStatus2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var _getStatus2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
         var request, blinds, item, oldState, sumState, position, state, _this$api$hap2, Service, Characteristic, service;
 
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context.prev = 0;
-                _context.next = 3;
+                _context3.prev = 0;
+                _context3.next = 3;
                 return this._send("/status");
 
               case 3:
-                request = _context.sent;
+                request = _context3.sent;
                 blinds = request.data.blinds;
 
                 for (item in blinds) {
@@ -281,13 +325,13 @@ var Platform = /*#__PURE__*/function () {
                   this.blinds[item] = state;
                 }
 
-                _context.next = 11;
+                _context3.next = 11;
                 break;
 
               case 8:
-                _context.prev = 8;
-                _context.t0 = _context["catch"](0);
-                this.log.error(_context.t0);
+                _context3.prev = 8;
+                _context3.t0 = _context3["catch"](0);
+                this.log.error(_context3.t0);
 
               case 11:
                 ;
@@ -295,10 +339,10 @@ var Platform = /*#__PURE__*/function () {
 
               case 13:
               case "end":
-                return _context.stop();
+                return _context3.stop();
             }
           }
-        }, _callee, this, [[0, 8]]);
+        }, _callee3, this, [[0, 8]]);
       }));
 
       function _getStatus() {
