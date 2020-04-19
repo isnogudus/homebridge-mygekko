@@ -105,11 +105,10 @@ var Blind = /*#__PURE__*/function () {
 
       if (oldPosition != this.position) {
         // Update service
-        this.log("setPosition ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
         var _this$api$hap2 = this.api.hap,
             Service = _this$api$hap2.Service,
             Characteristic = _this$api$hap2.Characteristic;
-        this.log.debug("Update position ".concat(item, " from ").concat(this.blinds[item].position, " to ").concat(state.position));
+        this.log.debug("Update position ".concat(this.item, " from ").concat(oldPosition, " to ").concat(this.position));
         var service = this.accessory.getService(Service.WindowCovering);
         if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(position);
       }

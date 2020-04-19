@@ -85,9 +85,8 @@ class Blind {
     this.slotRotationalArea = parseInt(sumState[4]);
     if (oldPosition != this.position) {
       // Update service
-      this.log(`setPosition ${item} ${sumState[1]} ${position} ${state.position}`);
       const { Service, Characteristic } = this.api.hap;
-      this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
+      this.log.debug(`Update position ${this.item} from ${oldPosition} to ${this.position}`);
       const service = this.accessory.getService(Service.WindowCovering);
       if (service)
         service.getCharacteristic(Characteristic.CurrentPosition).setValue(position);
