@@ -88,7 +88,7 @@ class Blind {
     if (oldPosition != this.position) {
       // Update service
       const { Service, Characteristic } = this.api.hap;
-      this.log.debug(`Update position ${this.item} from ${oldPosition} to ${this.position}`);
+      this.log.debug(`Update position ${this.index} from ${oldPosition} to ${this.position}`);
       const service = this.accessory.getService(Service.WindowCovering);
       if (service)
         service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
