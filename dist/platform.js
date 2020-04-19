@@ -166,7 +166,7 @@ var Platform = /*#__PURE__*/function () {
 
           var uuid = UUIDGen.generate(name);
 
-          _this3.log.debug.log("Cached : ".concat(uuid in accessories));
+          _this3.log.debug.log("Cached : ".concat(uuid in _this3.accessories));
 
           var accessory = (_this3$accessories$uu = _this3.accessories[uuid]) !== null && _this3$accessories$uu !== void 0 ? _this3$accessories$uu : new Accessory(name, uuid);
           _this3.blinds[index] = _blind["default"]["new"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3.log);

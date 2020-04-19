@@ -97,7 +97,7 @@ class Platform {
         const { name } = blind;
         //this._registerBlind(index, blind.name);
         const uuid = UUIDGen.generate(name);
-        this.log.debug.log(`Cached : ${uuid in accessories}`);
+        this.log.debug.log(`Cached : ${uuid in this.accessories}`);
         const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
 
         this.blinds[index] = Blind.new(accessory, name, index, this.api, this.blindAdjustment[index], this.log);
