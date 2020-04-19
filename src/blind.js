@@ -41,7 +41,7 @@ class Blind {
     if (this.target !== null && Math.abs(this.position - this.target) <= 2)
       callback(null, this.target);
     else
-      callback(null, position);
+      callback(null, this.position);
   }
 
   getTargetPosition(callback) {
@@ -56,7 +56,7 @@ class Blind {
   setTargetPosition(position, callback, context) {
     this.log(`setTargetPosition ${this.index} to ${position}`);
 
-    this.targetPosition = position;
+    this.target = position;
     this._callBlind(position);
     callback(null);
   }

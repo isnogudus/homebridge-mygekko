@@ -52,7 +52,7 @@ var Blind = /*#__PURE__*/function () {
     key: "getCurrentPosition",
     value: function getCurrentPosition(callback) {
       this.log.debug("getCurrentPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
-      if (this.target !== null && Math.abs(this.position - this.target) <= 2) callback(null, this.target);else callback(null, position);
+      if (this.target !== null && Math.abs(this.position - this.target) <= 2) callback(null, this.target);else callback(null, this.position);
     }
   }, {
     key: "getTargetPosition",
@@ -66,7 +66,7 @@ var Blind = /*#__PURE__*/function () {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback, context) {
       this.log("setTargetPosition ".concat(this.index, " to ").concat(position));
-      this.targetPosition = position;
+      this.target = position;
 
       this._callBlind(position);
 
