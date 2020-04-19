@@ -3,6 +3,7 @@ const url = require("url");
 const axios = require("axios");
 const PluginName = "homebridge-mygekko";
 const PlatformName = "mygekko";
+import Blind from "./blind";
 
 class Platform {
   constructor(log, config, api) {
@@ -88,11 +89,18 @@ class Platform {
 
   _fetchDevices() {
     this.log.debug("Fetch the devices");
+    const { Service, Characteristic, uuid: UUIDGen } = this.api.hap;
     this._send().then(response => {
       const { blinds } = response.data;
       for (const index in blinds) {
         const blind = blinds[index];
-        this._registerBlind(index, blind.name);
+        const { name } = blind;
+        //this._registerBlind(index, blind.name);
+        const uuid = UUIDGen.generate(name);
+        this.log.debug.log(`Cached : ${uuid in accessories}`);
+        const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
+
+        this.blinds[index] = Blind.new(accessory, name, index, this.api, this.blindAdjustment[index], this.log);
       }
       this._getStatus();
 
@@ -183,27 +191,7 @@ class Platform {
     this._send("/status").then(request => {
       const { blinds } = request.data;
       for (const item in blinds) {
-        const oldState = this.blinds[item];
-        const sumState = blinds[item].sumstate.value.split(";");
-        const position = parseFloat(sumState[1]);
-        const state = {
-          ...oldState,
-          state: parseInt(sumState[0]),
-          position: position < 50 ? Math.floor(position) : Math.ceil(position),
-          angle: parseFloat(sumState[2]),
-          sumState: parseInt(sumState[3]),
-          slotRotationalArea: parseInt(sumState[4])
-        };
-        // Update service
-        if (state.position != oldState.position) {
-          this.log(`Status position ${item} ${sumState[1]} ${position} ${state.position}`);
-          const { Service, Characteristic } = this.api.hap;
-          this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
-          const service = this.blindAccessories[item].getService(Service.WindowCovering);
-          if (service)
-            service.getCharacteristic(Characteristic.CurrentPosition).setValue(this._position(item, 100 - state.position));
-        }
-        this.blinds[item] = state;
+        this.blinds[item].setStatus(blinds[item]);
       }
     }).catch(error => {
       this.log.error(error);

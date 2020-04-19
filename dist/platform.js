@@ -1,5 +1,9 @@
 "use strict";
 
+var _blind = _interopRequireDefault(require("./blind"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -146,14 +150,26 @@ var Platform = /*#__PURE__*/function () {
       var _this3 = this;
 
       this.log.debug("Fetch the devices");
+      var _this$api$hap = this.api.hap,
+          Service = _this$api$hap.Service,
+          Characteristic = _this$api$hap.Characteristic,
+          UUIDGen = _this$api$hap.uuid;
 
       this._send().then(function (response) {
         var blinds = response.data.blinds;
 
         for (var index in blinds) {
-          var blind = blinds[index];
+          var _this3$accessories$uu;
 
-          _this3._registerBlind(index, blind.name);
+          var blind = blinds[index];
+          var name = blind.name; //this._registerBlind(index, blind.name);
+
+          var uuid = UUIDGen.generate(name);
+
+          _this3.log.debug.log("Cached : ".concat(uuid in accessories));
+
+          var accessory = (_this3$accessories$uu = _this3.accessories[uuid]) !== null && _this3$accessories$uu !== void 0 ? _this3$accessories$uu : new Accessory(name, uuid);
+          _this3.blinds[index] = _blind["default"]["new"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3.log);
         }
 
         _this3._getStatus(); //this.log.debug(response.data.blinds)
@@ -167,10 +183,10 @@ var Platform = /*#__PURE__*/function () {
     value: function _registerBlind(index, name) {
       var _this$blindAdjustment, _this$blindAdjustment2, _this$blindAdjustment3, _this$blindAdjustment4;
 
-      var _this$api$hap = this.api.hap,
-          Service = _this$api$hap.Service,
-          Characteristic = _this$api$hap.Characteristic,
-          UUIDGen = _this$api$hap.uuid;
+      var _this$api$hap2 = this.api.hap,
+          Service = _this$api$hap2.Service,
+          Characteristic = _this$api$hap2.Characteristic,
+          UUIDGen = _this$api$hap2.uuid;
       this.log("Creating Blind ".concat(index, " as ").concat(name));
       var uuid = UUIDGen.generate(name);
       this.log("Cached : ".concat(uuid in this.accessories));
@@ -247,34 +263,7 @@ var Platform = /*#__PURE__*/function () {
         var blinds = request.data.blinds;
 
         for (var item in blinds) {
-          var oldState = _this4.blinds[item];
-          var sumState = blinds[item].sumstate.value.split(";");
-          var position = parseFloat(sumState[1]);
-
-          var state = _objectSpread({}, oldState, {
-            state: parseInt(sumState[0]),
-            position: position < 50 ? Math.floor(position) : Math.ceil(position),
-            angle: parseFloat(sumState[2]),
-            sumState: parseInt(sumState[3]),
-            slotRotationalArea: parseInt(sumState[4])
-          }); // Update service
-
-
-          if (state.position != oldState.position) {
-            _this4.log("Status position ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
-
-            var _this4$api$hap = _this4.api.hap,
-                Service = _this4$api$hap.Service,
-                Characteristic = _this4$api$hap.Characteristic;
-
-            _this4.log.debug("Update position ".concat(item, " from ").concat(_this4.blinds[item].position, " to ").concat(state.position));
-
-            var service = _this4.blindAccessories[item].getService(Service.WindowCovering);
-
-            if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(_this4._position(item, 100 - state.position));
-          }
-
-          _this4.blinds[item] = state;
+          _this4.blinds[item].setStatus(blinds[item]);
         }
       })["catch"](function (error) {
         _this4.log.error(error);
