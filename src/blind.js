@@ -36,7 +36,7 @@ class Blind {
   }
 
   getCurrentPosition(callback) {
-    log.debug(`getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`);
+    this.log.debug(`getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`);
 
     if (this.target !== null && Math.abs(this.position - this.target) <= 2)
       callback(null, this.target);
@@ -54,7 +54,7 @@ class Blind {
   }
 
   setTargetPosition(position, callback, context) {
-    log(`setTargetPosition ${this.index} to ${position}`);
+    this.log(`setTargetPosition ${this.index} to ${position}`);
 
     this.targetPosition = position;
     this._callBlind(position);
