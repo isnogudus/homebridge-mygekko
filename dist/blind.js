@@ -110,7 +110,7 @@ var Blind = /*#__PURE__*/function () {
             Characteristic = _this$api$hap2.Characteristic;
         this.log.debug("Update position ".concat(this.item, " from ").concat(oldPosition, " to ").concat(this.position));
         var service = this.accessory.getService(Service.WindowCovering);
-        if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(position);
+        if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
       }
     }
   }, {

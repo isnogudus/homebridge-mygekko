@@ -89,7 +89,7 @@ class Blind {
       this.log.debug(`Update position ${this.item} from ${oldPosition} to ${this.position}`);
       const service = this.accessory.getService(Service.WindowCovering);
       if (service)
-        service.getCharacteristic(Characteristic.CurrentPosition).setValue(position);
+        service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
     }
   };
 
