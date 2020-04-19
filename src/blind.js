@@ -1,14 +1,14 @@
 class Blind {
-  constructor(accessory, name, index, hap, adjustment, log) {
+  constructor(accessory, name, index, api, adjustment, log) {
     log(`Creating Blind ${index} as ${name}`);
     this.positionBlind = null;
     this.log = log;
-    this.hap = hap;
+    this.api = api;
     this.position = 0;
     this.target = null;
     this.min = Math.max(0, parseInt(adjustment?.min ?? "0"));
     this.max = Math.min(100, parseInt(adjustment?.max ?? "100"));
-    const { Service, Characteristic } = hap;
+    const { Service, Characteristic } = this.api.hap;
     this.accessory = accessory;
     this.accessory.on("identify", this.identify.bind(this));
 
@@ -86,7 +86,7 @@ class Blind {
     if (oldPosition != this.position) {
       // Update service
       this.log(`setPosition ${item} ${sumState[1]} ${position} ${state.position}`);
-      const { Service, Characteristic } = this.hap;
+      const { Service, Characteristic } = this.api.hap;
       this.log.debug(`Update position ${item} from ${this.blinds[item].position} to ${state.position}`);
       const service = this.accessory.getService(Service.WindowCovering);
       if (service)

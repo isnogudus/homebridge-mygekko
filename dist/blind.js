@@ -12,7 +12,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var Blind = /*#__PURE__*/function () {
-  function Blind(accessory, name, index, hap, adjustment, log) {
+  function Blind(accessory, name, index, api, adjustment, log) {
     var _adjustment$min, _adjustment$max;
 
     _classCallCheck(this, Blind);
@@ -20,13 +20,14 @@ var Blind = /*#__PURE__*/function () {
     log("Creating Blind ".concat(index, " as ").concat(name));
     this.positionBlind = null;
     this.log = log;
-    this.hap = hap;
+    this.api = api;
     this.position = 0;
     this.target = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : "0"));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : "100"));
-    var Service = hap.Service,
-        Characteristic = hap.Characteristic;
+    var _this$api$hap = this.api.hap,
+        Service = _this$api$hap.Service,
+        Characteristic = _this$api$hap.Characteristic;
     this.accessory = accessory;
     this.accessory.on("identify", this.identify.bind(this));
     var service = this.accessory.getService(Service.WindowCovering) || this.accessory.addService(Service.WindowCovering, name);
@@ -105,9 +106,9 @@ var Blind = /*#__PURE__*/function () {
       if (oldPosition != this.position) {
         // Update service
         this.log("setPosition ".concat(item, " ").concat(sumState[1], " ").concat(position, " ").concat(state.position));
-        var _this$hap = this.hap,
-            Service = _this$hap.Service,
-            Characteristic = _this$hap.Characteristic;
+        var _this$api$hap2 = this.api.hap,
+            Service = _this$api$hap2.Service,
+            Characteristic = _this$api$hap2.Characteristic;
         this.log.debug("Update position ".concat(item, " from ").concat(this.blinds[item].position, " to ").concat(state.position));
         var service = this.accessory.getService(Service.WindowCovering);
         if (service) service.getCharacteristic(Characteristic.CurrentPosition).setValue(position);
