@@ -100,7 +100,7 @@ class Platform {
         this.log.debug(`Cached : ${uuid in this.accessories}`);
         const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
 
-        this.blinds[index] = new Blind(accessory, name, index, this.api, this.blindAdjustment[index], this.log);
+        this.blinds[index] = new Blind(accessory, name, index, this.api, this.blindAdjustment[index], this._send.bind(this), this.log);
       }
       this._getStatus();
 

@@ -12,7 +12,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var Blind = /*#__PURE__*/function () {
-  function Blind(accessory, name, index, api, adjustment, log) {
+  function Blind(accessory, name, index, api, adjustment, send, log) {
     var _adjustment$min, _adjustment$max;
 
     _classCallCheck(this, Blind);
@@ -24,6 +24,7 @@ var Blind = /*#__PURE__*/function () {
     this.blindPostioner = null;
     this.log = log;
     this.api = api;
+    this.send = send;
     this.position = 0;
     this.target = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : "0"));
@@ -124,8 +125,7 @@ var Blind = /*#__PURE__*/function () {
       var target = this._homebridge2gekko(this.target);
 
       this.log.debug("_callBlindSetPosition ".concat(this.index, " to ").concat(target));
-
-      this._send("/blinds/".concat(this.index, "/scmd/set"), "P".concat(target));
+      this.send("/blinds/".concat(this.index, "/scmd/set"), "P".concat(target));
     }
   }, {
     key: "_homebridge2gekko",

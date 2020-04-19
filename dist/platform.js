@@ -169,7 +169,7 @@ var Platform = /*#__PURE__*/function () {
           _this3.log.debug("Cached : ".concat(uuid in _this3.accessories));
 
           var accessory = (_this3$accessories$uu = _this3.accessories[uuid]) !== null && _this3$accessories$uu !== void 0 ? _this3$accessories$uu : new Accessory(name, uuid);
-          _this3.blinds[index] = new _blind["default"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3.log);
+          _this3.blinds[index] = new _blind["default"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3._send.bind(_this3), _this3.log);
         }
 
         _this3._getStatus(); //this.log.debug(response.data.blinds)

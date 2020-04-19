@@ -1,5 +1,5 @@
 class Blind {
-  constructor(accessory, name, index, api, adjustment, log) {
+  constructor(accessory, name, index, api, adjustment, send, log) {
     log(`Creating Blind ${index} as ${name}`);
     this.accessory = accessory;
     this.index = index;
@@ -7,6 +7,7 @@ class Blind {
     this.blindPostioner = null;
     this.log = log;
     this.api = api;
+    this.send = send;
     this.position = 0;
     this.target = null;
     this.min = Math.max(0, parseInt(adjustment?.min ?? "0"));
@@ -104,7 +105,7 @@ class Blind {
   _callBlindSetPosition() {
     const target = this._homebridge2gekko(this.target);
     this.log.debug(`_callBlindSetPosition ${this.index} to ${target}`);
-    this._send(`/blinds/${this.index}/scmd/set`, `P${target}`);
+    this.send(`/blinds/${this.index}/scmd/set`, `P${target}`);
   }
 
   _homebridge2gekko(position) {
