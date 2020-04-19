@@ -132,7 +132,7 @@ class Platform {
       const position = this._position(index, status.position);
       this.log.debug(`getCurrentPosition on ${index} pos: ${position} target: ${status.targetPosition}`);
 
-      if (status.targetPosition && Math.abs(position - status.targetPosition) <= 1)
+      if (status.targetPosition ?? Math.abs(position - status.targetPosition) <= 2)
         callback(null, 100 - status.targetPosition);
       else
         callback(null, 100 - position);
