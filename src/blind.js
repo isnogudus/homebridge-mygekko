@@ -122,3 +122,5 @@ class Blind {
     return 100 - pos;
   }
 }
+
+export default Blind;
