@@ -47,7 +47,7 @@ class Blind {
   getTargetPosition(callback) {
     this.log(`getTargetPosition ${this.index}`);
 
-    const position = status.targetPosition === null ? this.position : this.target;
+    const position = this.target === null ? this.position : this.target;
 
     this.log.debug(position);
     callback(null, position);

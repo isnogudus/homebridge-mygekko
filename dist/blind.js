@@ -58,7 +58,7 @@ var Blind = /*#__PURE__*/function () {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
       this.log("getTargetPosition ".concat(this.index));
-      var position = status.targetPosition === null ? this.position : this.target;
+      var position = this.target === null ? this.position : this.target;
       this.log.debug(position);
       callback(null, position);
     }
