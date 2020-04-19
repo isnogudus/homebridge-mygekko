@@ -18,7 +18,10 @@ var Blind = /*#__PURE__*/function () {
     _classCallCheck(this, Blind);
 
     log("Creating Blind ".concat(index, " as ").concat(name));
-    this.positionBlind = null;
+    this.accessory = accessory;
+    this.index = index;
+    this.name = name;
+    this.blindPostioner = null;
     this.log = log;
     this.api = api;
     this.position = 0;
@@ -28,7 +31,6 @@ var Blind = /*#__PURE__*/function () {
     var _this$api$hap = this.api.hap,
         Service = _this$api$hap.Service,
         Characteristic = _this$api$hap.Characteristic;
-    this.accessory = accessory;
     this.accessory.on("identify", this.identify.bind(this));
     var service = this.accessory.getService(Service.WindowCovering) || this.accessory.addService(Service.WindowCovering, name);
     service.getCharacteristic(Characteristic.CurrentPosition).on("get", this.getCurrentPosition.bind(this));
@@ -49,25 +51,21 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "getCurrentPosition",
     value: function getCurrentPosition(callback) {
-      var position = this._position(this.position);
-
-      log.debug("getCurrentPosition on ".concat(index, " pos: ").concat(position, " target: ").concat(this.targetPosition));
-      if (this.target !== null && Math.abs(position - this.target) <= 2) callback(null, 100 - status.target);else callback(null, 100 - position);
+      log.debug("getCurrentPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
+      if (this.target !== null && Math.abs(this.position - this.target) <= 2) callback(null, this.target);else callback(null, position);
     }
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
-      this.log("getTargetPosition ".concat(index));
-
-      var position = this._position(index, status.targetPosition === null ? this.position : this.target);
-
+      this.log("getTargetPosition ".concat(this.index));
+      var position = status.targetPosition === null ? this.position : this.target;
       this.log.debug(position);
-      callback(null, 100 - position);
+      callback(null, position);
     }
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback, context) {
-      log("setTargetPosition ".concat(index, " to ").concat(position));
+      log("setTargetPosition ".concat(this.index, " to ").concat(position));
       this.targetPosition = position;
 
       this._callBlind(position);
@@ -77,7 +75,7 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "getPositionState",
     value: function getPositionState(callback) {
-      this.log("getPositionSate ".concat(index));
+      this.log("getPositionSate ".concat(this.index));
 
       switch (this.state) {
         case -1:
@@ -116,8 +114,8 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "_callBlind",
     value: function _callBlind(position) {
-      this.log("_callBlind ".concat(index, " ").concat(position));
-      clearTimeout(this.positionBlind); // correct the blinds
+      this.log("_callBlind ".concat(this.index, " ").concat(position));
+      clearTimeout(this.blindPostioner); // correct the blinds
 
       var newPosition = Math.min(max, Math.max(min, position));
       this.log("_setBlindTargetPosition ".concat(newPosition, " ").concat(min, " ").concat(max));

@@ -1,7 +1,10 @@
 class Blind {
   constructor(accessory, name, index, api, adjustment, log) {
     log(`Creating Blind ${index} as ${name}`);
-    this.positionBlind = null;
+    this.accessory = accessory;
+    this.index = index;
+    this.name = name;
+    this.blindPostioner = null;
     this.log = log;
     this.api = api;
     this.position = 0;
@@ -9,7 +12,6 @@ class Blind {
     this.min = Math.max(0, parseInt(adjustment?.min ?? "0"));
     this.max = Math.min(100, parseInt(adjustment?.max ?? "100"));
     const { Service, Characteristic } = this.api.hap;
-    this.accessory = accessory;
     this.accessory.on("identify", this.identify.bind(this));
 
     const service = this.accessory.getService(Service.WindowCovering) || this.accessory.addService(Service.WindowCovering, name);
@@ -34,26 +36,25 @@ class Blind {
   }
 
   getCurrentPosition(callback) {
-    const position = this._position(this.position);
-    log.debug(`getCurrentPosition on ${index} pos: ${position} target: ${this.targetPosition}`);
+    log.debug(`getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`);
 
-    if (this.target !== null && Math.abs(position - this.target) <= 2)
-      callback(null, 100 - status.target);
+    if (this.target !== null && Math.abs(this.position - this.target) <= 2)
+      callback(null, this.target);
     else
-      callback(null, 100 - position);
+      callback(null, position);
   }
 
   getTargetPosition(callback) {
-    this.log(`getTargetPosition ${index}`);
+    this.log(`getTargetPosition ${this.index}`);
 
-    const position = this._position(index, status.targetPosition === null ? this.position : this.target);
+    const position = status.targetPosition === null ? this.position : this.target;
 
     this.log.debug(position);
-    callback(null, 100 - position);
+    callback(null, position);
   }
 
   setTargetPosition(position, callback, context) {
-    log(`setTargetPosition ${index} to ${position}`);
+    log(`setTargetPosition ${this.index} to ${position}`);
 
     this.targetPosition = position;
     this._callBlind(position);
@@ -61,7 +62,7 @@ class Blind {
   }
 
   getPositionState(callback) {
-    this.log(`getPositionSate ${index}`);
+    this.log(`getPositionSate ${this.index}`);
 
     switch (this.state) {
       case -1:
@@ -94,8 +95,8 @@ class Blind {
   };
 
   _callBlind(position) {
-    this.log(`_callBlind ${index} ${position}`);
-    clearTimeout(this.positionBlind);
+    this.log(`_callBlind ${this.index} ${position}`);
+    clearTimeout(this.blindPostioner);
 
     // correct the blinds
     const newPosition = Math.min(max, Math.max(min, position));
