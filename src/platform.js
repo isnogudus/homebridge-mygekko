@@ -3,7 +3,7 @@ const url = require("url");
 const axios = require("axios");
 const PluginName = "homebridge-mygekko";
 const PlatformName = "mygekko";
-const Blind = require("./blind.js");
+import Blind from "./blind";
 
 class Platform {
   constructor(log, config, api) {
@@ -100,7 +100,7 @@ class Platform {
         this.log.debug(`Cached : ${uuid in this.accessories}`);
         const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
 
-        this.blinds[index] = Blind.new(accessory, name, index, this.api, this.blindAdjustment[index], this.log);
+        this.blinds[index] = new Blind(accessory, name, index, this.api, this.blindAdjustment[index], this.log);
       }
       this._getStatus();
 
