@@ -3,7 +3,7 @@ const url = require("url");
 const axios = require("axios");
 const PluginName = "homebridge-mygekko";
 const PlatformName = "mygekko";
-import Blind from "./blind";
+const Blind = require("./blind.js");
 
 class Platform {
   constructor(log, config, api) {

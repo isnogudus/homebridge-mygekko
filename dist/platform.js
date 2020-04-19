@@ -1,9 +1,5 @@
 "use strict";
 
-var _blind = _interopRequireDefault(require("./blind"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -24,6 +20,8 @@ var axios = require("axios");
 
 var PluginName = "homebridge-mygekko";
 var PlatformName = "mygekko";
+
+var Blind = require("./blind.js");
 
 var Platform = /*#__PURE__*/function () {
   function Platform(log, config, api) {
@@ -169,7 +167,7 @@ var Platform = /*#__PURE__*/function () {
           _this3.log.debug("Cached : ".concat(uuid in _this3.accessories));
 
           var accessory = (_this3$accessories$uu = _this3.accessories[uuid]) !== null && _this3$accessories$uu !== void 0 ? _this3$accessories$uu : new Accessory(name, uuid);
-          _this3.blinds[index] = _blind["default"]["new"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3.log);
+          _this3.blinds[index] = Blind["new"](accessory, name, index, _this3.api, _this3.blindAdjustment[index], _this3.log);
         }
 
         _this3._getStatus(); //this.log.debug(response.data.blinds)
