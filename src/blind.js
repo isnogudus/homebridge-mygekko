@@ -98,10 +98,6 @@ class Blind {
     this.log(`_callBlind ${this.index} ${position}`);
     clearTimeout(this.blindPostioner);
 
-    // correct the blinds
-    const newPosition = Math.min(max, Math.max(min, position));
-    this.log(`_setBlindTargetPosition ${newPosition} ${min} ${max}`);
-
     this.blindPostioner = setTimeout(this._callBlindSetPosition.bind(this), 1000);
   }
 

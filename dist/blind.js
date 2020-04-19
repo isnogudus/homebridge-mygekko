@@ -115,10 +115,7 @@ var Blind = /*#__PURE__*/function () {
     key: "_callBlind",
     value: function _callBlind(position) {
       this.log("_callBlind ".concat(this.index, " ").concat(position));
-      clearTimeout(this.blindPostioner); // correct the blinds
-
-      var newPosition = Math.min(max, Math.max(min, position));
-      this.log("_setBlindTargetPosition ".concat(newPosition, " ").concat(min, " ").concat(max));
+      clearTimeout(this.blindPostioner);
       this.blindPostioner = setTimeout(this._callBlindSetPosition.bind(this), 1000);
     }
   }, {
