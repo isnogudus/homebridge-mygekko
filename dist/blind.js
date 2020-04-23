@@ -58,8 +58,8 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
-      this.log("getTargetPosition ".concat(this.index));
       var position = this.target === null ? this.position : this.target;
+      this.log("getTargetPosition ".concat(this.index, " "));
       this.log.debug(position);
       callback(null, position);
     }
@@ -136,6 +136,7 @@ var Blind = /*#__PURE__*/function () {
     key: "_gekko2homebridge",
     value: function _gekko2homebridge(position) {
       var pos = Math.round(position);
+      this.log.debug("Rounding ".concat(position, " to ").concat(pos));
       if (pos <= this.min) return 0;
       if (pos >= this.max) return 100;
       return 100 - pos;

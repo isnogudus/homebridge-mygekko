@@ -46,10 +46,10 @@ class Blind {
   }
 
   getTargetPosition(callback) {
-    this.log(`getTargetPosition ${this.index}`);
 
     const position = this.target === null ? this.position : this.target;
 
+    this.log(`getTargetPosition ${this.index} `);
     this.log.debug(position);
     callback(null, position);
   }
@@ -93,7 +93,7 @@ class Blind {
       if (service)
         service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
     }
-  };
+  }
 
   _callBlind(position) {
     this.log(`_callBlind ${this.index} ${position}`);
@@ -113,6 +113,7 @@ class Blind {
   }
   _gekko2homebridge(position) {
     const pos = Math.round(position);
+    this.log.debug(`Rounding ${position} to ${pos}`);
     if (pos <= this.min) return 0;
     if (pos >= this.max) return 100;
 
