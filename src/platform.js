@@ -1,8 +1,4 @@
-const http = require("http");
-const url = require("url");
-const axios = require("axios");
-const PluginName = "homebridge-mygekko";
-const PlatformName = "mygekko";
+import axios from "axios";
 import Blind from "./blind";
 
 class Platform {

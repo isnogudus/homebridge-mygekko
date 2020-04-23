@@ -1,5 +1,7 @@
 "use strict";
 
+var _axios = _interopRequireDefault(require("axios"));
+
 var _blind = _interopRequireDefault(require("./blind"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -9,15 +11,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-var http = require("http");
-
-var url = require("url");
-
-var axios = require("axios");
-
-var PluginName = "homebridge-mygekko";
-var PlatformName = "mygekko";
 
 var Platform = /*#__PURE__*/function () {
   function Platform(log, config, api) {
@@ -78,7 +71,7 @@ var Platform = /*#__PURE__*/function () {
         password: password,
         value: value
       };
-      return axios.get(url + path, {
+      return _axios["default"].get(url + path, {
         params: params
       });
     }
