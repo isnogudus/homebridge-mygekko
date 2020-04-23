@@ -102,6 +102,10 @@ var Blind = /*#__PURE__*/function () {
       this.sumState = parseInt(sumState[3]);
       this.slotRotationalArea = parseInt(sumState[4]);
 
+      if (this.index == "item13") {
+        this.log.debug("item13 ".concat(oldPosition, " ").concat(this.position, " ").concat(oldPosition != this.position));
+      }
+
       if (oldPosition != this.position) {
         // Update service
         var _this$api$hap2 = this.api.hap,

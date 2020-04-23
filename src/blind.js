@@ -85,6 +85,9 @@ class Blind {
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3]);
     this.slotRotationalArea = parseInt(sumState[4]);
+    if (this.index == "item13") {
+      this.log.debug(`item13 ${oldPosition} ${this.position} ${oldPosition != this.position}`);
+    }
     if (oldPosition != this.position) {
       // Update service
       const { Service, Characteristic } = this.api.hap;
