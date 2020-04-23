@@ -86,7 +86,7 @@ class Blind {
     this.sumState = parseInt(sumState[3]);
     this.slotRotationalArea = parseInt(sumState[4]);
     if (this.index == "item13") {
-      this.log.debug(`item13 ${oldPosition} ${this.position} ${oldPosition != this.position}`);
+      this.log.debug(`item13 ${sumState[1]} ${parseFloat(sumState[1])} ${oldPosition} ${this.position} ${oldPosition != this.position}`);
     }
     if (oldPosition != this.position) {
       // Update service
