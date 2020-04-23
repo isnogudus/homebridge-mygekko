@@ -103,7 +103,7 @@ var Blind = /*#__PURE__*/function () {
       this.slotRotationalArea = parseInt(sumState[4]);
 
       if (this.index == "item13") {
-        this.log.debug("item13 ".concat(sumState[1], " ").concat(parseFloat(sumState[1]), " ").concat(this._gekko2homebridge(parseFloat(sumState[1])), " ").concat(oldPosition, " ").concat(this.position, " ").concat(oldPosition != this.position));
+        this.log.debug("item13 ".concat(this.min, " ").concat(this.max, " ").concat(sumState[1], " ").concat(parseFloat(sumState[1]), " ").concat(this._gekko2homebridge(parseFloat(sumState[1])), " ").concat(oldPosition, " ").concat(this.position, " ").concat(oldPosition != this.position));
       }
 
       if (oldPosition != this.position) {
