@@ -120,7 +120,6 @@ class Blind {
     else
       pos = Math.round(position);
 
-    this.log.debug(`Rounding ${position} to ${pos}`);
     if (pos <= this.min) return 0;
     if (pos >= this.max) return 100;
 
