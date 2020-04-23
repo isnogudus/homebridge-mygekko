@@ -112,7 +112,14 @@ class Blind {
     return Math.max(this.min, Math.min(this.max, 100 - position));
   }
   _gekko2homebridge(position) {
-    const pos = Math.round(position);
+    let pos;
+    if (position < 10.0)
+      pos = Math.floor(position);
+    else if (position > 90.0)
+      pos = Math.ceil(position);
+    else
+      pos = Math.round(position);
+
     this.log.debug(`Rounding ${position} to ${pos}`);
     if (pos <= this.min) return 0;
     if (pos >= this.max) return 100;

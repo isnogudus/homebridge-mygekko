@@ -135,7 +135,8 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "_gekko2homebridge",
     value: function _gekko2homebridge(position) {
-      var pos = Math.round(position);
+      var pos;
+      if (position < 10.0) pos = Math.floor(position);else if (position > 90.0) pos = Math.ceil(position);else pos = Math.round(position);
       this.log.debug("Rounding ".concat(position, " to ").concat(pos));
       if (pos <= this.min) return 0;
       if (pos >= this.max) return 100;
