@@ -102,10 +102,6 @@ var Blind = /*#__PURE__*/function () {
       this.sumState = parseInt(sumState[3]);
       this.slotRotationalArea = parseInt(sumState[4]);
 
-      if (this.index == "item13") {
-        this.log.debug("item13 ".concat(this.min, " ").concat(this.max, " ").concat(sumState[1], " ").concat(parseFloat(sumState[1]), " ").concat(this._gekko2homebridge(parseFloat(sumState[1])), " ").concat(oldPosition, " ").concat(this.position, " ").concat(oldPosition != this.position));
-      }
-
       if (oldPosition != this.position) {
         // Update service
         var _this$api$hap2 = this.api.hap,
@@ -141,8 +137,8 @@ var Blind = /*#__PURE__*/function () {
     value: function _gekko2homebridge(position) {
       var pos;
       if (position < 10.0) pos = Math.floor(position);else if (position > 90.0) pos = Math.ceil(position);else pos = Math.round(position);
-      if (pos <= this.min) return 0;
-      if (pos >= this.max) return 100;
+      if (pos <= this.min) pos = 0;
+      if (pos >= this.max) pos = 100;
       return 100 - pos;
     }
   }]);

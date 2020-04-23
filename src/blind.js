@@ -85,9 +85,6 @@ class Blind {
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3]);
     this.slotRotationalArea = parseInt(sumState[4]);
-    if (this.index == "item13") {
-      this.log.debug(`item13 ${this.min} ${this.max} ${sumState[1]} ${parseFloat(sumState[1])} ${this._gekko2homebridge(parseFloat(sumState[1]))} ${oldPosition} ${this.position} ${oldPosition != this.position}`);
-    }
     if (oldPosition != this.position) {
       // Update service
       const { Service, Characteristic } = this.api.hap;
@@ -123,8 +120,8 @@ class Blind {
     else
       pos = Math.round(position);
 
-    if (pos <= this.min) return 0;
-    if (pos >= this.max) return 100;
+    if (pos <= this.min) pos = 0;
+    if (pos >= this.max) pos = 100;
 
     return 100 - pos;
   }
