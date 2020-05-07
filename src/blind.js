@@ -37,6 +37,7 @@ class Blind {
   }
 
   identify(paired, callback) {
+    
     this.log(`identify(paired: ${paired})`);
     callback();
   }

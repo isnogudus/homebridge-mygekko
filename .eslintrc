@@ -1,39 +1,31 @@
 {
-    "env": {
-        "node": true
-    },
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 2020,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "impliedStrict": true
-        }
-    },
-    "plugins": [
-        "node",
-        "babel"
-    ],
-    "rules": {
-        "no-unused-expressions": 0,
-        "babel/no-unused-expressions": 1,
-        "prefer-destructuring": [
-            "error",
-            {
-                "object": true,
-                "array": false
-            }
-        ],
-        "prefer-const": "error",
-        "prefer-spread": "error",
-        "prefer-template": "error",
-        "semi": [
-            "error",
-            "always"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ]
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true
     }
+  },
+  "extends": ["eslint:recommended", "eslint-config-airbnb-base", "prettier"],
+  "plugins": ["node", "babel"],
+  "rules": {
+    "no-unused-expressions": 0,
+    "babel/no-unused-expressions": 1,
+    "prefer-destructuring": [
+      "error",
+      {
+        "object": true,
+        "array": false
+      }
+    ],
+    "prefer-const": "error",
+    "prefer-spread": "error",
+    "prefer-template": "error",
+    "semi": ["error", "always"]
+  }
 }
