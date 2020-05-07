@@ -1,5 +1,7 @@
-import axios from "axios";
+import http from "http";
+import querystring from "querystring";
 import Blind from "./blind";
+
 
 class Platform {
   constructor(log, config, api) {
@@ -17,7 +19,9 @@ class Platform {
       return;
     }
 
-    const { user, password, host, blindAdjustment } = config;
+    const {
+      user, password, host, blindAdjustment,
+    } = config;
     this.username = user;
     this.password = password;
     this.host = host;
@@ -27,55 +31,68 @@ class Platform {
 
     this.log("Starting MyGEKKO Platform using homebridge API", api.version);
     if (api) {
-
       // save the api for use later
       this.api = api;
 
       // if finished loading cache accessories
       this.api.on("didFinishLaunching", () => {
         // Fetch the devices
-        this._fetchDevices();
+        this.fetchDevices();
       });
     }
   }
 
-  _send(path = "", value = undefined) {
+  sending = (path = "", value) => {
     const { url, username, password } = this;
     const params = (value === undefined) ? { username, password } : { username, password, value };
-    return axios.get(url + path, { params });
+
+    const payload = querystring.stringify(params);
+
+    const uri = `${url}${path}?${payload}`;
+    return new Promise((resolve, reject) => {
+      http.get(uri, (response) => {
+        let data = "";
+        response.on("data", (chunk) => { data += chunk; });
+        response.on("end", () => {
+          resolve(data);
+        });
+      }).on("error", (error) => {
+        reject(error);
+      });
+    });
   }
 
-  _fetchDevices() {
+  fetchDevices() {
     this.log.debug("Fetch the devices");
-    const { Service, Characteristic, uuid: UUIDGen } = this.api.hap;
-    this._send().then(response => {
+    const { Accessory, uuid: UUIDGen } = this.api.hap;
+    this.sending().then((response) => {
       const { blinds } = response.data;
-      for (const index in blinds) {
+      Object.keys(blinds).forEach((index) => {
         const blind = blinds[index];
         const { name } = blind;
-        //this._registerBlind(index, blind.name);
         const uuid = UUIDGen.generate(name);
         this.log.debug(`Cached : ${uuid in this.accessories}`);
         const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
 
-        this.blinds[index] = new Blind(accessory, name, index, this.api, this.blindAdjustment[index], this._send.bind(this), this.log);
-      }
-      this._getStatus();
+        this.blinds[index] = new Blind(accessory,
+          name, index, this.api, this.blindAdjustment[index], this.sending, this.log);
+      });
+      this.getStatus();
 
-      //this.log.debug(response.data.blinds)
-    }).catch(error => { console.log(error); });
+      // this.log.debug(response.data.blinds)
+    }).catch((error) => { this.log.log(error); });
   }
 
-  _getStatus() {
-    this._send("/status").then(request => {
+  getStatus() {
+    this.sending("/status").then((request) => {
       const { blinds } = request.data;
-      for (const item in blinds) {
+      Object.keys(blinds).forEach((item) => {
         this.blinds[item].setStatus(blinds[item]);
-      }
-    }).catch(error => {
+      });
+    }).catch((error) => {
       this.log.error(error);
     });
-    this.updater = setTimeout(this._getStatus.bind(this), 5000);
+    this.updater = setTimeout(this.getStatus.bind(this), 5000);
   }
 
   configureAccessory(accessory) {

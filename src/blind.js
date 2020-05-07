@@ -1,33 +1,38 @@
 class Blind {
-  constructor(accessory, name, index, api, adjustment, send, log) {
+  constructor(accessory, name, index, hap, adjustment, send, log) {
     log(`Creating Blind ${index} as ${name}`);
     this.accessory = accessory;
     this.index = index;
     this.name = name;
     this.blindPostioner = null;
     this.log = log;
-    this.api = api;
+    this.hap = hap;
     this.send = send;
     this.position = 0;
     this.target = null;
-    this.min = Math.max(0, parseInt(adjustment?.min ?? "0"));
-    this.max = Math.min(100, parseInt(adjustment?.max ?? "100"));
-    const { Service, Characteristic } = this.api.hap;
+    this.min = Math.max(0, parseInt(adjustment?.min ?? "0", 10));
+    this.max = Math.min(100, parseInt(adjustment?.max ?? "100", 10));
+    const {
+      Service: WindowCovering, Characteristic: { CurrentPosition, PositionState, TargetPosition },
+    } = this.hap;
+
     this.accessory.on("identify", this.identify.bind(this));
 
-    const service = this.accessory.getService(Service.WindowCovering) || this.accessory.addService(Service.WindowCovering, name);
+    const service = this.accessory.getService(WindowCovering)
+      || this.accessory.addService(WindowCovering, name);
 
-    service.getCharacteristic(Characteristic.CurrentPosition)
+    service.getCharacteristic(CurrentPosition)
       .on("get", this.getCurrentPosition.bind(this));
-    service.getCharacteristic(Characteristic.TargetPosition)
+    service.getCharacteristic(TargetPosition)
       .on("get", this.getTargetPosition.bind(this))
       .on("set", this.setTargetPosition.bind(this));
 
-    // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's opening, closing or idle.
-    // It absolutely doesn't care about Characteristic.PositionState, which is supposed to be :
+    // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
+    // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,
+    // which is supposed to be :
     // PositionState.INCREASING = 1, PositionState.DECREASING = 0 or PositionState.STOPPED = 2
     // But in any case, let's still implement it
-    service.getCharacteristic(Characteristic.PositionState)
+    service.getCharacteristic(PositionState)
       .on("get", this.getPositionState.bind(this));
   }
 
@@ -39,14 +44,14 @@ class Blind {
   getCurrentPosition(callback) {
     this.log.debug(`getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`);
 
-    if (this.target !== null && Math.abs(this.position - this.target) <= 2)
+    if (this.target !== null && Math.abs(this.position - this.target) <= 2) {
       callback(null, this.target);
-    else
+    } else {
       callback(null, this.position);
+    }
   }
 
   getTargetPosition(callback) {
-
     const position = this.target === null ? this.position : this.target;
 
     this.log(`getTargetPosition ${this.index} `);
@@ -54,71 +59,71 @@ class Blind {
     callback(null, position);
   }
 
-  setTargetPosition(position, callback, context) {
+  setTargetPosition(position, callback) {
     this.log(`setTargetPosition ${this.index} to ${position}`);
 
     this.target = position;
-    this._callBlind(position);
+    clearTimeout(this.blindPostioner);
+
+    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 1000);
     callback(null);
   }
 
   getPositionState(callback) {
     this.log(`getPositionSate ${this.index}`);
+    const { Characteristic: PositionState } = this.hap;
+    const { DECREASING, INCREASING, STOPPED } = PositionState;
 
     switch (this.state) {
       case -1:
-        callback(null, PositionState.DECREASING);
+        callback(null, DECREASING);
         break;
       case 1:
-        callback(null, PositionState.INCREASING);
+        callback(null, INCREASING);
         break;
       default:
-        callback(null, PositionState.STOPPED);
+        callback(null, STOPPED);
     }
   }
 
   setStatus(data) {
     const oldPosition = this.position;
     const sumState = data.sumstate.value.split(";");
-    this.state = parseInt(sumState[0]);
-    this.position = this._gekko2homebridge(parseFloat(sumState[1]));
+    this.state = parseInt(sumState[0], 10);
+    this.position = this.gekko2homebridge(parseFloat(sumState[1]));
     this.angle = parseFloat(sumState[2]);
-    this.sumState = parseInt(sumState[3]);
-    this.slotRotationalArea = parseInt(sumState[4]);
-    if (oldPosition != this.position) {
+    this.sumState = parseInt(sumState[3], 10);
+    this.slotRotationalArea = parseInt(sumState[4], 10);
+    if (oldPosition !== this.position) {
       // Update service
       const { Service, Characteristic } = this.api.hap;
       this.log.debug(`Update position ${this.index} from ${oldPosition} to ${this.position}`);
       const service = this.accessory.getService(Service.WindowCovering);
-      if (service)
+      if (service) {
         service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
+      }
     }
   }
 
-  _callBlind(position) {
-    this.log(`_callBlind ${this.index} ${position}`);
-    clearTimeout(this.blindPostioner);
-
-    this.blindPostioner = setTimeout(this._callBlindSetPosition.bind(this), 1000);
-  }
-
-  _callBlindSetPosition() {
-    const target = this._homebridge2gekko(this.target);
+  callBlindSetPosition() {
+    const target = this.homebridge2gekko(this.target);
     this.log.debug(`_callBlindSetPosition ${this.index} to ${target}`);
     this.send(`/blinds/${this.index}/scmd/set`, `P${target}`);
   }
 
-  _homebridge2gekko(position) {
+  homebridge2gekko(position) {
     return Math.max(this.min, Math.min(this.max, 100 - position));
   }
-  _gekko2homebridge(position) {
+
+  gekko2homebridge(position) {
     let pos;
-    if (position < 10.0)
+    if (position < 10.0) {
       pos = Math.floor(position);
-    else if (position > 90.0)
+    } else if (position > 90.0) {
       pos = Math.ceil(position);
-    else
+    } else {
       pos = Math.round(position);
+    }
 
     if (pos <= this.min) pos = 0;
     if (pos >= this.max) pos = 100;
