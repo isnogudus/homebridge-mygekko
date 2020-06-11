@@ -30,7 +30,6 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.3",
-    "homebridge": "^1.1.0",
     "minimist": ">=1.2.3",
     "prettier": "^2.0.5"
   },
@@ -46,8 +45,5 @@
   "bugs": {
     "url": "https://github.com/isnogudus/homebridge-mygekko/issues"
   },
-  "homepage": "https://github.com/isnogudus/homebridge-mygekko#readme",
-  "dependencies": {
-    "hap-nodejs": "^0.7.3"
-  }
+  "homepage": "https://github.com/isnogudus/homebridge-mygekko#readme"
 }
