@@ -92,8 +92,6 @@ class Platform {
           );
         });
         this.getStatus();
-
-        this.log.debug(response.data.blinds);
       })
       .catch((error) => {
         this.log.error(error);

@@ -81,9 +81,7 @@ var Platform = /*#__PURE__*/function () {
     this.blindAdjustment = blindAdjustment || {};
     this.url = "http://".concat(this.host, "/api/v1/var");
     this.accessories = {};
-    this.log('Starting MyGEKKO Platform using homebridge API', api.version);
-    this.log.error(api);
-    0 / 0; // if finished loading cache accessories
+    this.log('Starting MyGEKKO Platform using homebridge API', api.version); // if finished loading cache accessories
 
     this.api.on(_homebridge.APIEvent.DID_FINISH_LAUNCHING, function () {
       // Fetch the devices
@@ -116,8 +114,6 @@ var Platform = /*#__PURE__*/function () {
         });
 
         _this2.getStatus();
-
-        _this2.log.debug(response.data.blinds);
       })["catch"](function (error) {
         _this2.log.error(error);
       });
