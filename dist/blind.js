@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _hapNodejs = require("hap-nodejs");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -18,6 +20,7 @@ var Blind = /*#__PURE__*/function () {
     _classCallCheck(this, Blind);
 
     log("Creating Blind ".concat(index, " as ").concat(name));
+    log("WindowCovering ".concat(_hapNodejs.Service.WindowCovering));
     this.accessory = accessory;
     this.index = index;
     this.name = name;
@@ -29,14 +32,12 @@ var Blind = /*#__PURE__*/function () {
     this.target = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : '0', 10));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : '100', 10));
-    var _api$hap = api.hap,
-        WindowCovering = _api$hap.Service,
-        _api$hap$Characterist = _api$hap.Characteristic,
+    var _api$hap$Characterist = api.hap.Characteristic,
         CurrentPosition = _api$hap$Characterist.CurrentPosition,
         TargetPosition = _api$hap$Characterist.TargetPosition,
         PositionState = _api$hap$Characterist.PositionState;
     this.accessory.on('identify', this.identify.bind(this));
-    var service = this.accessory.getService(WindowCovering) || this.accessory.addService(WindowCovering, name);
+    var service = this.accessory.getService(_hapNodejs.Service.WindowCovering) || this.accessory.addService(_hapNodejs.Service.WindowCovering, name);
     service.getCharacteristic(CurrentPosition).on('get', this.getCurrentPosition.bind(this));
     service.getCharacteristic(TargetPosition).on('get', this.getTargetPosition.bind(this)).on('set', this.setTargetPosition.bind(this)); // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
     // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,

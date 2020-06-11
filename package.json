@@ -46,5 +46,8 @@
   "bugs": {
     "url": "https://github.com/isnogudus/homebridge-mygekko/issues"
   },
-  "homepage": "https://github.com/isnogudus/homebridge-mygekko#readme"
+  "homepage": "https://github.com/isnogudus/homebridge-mygekko#readme",
+  "dependencies": {
+    "hap-nodejs": "^0.7.3"
+  }
 }
