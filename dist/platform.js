@@ -4,9 +4,13 @@ var _http = _interopRequireDefault(require("http"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
+var _homebridgeLib = _interopRequireDefault(require("homebridge-lib"));
+
 var _blind = _interopRequireDefault(require("./blind"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -14,80 +18,71 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var Platform = /*#__PURE__*/function () {
+var Platform = /*#__PURE__*/function (_HomebridgeLib) {
+  _inherits(Platform, _HomebridgeLib);
+
+  var _super = _createSuper(Platform);
+
   function Platform(log, config, api) {
-    var _this = this;
+    var _this;
 
     _classCallCheck(this, Platform);
 
-    _defineProperty(this, "sending", function (path, value) {
-      var url = _this.url,
-          username = _this.username,
-          password = _this.password;
-      var params = value === undefined ? {
-        username: username,
-        password: password
-      } : {
-        username: username,
-        password: password,
-        value: value
-      };
-
-      var payload = _querystring["default"].stringify(params);
-
-      var uri = "".concat(url).concat(path !== null && path !== void 0 ? path : '', "?").concat(payload);
-      return new Promise(function (resolve, reject) {
-        _http["default"].get(uri, function (response) {
-          var data = '';
-          response.on('data', function (chunk) {
-            data += chunk;
-          });
-          response.on('end', function () {
-            resolve(data);
-          });
-        }).on('error', function (error) {
-          reject(error);
-        });
-      });
-    });
-
-    this.log = log;
-    this.config = config;
-    this.updater = null;
-    this.blindPostioner = null;
-    this.blinds = {};
-    this.blindAccessories = {};
-    this.targetPositions = {};
-    this.blindsTargetPositions = null;
+    _this.log = log;
+    _this.config = config;
+    _this.updater = null;
+    _this.blindPostioner = null;
+    _this.blinds = {};
+    _this.blindAccessories = {};
+    _this.targetPositions = {};
+    _this.blindsTargetPositions = null;
 
     if (!config || !config.user || !config.password || !config.host) {
-      this.log.error('Platform config incorrect or missing. Check the config.json file.');
-      return;
+      _this.log.error('Platform config incorrect or missing. Check the config.json file.');
+
+      return _possibleConstructorReturn(_this);
     }
 
     var user = config.user,
         _password = config.password,
         host = config.host,
         blindAdjustment = config.blindAdjustment;
-    this.username = user;
-    this.password = _password;
-    this.host = host;
-    this.blindAdjustment = blindAdjustment || {};
-    this.url = "http://".concat(this.host, "/api/v1/var");
-    this.accessories = {};
-    this.log('Starting MyGEKKO Platform using homebridge API', api.version);
+    _this.username = user;
+    _this.password = _password;
+    _this.host = host;
+    _this.blindAdjustment = blindAdjustment || {};
+    _this.url = "http://".concat(_this.host, "/api/v1/var");
+    _this.accessories = {};
+
+    _this.log('Starting MyGEKKO Platform using homebridge API', api.version);
 
     if (api) {
       // save the api for use later
-      this.api = api; // if finished loading cache accessories
+      _this.api = api; // if finished loading cache accessories
 
-      this.api.on('didFinishLaunching', function () {
+      _this.api.on('didFinishLaunching', function () {
         // Fetch the devices
         _this.fetchDevices();
       });
     }
+
+    return _possibleConstructorReturn(_this);
   }
 
   _createClass(Platform, [{
@@ -144,6 +139,6 @@ var Platform = /*#__PURE__*/function () {
   }]);
 
   return Platform;
-}();
+}(_homebridgeLib["default"]);
 
 module.exports = Platform;

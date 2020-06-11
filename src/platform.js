@@ -1,8 +1,9 @@
 import http from 'http';
 import querystring from 'querystring';
+import HomebridgeLib from 'homebridge-lib';
 import Blind from './blind';
 
-class Platform {
+class Platform extends HomebridgeLib {
   constructor(log, config, api) {
     this.log = log;
     this.config = config;
