@@ -12,6 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var _default = function _default(homebridge) {
   var PluginName = 'homebridge-mygekko';
   var PlatformName = 'mygekko';
+  console.log('*** TEST ***');
   homebridge.registerPlatform(PlatformName, _platform["default"]);
 };
 
