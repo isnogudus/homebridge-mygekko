@@ -20,7 +20,6 @@ var Blind = /*#__PURE__*/function () {
     _classCallCheck(this, Blind);
 
     log("Creating Blind ".concat(index, " as ").concat(name));
-    log("WindowCovering ".concat(_hapNodejs.Service.WindowCovering));
     this.accessory = accessory;
     this.index = index;
     this.name = name;
