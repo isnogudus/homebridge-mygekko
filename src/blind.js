@@ -10,40 +10,46 @@ class Blind {
     this.send = send;
     this.position = 0;
     this.target = null;
-    this.min = Math.max(0, parseInt(adjustment?.min ?? "0", 10));
-    this.max = Math.min(100, parseInt(adjustment?.max ?? "100", 10));
+    this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
+    this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
-      Service: WindowCovering, Characteristic: { CurrentPosition, PositionState, TargetPosition },
+      Service: WindowCovering,
+      Characteristic: { CurrentPosition, PositionState, TargetPosition },
     } = this.hap;
 
-    this.accessory.on("identify", this.identify.bind(this));
+    this.accessory.on('identify', this.identify.bind(this));
 
-    const service = this.accessory.getService(WindowCovering)
-      || this.accessory.addService(WindowCovering, name);
+    const service =
+      this.accessory.getService(WindowCovering) ||
+      this.accessory.addService(WindowCovering, name);
 
-    service.getCharacteristic(CurrentPosition)
-      .on("get", this.getCurrentPosition.bind(this));
-    service.getCharacteristic(TargetPosition)
-      .on("get", this.getTargetPosition.bind(this))
-      .on("set", this.setTargetPosition.bind(this));
+    service
+      .getCharacteristic(CurrentPosition)
+      .on('get', this.getCurrentPosition.bind(this));
+    service
+      .getCharacteristic(TargetPosition)
+      .on('get', this.getTargetPosition.bind(this))
+      .on('set', this.setTargetPosition.bind(this));
 
     // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
     // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,
     // which is supposed to be :
     // PositionState.INCREASING = 1, PositionState.DECREASING = 0 or PositionState.STOPPED = 2
     // But in any case, let's still implement it
-    service.getCharacteristic(PositionState)
-      .on("get", this.getPositionState.bind(this));
+    service
+      .getCharacteristic(PositionState)
+      .on('get', this.getPositionState.bind(this));
   }
 
   identify(paired, callback) {
-    
     this.log(`identify(paired: ${paired})`);
     callback();
   }
 
   getCurrentPosition(callback) {
-    this.log.debug(`getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`);
+    this.log.debug(
+      `getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`
+    );
 
     if (this.target !== null && Math.abs(this.position - this.target) <= 2) {
       callback(null, this.target);
@@ -66,7 +72,10 @@ class Blind {
     this.target = position;
     clearTimeout(this.blindPostioner);
 
-    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 1000);
+    this.blindPostioner = setTimeout(
+      this.callBlindSetPosition.bind(this),
+      1000
+    );
     callback(null);
   }
 
@@ -89,21 +98,25 @@ class Blind {
 
   setStatus(data) {
     const oldPosition = this.position;
-    const sumState = data.sumstate.value.split(";");
+    const sumState = data.sumstate.value.split(';');
     this.state = parseInt(sumState[0], 10);
     this.position = this.gekko2homebridge(parseFloat(sumState[1]));
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3], 10);
     this.slotRotationalArea = parseInt(sumState[4], 10);
-    if (oldPosition !== this.position) {
-      // Update service
-      const { Service, Characteristic } = this.api.hap;
-      this.log.debug(`Update position ${this.index} from ${oldPosition} to ${this.position}`);
-      const service = this.accessory.getService(Service.WindowCovering);
-      if (service) {
-        service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
-      }
+    // if (oldPosition !== this.position) {
+    // Update service
+    const { Service, Characteristic } = this.api.hap;
+    this.log.debug(
+      `Update position ${this.index} from ${oldPosition} to ${this.position}`
+    );
+    const service = this.accessory.getService(Service.WindowCovering);
+    if (service) {
+      service
+        .getCharacteristic(Characteristic.CurrentPosition)
+        .setValue(this.position);
     }
+    // }
   }
 
   callBlindSetPosition() {

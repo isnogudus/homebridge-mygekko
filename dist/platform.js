@@ -22,9 +22,7 @@ var Platform = /*#__PURE__*/function () {
 
     _classCallCheck(this, Platform);
 
-    _defineProperty(this, "sending", function () {
-      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-      var value = arguments.length > 1 ? arguments[1] : undefined;
+    _defineProperty(this, "sending", function (path, value) {
       var url = _this.url,
           username = _this.username,
           password = _this.password;
@@ -39,17 +37,17 @@ var Platform = /*#__PURE__*/function () {
 
       var payload = _querystring["default"].stringify(params);
 
-      var uri = "".concat(url).concat(path, "?").concat(payload);
+      var uri = "".concat(url).concat(path !== null && path !== void 0 ? path : '', "?").concat(payload);
       return new Promise(function (resolve, reject) {
         _http["default"].get(uri, function (response) {
-          var data = "";
-          response.on("data", function (chunk) {
+          var data = '';
+          response.on('data', function (chunk) {
             data += chunk;
           });
-          response.on("end", function () {
+          response.on('end', function () {
             resolve(data);
           });
-        }).on("error", function (error) {
+        }).on('error', function (error) {
           reject(error);
         });
       });
@@ -65,7 +63,7 @@ var Platform = /*#__PURE__*/function () {
     this.blindsTargetPositions = null;
 
     if (!config || !config.user || !config.password || !config.host) {
-      this.log.error("Platform config incorrect or missing. Check the config.json file.");
+      this.log.error('Platform config incorrect or missing. Check the config.json file.');
       return;
     }
 
@@ -79,13 +77,13 @@ var Platform = /*#__PURE__*/function () {
     this.blindAdjustment = blindAdjustment || {};
     this.url = "http://".concat(this.host, "/api/v1/var");
     this.accessories = {};
-    this.log("Starting MyGEKKO Platform using homebridge API", api.version);
+    this.log('Starting MyGEKKO Platform using homebridge API', api.version);
 
     if (api) {
       // save the api for use later
       this.api = api; // if finished loading cache accessories
 
-      this.api.on("didFinishLaunching", function () {
+      this.api.on('didFinishLaunching', function () {
         // Fetch the devices
         _this.fetchDevices();
       });
@@ -97,7 +95,7 @@ var Platform = /*#__PURE__*/function () {
     value: function fetchDevices() {
       var _this2 = this;
 
-      this.log.debug("Fetch the devices");
+      this.log.debug('Fetch the devices');
       var _this$api$hap = this.api.hap,
           Accessory = _this$api$hap.Accessory,
           UUIDGen = _this$api$hap.uuid;
@@ -127,7 +125,7 @@ var Platform = /*#__PURE__*/function () {
     value: function getStatus() {
       var _this3 = this;
 
-      this.sending("/status").then(function (request) {
+      this.sending('/status').then(function (request) {
         var blinds = request.data.blinds;
         Object.keys(blinds).forEach(function (item) {
           _this3.blinds[item].setStatus(blinds[item]);
