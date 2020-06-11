@@ -1,9 +1,8 @@
 import http from 'http';
 import querystring from 'querystring';
-import HomebridgeLib from 'homebridge-lib';
 import Blind from './blind';
 
-class Platform extends HomebridgeLib {
+class Platform {
   constructor(log, config, api) {
     this.log = log;
     this.config = config;
@@ -14,7 +13,9 @@ class Platform extends HomebridgeLib {
     this.targetPositions = {};
     this.blindsTargetPositions = null;
 
-    if (!config || !config.user || !config.password || !config.host) {
+    this.name = this.config.name || 'mygekko';
+
+    if (!config.user || !config.password || !config.host) {
       this.log.error(
         'Platform config incorrect or missing. Check the config.json file.'
       );
