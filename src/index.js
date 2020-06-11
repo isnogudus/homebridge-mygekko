@@ -5,5 +5,6 @@ export default (homebridge) => {
   const PlatformName = 'mygekko';
 
   console.log('*** TEST ***');
+  0 / 0;
   homebridge.registerPlatform(PlatformName, Platform);
 };

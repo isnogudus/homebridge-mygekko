@@ -13,6 +13,7 @@ var _default = function _default(homebridge) {
   var PluginName = 'homebridge-mygekko';
   var PlatformName = 'mygekko';
   console.log('*** TEST ***');
+  0 / 0;
   homebridge.registerPlatform(PlatformName, _platform["default"]);
 };
 
