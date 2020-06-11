@@ -4,9 +4,9 @@ var _http = _interopRequireDefault(require("http"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
-var _homebridge = require("homebridge");
-
 var _blind = _interopRequireDefault(require("./blind"));
+
+var _ = require(".");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -47,9 +47,11 @@ var Platform = /*#__PURE__*/function () {
             data += chunk;
           });
           response.on('end', function () {
-            resolve(JSON.parse(data));
+            resolve(data);
           });
         }).on('error', function (error) {
+          _this.log.error(error);
+
           reject(error);
         });
       });
@@ -83,7 +85,7 @@ var Platform = /*#__PURE__*/function () {
     this.accessories = {};
     this.log('Starting MyGEKKO Platform using homebridge API', api.version); // if finished loading cache accessories
 
-    this.api.on(_homebridge.APIEvent.DID_FINISH_LAUNCHING, function () {
+    this.api.on('didFinishLaunching', function () {
       // Fetch the devices
       _this.fetchDevices();
     });
@@ -95,22 +97,23 @@ var Platform = /*#__PURE__*/function () {
       var _this2 = this;
 
       this.log.debug('Fetch the devices');
-      var _this$api$hap = this.api.hap,
-          Accessory = _this$api$hap.Accessory,
-          UUIDGen = _this$api$hap.uuid;
+      var UUIDGen = this.api.hap.uuid;
+      var PlatformAccessory = this.api.platformAccessory;
       this.sending().then(function (response) {
-        var blinds = response.blinds;
-        Object.keys(blinds).forEach(function (index) {
-          var _this2$accessories$uu;
+        var _JSON$parse = JSON.parse(response),
+            blinds = _JSON$parse.blinds;
 
+        Object.keys(blinds).forEach(function (index) {
           var blind = blinds[index];
           var name = blind.name;
           var uuid = UUIDGen.generate(name);
+          var cachedAccessory = _this2.accessories[uuid];
 
-          _this2.log.debug("Cached : ".concat(uuid in _this2.accessories));
+          _this2.log.debug("Cached : ".concat(!!cachedAccessory));
 
-          var accessory = (_this2$accessories$uu = _this2.accessories[uuid]) !== null && _this2$accessories$uu !== void 0 ? _this2$accessories$uu : new Accessory(name, uuid);
+          var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
           _this2.blinds[index] = new _blind["default"](accessory, name, index, _this2.api, _this2.blindAdjustment[index], _this2.sending, _this2.log);
+          if (!cachedAccessory) _this2.api.registerPlatformAccessories(_.PluginName, _.PlatformName, [accessory]);
         });
 
         _this2.getStatus();
@@ -124,7 +127,9 @@ var Platform = /*#__PURE__*/function () {
       var _this3 = this;
 
       this.sending('/status').then(function (request) {
-        var blinds = request.blinds;
+        var _JSON$parse2 = JSON.parse(request),
+            blinds = _JSON$parse2.blinds;
+
         Object.keys(blinds).forEach(function (item) {
           _this3.blinds[item].setStatus(blinds[item]);
         });
@@ -136,7 +141,7 @@ var Platform = /*#__PURE__*/function () {
   }, {
     key: "configureAccessory",
     value: function configureAccessory(accessory) {
-      this.log("config cached accessories ".concat(accessory.displayName));
+      this.log("config cached accessories ".concat(accessory.UUID));
       this.accessories[accessory.UUID] = accessory;
     }
   }]);

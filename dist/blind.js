@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _hapNodejs = require("hap-nodejs");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -36,7 +34,7 @@ var Blind = /*#__PURE__*/function () {
         TargetPosition = _api$hap$Characterist.TargetPosition,
         PositionState = _api$hap$Characterist.PositionState;
     this.accessory.on('identify', this.identify.bind(this));
-    var service = this.accessory.getService(_hapNodejs.Service.WindowCovering) || this.accessory.addService(_hapNodejs.Service.WindowCovering, name);
+    var service = this.accessory.getService(api.hap.Service.WindowCovering) || this.accessory.addService(api.hap.Service.WindowCovering, name);
     service.getCharacteristic(CurrentPosition).on('get', this.getCurrentPosition.bind(this));
     service.getCharacteristic(TargetPosition).on('get', this.getTargetPosition.bind(this)).on('set', this.setTargetPosition.bind(this)); // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
     // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,

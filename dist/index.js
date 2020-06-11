@@ -3,16 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports["default"] = exports.PlatformName = exports.PluginName = void 0;
 
 var _platform = _interopRequireDefault(require("./platform"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _default = function _default(homebridge) {
-  var PluginName = 'homebridge-mygekko';
-  var PlatformName = 'mygekko';
-  homebridge.registerPlatform(PluginName, PlatformName, _platform["default"]);
+var PluginName = 'homebridge-mygekko';
+exports.PluginName = PluginName;
+var PlatformName = 'mygekko';
+exports.PlatformName = PlatformName;
+
+var _default = function _default(api) {
+  api.registerPlatform(PluginName, PlatformName, _platform["default"]);
 };
 
 exports["default"] = _default;

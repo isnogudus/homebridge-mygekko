@@ -1,8 +1,8 @@
 import Platform from './platform';
 
-export default (homebridge) => {
-  const PluginName = 'homebridge-mygekko';
-  const PlatformName = 'mygekko';
+export const PluginName = 'homebridge-mygekko';
+export const PlatformName = 'mygekko';
 
-  homebridge.registerPlatform(PluginName, PlatformName, Platform);
+export default (api) => {
+  api.registerPlatform(PluginName, PlatformName, Platform);
 };

@@ -1,7 +1,7 @@
 import http from 'http';
 import querystring from 'querystring';
-import { APIEvent } from 'homebridge';
 import Blind from './blind';
+import { PlatformName, PluginName } from '.';
 
 class Platform {
   constructor(log, config, api) {
@@ -35,7 +35,7 @@ class Platform {
     this.log('Starting MyGEKKO Platform using homebridge API', api.version);
 
     // if finished loading cache accessories
-    this.api.on(APIEvent.DID_FINISH_LAUNCHING, () => {
+    this.api.on('didFinishLaunching', () => {
       // Fetch the devices
       this.fetchDevices();
     });
@@ -59,10 +59,11 @@ class Platform {
             data += chunk;
           });
           response.on('end', () => {
-            resolve(JSON.parse(data));
+            resolve(data);
           });
         })
         .on('error', (error) => {
+          this.log.error(error);
           reject(error);
         });
     });
@@ -70,16 +71,19 @@ class Platform {
 
   fetchDevices() {
     this.log.debug('Fetch the devices');
-    const { Accessory, uuid: UUIDGen } = this.api.hap;
+    const { uuid: UUIDGen } = this.api.hap;
+    const PlatformAccessory = this.api.platformAccessory;
     this.sending()
       .then((response) => {
-        const { blinds } = response;
+        const { blinds } = JSON.parse(response);
         Object.keys(blinds).forEach((index) => {
           const blind = blinds[index];
           const { name } = blind;
           const uuid = UUIDGen.generate(name);
-          this.log.debug(`Cached : ${uuid in this.accessories}`);
-          const accessory = this.accessories[uuid] ?? new Accessory(name, uuid);
+          const cachedAccessory = this.accessories[uuid];
+          this.log.debug(`Cached : ${!!cachedAccessory}`);
+          const accessory =
+            cachedAccessory ?? new PlatformAccessory(name, uuid);
 
           this.blinds[index] = new Blind(
             accessory,
@@ -90,6 +94,13 @@ class Platform {
             this.sending,
             this.log
           );
+          if (!cachedAccessory)
+            this.api.registerPlatformAccessories(
+              PluginName,
+              PlatformName,
+
+              [accessory]
+            );
         });
         this.getStatus();
       })
@@ -101,7 +112,7 @@ class Platform {
   getStatus() {
     this.sending('/status')
       .then((request) => {
-        const { blinds } = request;
+        const { blinds } = JSON.parse(request);
         Object.keys(blinds).forEach((item) => {
           this.blinds[item].setStatus(blinds[item]);
         });
@@ -113,7 +124,7 @@ class Platform {
   }
 
   configureAccessory(accessory) {
-    this.log(`config cached accessories ${accessory.displayName}`);
+    this.log(`config cached accessories ${accessory.UUID}`);
     this.accessories[accessory.UUID] = accessory;
   }
 }

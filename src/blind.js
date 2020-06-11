@@ -1,5 +1,3 @@
-import { Service } from 'hap-nodejs';
-
 class Blind {
   constructor(accessory, name, index, api, adjustment, send, log) {
     log(`Creating Blind ${index} as ${name}`);
@@ -21,8 +19,8 @@ class Blind {
     this.accessory.on('identify', this.identify.bind(this));
 
     const service =
-      this.accessory.getService(Service.WindowCovering) ||
-      this.accessory.addService(Service.WindowCovering, name);
+      this.accessory.getService(api.hap.Service.WindowCovering) ||
+      this.accessory.addService(api.hap.Service.WindowCovering, name);
 
     service
       .getCharacteristic(CurrentPosition)
