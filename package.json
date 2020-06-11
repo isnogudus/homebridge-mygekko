@@ -6,7 +6,7 @@
   "author": "Markus Teichmann",
   "license": "MIT",
   "engines": {
-    "homebridge": "~0.4.50",
+    "homebridge": "^1.1.0",
     "node": ">=12.0.0"
   },
   "keywords": [
@@ -14,7 +14,8 @@
     "homekit"
   ],
   "dependencies": {
-    "axios": "^0.19.0"
+    "axios": "^0.19.0",
+    "homebridge": "^1.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
