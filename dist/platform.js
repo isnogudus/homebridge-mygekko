@@ -4,6 +4,8 @@ var _http = _interopRequireDefault(require("http"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
+var _homebridge = require("homebridge");
+
 var _blind = _interopRequireDefault(require("./blind"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -45,7 +47,7 @@ var Platform = /*#__PURE__*/function () {
             data += chunk;
           });
           response.on('end', function () {
-            resolve(data);
+            resolve(JSON.parse(data));
           });
         }).on('error', function (error) {
           reject(error);
@@ -53,6 +55,7 @@ var Platform = /*#__PURE__*/function () {
       });
     });
 
+    this.api = api;
     this.log = log;
     this.config = config;
     this.updater = null;
@@ -79,16 +82,13 @@ var Platform = /*#__PURE__*/function () {
     this.url = "http://".concat(this.host, "/api/v1/var");
     this.accessories = {};
     this.log('Starting MyGEKKO Platform using homebridge API', api.version);
+    this.log.error(api);
+    0 / 0; // if finished loading cache accessories
 
-    if (api) {
-      // save the api for use later
-      this.api = api; // if finished loading cache accessories
-
-      this.api.on('didFinishLaunching', function () {
-        // Fetch the devices
-        _this.fetchDevices();
-      });
-    }
+    this.api.on(_homebridge.APIEvent.DID_FINISH_LAUNCHING, function () {
+      // Fetch the devices
+      _this.fetchDevices();
+    });
   }
 
   _createClass(Platform, [{
@@ -101,7 +101,7 @@ var Platform = /*#__PURE__*/function () {
           Accessory = _this$api$hap.Accessory,
           UUIDGen = _this$api$hap.uuid;
       this.sending().then(function (response) {
-        var blinds = response.data.blinds;
+        var blinds = response.blinds;
         Object.keys(blinds).forEach(function (index) {
           var _this2$accessories$uu;
 
@@ -115,10 +115,11 @@ var Platform = /*#__PURE__*/function () {
           _this2.blinds[index] = new _blind["default"](accessory, name, index, _this2.api, _this2.blindAdjustment[index], _this2.sending, _this2.log);
         });
 
-        _this2.getStatus(); // this.log.debug(response.data.blinds)
+        _this2.getStatus();
 
+        _this2.log.debug(response.data.blinds);
       })["catch"](function (error) {
-        _this2.log.log(error);
+        _this2.log.error(error);
       });
     }
   }, {
@@ -127,7 +128,7 @@ var Platform = /*#__PURE__*/function () {
       var _this3 = this;
 
       this.sending('/status').then(function (request) {
-        var blinds = request.data.blinds;
+        var blinds = request.blinds;
         Object.keys(blinds).forEach(function (item) {
           _this3.blinds[item].setStatus(blinds[item]);
         });

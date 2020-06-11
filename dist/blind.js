@@ -12,7 +12,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var Blind = /*#__PURE__*/function () {
-  function Blind(accessory, name, index, hap, adjustment, send, log) {
+  function Blind(accessory, name, index, api, adjustment, send, log) {
     var _adjustment$min, _adjustment$max;
 
     _classCallCheck(this, Blind);
@@ -23,18 +23,18 @@ var Blind = /*#__PURE__*/function () {
     this.name = name;
     this.blindPostioner = null;
     this.log = log;
-    this.hap = hap;
+    this.api = api;
     this.send = send;
     this.position = 0;
     this.target = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : '0', 10));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : '100', 10));
-    var _this$hap = this.hap,
-        WindowCovering = _this$hap.Service,
-        _this$hap$Characteris = _this$hap.Characteristic,
-        CurrentPosition = _this$hap$Characteris.CurrentPosition,
-        PositionState = _this$hap$Characteris.PositionState,
-        TargetPosition = _this$hap$Characteris.TargetPosition;
+    var _api$hap = api.hap,
+        WindowCovering = _api$hap.Service,
+        _api$hap$Characterist = _api$hap.Characteristic,
+        CurrentPosition = _api$hap$Characterist.CurrentPosition,
+        TargetPosition = _api$hap$Characterist.TargetPosition,
+        PositionState = _api$hap$Characterist.PositionState;
     this.accessory.on('identify', this.identify.bind(this));
     var service = this.accessory.getService(WindowCovering) || this.accessory.addService(WindowCovering, name);
     service.getCharacteristic(CurrentPosition).on('get', this.getCurrentPosition.bind(this));
@@ -118,7 +118,7 @@ var Blind = /*#__PURE__*/function () {
       var _this$api$hap = this.api.hap,
           Service = _this$api$hap.Service,
           Characteristic = _this$api$hap.Characteristic;
-      this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
+      if (oldPosition !== this.position) this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
       var service = this.accessory.getService(Service.WindowCovering);
 
       if (service) {

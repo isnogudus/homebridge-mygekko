@@ -1,9 +1,11 @@
 import http from 'http';
 import querystring from 'querystring';
+import { APIEvent } from 'homebridge';
 import Blind from './blind';
 
 class Platform {
   constructor(log, config, api) {
+    this.api = api;
     this.log = log;
     this.config = config;
     this.updater = null;
@@ -31,16 +33,12 @@ class Platform {
     this.accessories = {};
 
     this.log('Starting MyGEKKO Platform using homebridge API', api.version);
-    if (api) {
-      // save the api for use later
-      this.api = api;
 
-      // if finished loading cache accessories
-      this.api.on('didFinishLaunching', () => {
-        // Fetch the devices
-        this.fetchDevices();
-      });
-    }
+    // if finished loading cache accessories
+    this.api.on(APIEvent.DID_FINISH_LAUNCHING, () => {
+      // Fetch the devices
+      this.fetchDevices();
+    });
   }
 
   sending = (path, value) => {
@@ -61,7 +59,7 @@ class Platform {
             data += chunk;
           });
           response.on('end', () => {
-            resolve(data);
+            resolve(JSON.parse(data));
           });
         })
         .on('error', (error) => {
@@ -75,7 +73,7 @@ class Platform {
     const { Accessory, uuid: UUIDGen } = this.api.hap;
     this.sending()
       .then((response) => {
-        const { blinds } = response.data;
+        const { blinds } = response;
         Object.keys(blinds).forEach((index) => {
           const blind = blinds[index];
           const { name } = blind;
@@ -95,17 +93,17 @@ class Platform {
         });
         this.getStatus();
 
-        // this.log.debug(response.data.blinds)
+        this.log.debug(response.data.blinds);
       })
       .catch((error) => {
-        this.log.log(error);
+        this.log.error(error);
       });
   }
 
   getStatus() {
     this.sending('/status')
       .then((request) => {
-        const { blinds } = request.data;
+        const { blinds } = request;
         Object.keys(blinds).forEach((item) => {
           this.blinds[item].setStatus(blinds[item]);
         });
