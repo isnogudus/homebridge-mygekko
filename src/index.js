@@ -1,5 +1,5 @@
 import Platform, { Name, PluginName } from './platform';
 
 export default (api) => {
-  api.registerPlatform(PluginName, Name, Platform);
+  api.registerPlatform(PluginName, Platform);
 };
