@@ -1,7 +1,9 @@
 import http from 'http';
 import querystring from 'querystring';
 import Blind from './blind';
-import { PlatformName, PluginName } from '.';
+
+export const PluginName = 'homebridge-mygekko';
+export const Name = 'mygekko';
 
 class Platform {
   constructor(log, config, api) {
@@ -97,7 +99,7 @@ class Platform {
           if (!cachedAccessory)
             this.api.registerPlatformAccessories(
               PluginName,
-              PlatformName,
+              Name,
 
               [accessory]
             );

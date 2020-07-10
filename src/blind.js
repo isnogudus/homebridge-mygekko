@@ -40,6 +40,9 @@ class Blind {
       .on('get', this.getPositionState.bind(this));
   }
 
+  getService = () =>
+    this.accessory.getService(this.api.hap.Service.WindowCovering);
+
   identify(paired, callback) {
     this.log(`identify(paired: ${paired})`);
     callback();
@@ -50,36 +53,28 @@ class Blind {
       `getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`
     );
 
-    if (this.target !== null && Math.abs(this.position - this.target) <= 2) {
-      callback(null, this.target);
-    } else {
-      callback(null, this.position);
-    }
+    callback(null, this.position);
   }
 
   getTargetPosition(callback) {
     const position = this.target === null ? this.position : this.target;
 
-    this.log(`getTargetPosition ${this.index} `);
-    this.log.debug(position);
+    this.log.debug(`getTargetPosition of ${this.index}: ${position}`);
     callback(null, position);
   }
 
   setTargetPosition(position, callback) {
-    this.log(`setTargetPosition ${this.index} to ${position}`);
+    this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
     this.target = position;
     clearTimeout(this.blindPostioner);
 
-    this.blindPostioner = setTimeout(
-      this.callBlindSetPosition.bind(this),
-      1000
-    );
+    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
     callback(null);
   }
 
   getPositionState(callback) {
-    this.log(`getPositionSate ${this.index}`);
+    this.log.debug(`getPositionSate of ${this.index}`);
     const { Characteristic: PositionState } = this.hap;
     const { DECREASING, INCREASING, STOPPED } = PositionState;
 
@@ -103,20 +98,37 @@ class Blind {
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3], 10);
     this.slotRotationalArea = parseInt(sumState[4], 10);
-    // if (oldPosition !== this.position) {
-    // Update service
-    const { Service, Characteristic } = this.api.hap;
+
+    const { Characteristic } = this.api.hap;
+    // set state
+    const positionState = this.getService().getCharacteristic(
+      Characteristic.PositionState
+    );
+    const { DECREASING, INCREASING, STOPPED } = positionState;
+    switch (this.state) {
+      case -1:
+        positionState.setValue(DECREASING);
+        break;
+      case 1:
+        positionState.setValue(INCREASING);
+        break;
+      default:
+        positionState.setValue(STOPPED);
+    }
     if (oldPosition !== this.position)
       this.log.debug(
         `Update position ${this.index} from ${oldPosition} to ${this.position}`
       );
-    const service = this.accessory.getService(Service.WindowCovering);
-    if (service) {
-      service
-        .getCharacteristic(Characteristic.CurrentPosition)
-        .setValue(this.position);
-    }
-    // }
+    this.getService()
+      .getCharacteristic(Characteristic.CurrentPosition)
+      .setValue(this.position);
+    if (
+      this.position !== this.target &&
+      Math.abs(this.position - this.target) <= 2
+    )
+      this.getService()
+        .getCharacteristic(Characteristic.TargetPosition)
+        .setValue((this.target = this.position));
   }
 
   callBlindSetPosition() {

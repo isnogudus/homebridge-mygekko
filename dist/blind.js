@@ -11,11 +11,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Blind = /*#__PURE__*/function () {
   function Blind(accessory, name, index, api, adjustment, send, log) {
-    var _adjustment$min, _adjustment$max;
+    var _this = this,
+        _adjustment$min,
+        _adjustment$max;
 
     _classCallCheck(this, Blind);
+
+    _defineProperty(this, "getService", function () {
+      return _this.accessory.getService(_this.api.hap.Service.WindowCovering);
+    });
 
     log("Creating Blind ".concat(index, " as ").concat(name));
     this.accessory = accessory;
@@ -55,34 +63,28 @@ var Blind = /*#__PURE__*/function () {
     key: "getCurrentPosition",
     value: function getCurrentPosition(callback) {
       this.log.debug("getCurrentPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
-
-      if (this.target !== null && Math.abs(this.position - this.target) <= 2) {
-        callback(null, this.target);
-      } else {
-        callback(null, this.position);
-      }
+      callback(null, this.position);
     }
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
       var position = this.target === null ? this.position : this.target;
-      this.log("getTargetPosition ".concat(this.index, " "));
-      this.log.debug(position);
+      this.log.debug("getTargetPosition of ".concat(this.index, ": ").concat(position));
       callback(null, position);
     }
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      this.log("setTargetPosition ".concat(this.index, " to ").concat(position));
+      this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
       this.target = position;
       clearTimeout(this.blindPostioner);
-      this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 1000);
+      this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
       callback(null);
     }
   }, {
     key: "getPositionState",
     value: function getPositionState(callback) {
-      this.log("getPositionSate ".concat(this.index));
+      this.log.debug("getPositionSate of ".concat(this.index));
       var PositionState = this.hap.Characteristic;
       var DECREASING = PositionState.DECREASING,
           INCREASING = PositionState.INCREASING,
@@ -110,19 +112,30 @@ var Blind = /*#__PURE__*/function () {
       this.position = this.gekko2homebridge(parseFloat(sumState[1]));
       this.angle = parseFloat(sumState[2]);
       this.sumState = parseInt(sumState[3], 10);
-      this.slotRotationalArea = parseInt(sumState[4], 10); // if (oldPosition !== this.position) {
-      // Update service
+      this.slotRotationalArea = parseInt(sumState[4], 10);
+      var Characteristic = this.api.hap.Characteristic; // set state
 
-      var _this$api$hap = this.api.hap,
-          Service = _this$api$hap.Service,
-          Characteristic = _this$api$hap.Characteristic;
+      var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
+      var DECREASING = positionState.DECREASING,
+          INCREASING = positionState.INCREASING,
+          STOPPED = positionState.STOPPED;
+
+      switch (this.state) {
+        case -1:
+          positionState.setValue(DECREASING);
+          break;
+
+        case 1:
+          positionState.setValue(INCREASING);
+          break;
+
+        default:
+          positionState.setValue(STOPPED);
+      }
+
       if (oldPosition !== this.position) this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
-      var service = this.accessory.getService(Service.WindowCovering);
-
-      if (service) {
-        service.getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
-      } // }
-
+      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
+      if (this.position !== this.target && Math.abs(this.position - this.target) <= 2) this.getService().getCharacteristic(Characteristic.TargetPosition).setValue(this.target = this.position);
     }
   }, {
     key: "callBlindSetPosition",

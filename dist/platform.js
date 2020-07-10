@@ -1,12 +1,15 @@
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Name = exports.PluginName = void 0;
+
 var _http = _interopRequireDefault(require("http"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
 
 var _blind = _interopRequireDefault(require("./blind"));
-
-var _ = require(".");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -17,6 +20,11 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var PluginName = 'homebridge-mygekko';
+exports.PluginName = PluginName;
+var Name = 'mygekko';
+exports.Name = Name;
 
 var Platform = /*#__PURE__*/function () {
   function Platform(log, config, api) {
@@ -113,7 +121,7 @@ var Platform = /*#__PURE__*/function () {
 
           var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
           _this2.blinds[index] = new _blind["default"](accessory, name, index, _this2.api, _this2.blindAdjustment[index], _this2.sending, _this2.log);
-          if (!cachedAccessory) _this2.api.registerPlatformAccessories(_.PluginName, _.PlatformName, [accessory]);
+          if (!cachedAccessory) _this2.api.registerPlatformAccessories(PluginName, Name, [accessory]);
         });
 
         _this2.getStatus();
