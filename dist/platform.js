@@ -1,10 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Name = exports.PluginName = void 0;
-
 var _http = _interopRequireDefault(require("http"));
 
 var _querystring = _interopRequireDefault(require("querystring"));
@@ -22,9 +17,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var PluginName = 'homebridge-mygekko';
-exports.PluginName = PluginName;
 var Name = 'mygekko';
-exports.Name = Name;
 
 var Platform = /*#__PURE__*/function () {
   function Platform(log, config, api) {

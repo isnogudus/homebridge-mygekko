@@ -2,8 +2,8 @@ import http from 'http';
 import querystring from 'querystring';
 import Blind from './blind';
 
-export const PluginName = 'homebridge-mygekko';
-export const Name = 'mygekko';
+const PluginName = 'homebridge-mygekko';
+const Name = 'mygekko';
 
 class Platform {
   constructor(log, config, api) {

@@ -124,7 +124,7 @@ class Blind {
       .setValue(this.position);
     if (
       this.position !== this.target &&
-      Math.abs(this.position - this.target) <= 2
+      Math.abs(this.position - this.target) <= 1
     )
       this.getService()
         .getCharacteristic(Characteristic.TargetPosition)
