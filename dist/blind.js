@@ -134,8 +134,13 @@ var Blind = /*#__PURE__*/function () {
       }
 
       if (oldPosition !== this.position) this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
-      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
-      if (this.position !== this.target && Math.abs(this.position - this.target) <= 1) this.getService().getCharacteristic(Characteristic.TargetPosition).setValue(this.target = this.position);
+      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position); // if (
+      //   this.position !== this.target &&
+      //   Math.abs(this.position - this.target) <= 1
+      // )
+      //   this.getService()
+      //     .getCharacteristic(Characteristic.TargetPosition)
+      //     .setValue((this.target = this.position));
     }
   }, {
     key: "callBlindSetPosition",
