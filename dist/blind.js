@@ -13,6 +13,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var TARGET_TRESHOLD = 1;
+
 var Blind = /*#__PURE__*/function () {
   function Blind(accessory, name, index, api, adjustment, send, log) {
     var _this = this,
@@ -109,7 +111,8 @@ var Blind = /*#__PURE__*/function () {
       var oldPosition = this.position;
       var sumState = data.sumstate.value.split(';');
       this.state = parseInt(sumState[0], 10);
-      this.position = this.gekko2homebridge(parseFloat(sumState[1]));
+      var newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
+      this.position = Math.abs(newPosition - this.target) <= TARGET_TRESHOLD ? this.target : newPosition;
       this.angle = parseFloat(sumState[2]);
       this.sumState = parseInt(sumState[3], 10);
       this.slotRotationalArea = parseInt(sumState[4], 10);
@@ -134,13 +137,7 @@ var Blind = /*#__PURE__*/function () {
       }
 
       if (oldPosition !== this.position) this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
-      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position); // if (
-      //   this.position !== this.target &&
-      //   Math.abs(this.position - this.target) <= 1
-      // )
-      //   this.getService()
-      //     .getCharacteristic(Characteristic.TargetPosition)
-      //     .setValue((this.target = this.position));
+      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
     }
   }, {
     key: "callBlindSetPosition",

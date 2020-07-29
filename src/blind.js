@@ -1,3 +1,5 @@
+const TARGET_TRESHOLD = 1;
+
 class Blind {
   constructor(accessory, name, index, api, adjustment, send, log) {
     log(`Creating Blind ${index} as ${name}`);
@@ -94,7 +96,11 @@ class Blind {
     const oldPosition = this.position;
     const sumState = data.sumstate.value.split(';');
     this.state = parseInt(sumState[0], 10);
-    this.position = this.gekko2homebridge(parseFloat(sumState[1]));
+    const newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
+    this.position =
+      Math.abs(newPosition - this.target) <= TARGET_TRESHOLD
+        ? this.target
+        : newPosition;
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3], 10);
     this.slotRotationalArea = parseInt(sumState[4], 10);
@@ -122,13 +128,6 @@ class Blind {
     this.getService()
       .getCharacteristic(Characteristic.CurrentPosition)
       .setValue(this.position);
-    // if (
-    //   this.position !== this.target &&
-    //   Math.abs(this.position - this.target) <= 1
-    // )
-    //   this.getService()
-    //     .getCharacteristic(Characteristic.TargetPosition)
-    //     .setValue((this.target = this.position));
   }
 
   callBlindSetPosition() {
