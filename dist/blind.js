@@ -13,7 +13,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var TARGET_TRESHOLD = 1;
+var TARGET_TRESHOLD = 3;
 
 var Blind = /*#__PURE__*/function () {
   function Blind(accessory, name, index, api, adjustment, send, log) {

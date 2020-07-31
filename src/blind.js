@@ -1,4 +1,4 @@
-const TARGET_TRESHOLD = 1;
+const TARGET_TRESHOLD = 3;
 
 class Blind {
   constructor(accessory, name, index, api, adjustment, send, log) {
