@@ -68,10 +68,15 @@ class Blind {
   setTargetPosition(position, callback) {
     this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
-    this.target = position;
-    clearTimeout(this.blindPostioner);
+    if (this.target !== position) {
+      this.target = position;
+      clearTimeout(this.blindPostioner);
 
-    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
+      this.blindPostioner = setTimeout(
+        this.callBlindSetPosition.bind(this),
+        500
+      );
+    }
     callback(null);
   }
 
