@@ -10,7 +10,7 @@ class Blind {
     this.log = log;
     this.api = api;
     this.send = send;
-    this.position = 0;
+    this.position = null;
     this.target = null;
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
@@ -97,10 +97,15 @@ class Blind {
     const sumState = data.sumstate.value.split(';');
     this.state = parseInt(sumState[0], 10);
     const newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
-    this.position =
-      Math.abs(newPosition - this.target) <= TARGET_TRESHOLD
-        ? this.target
-        : newPosition;
+    if (this.position === null) {
+      this.position = newPosition;
+      this.target = newPosition;
+    } else {
+      this.position =
+        Math.abs(newPosition - this.target) <= TARGET_TRESHOLD
+          ? this.target
+          : newPosition;
+    }
     this.angle = parseFloat(sumState[2]);
     this.sumState = parseInt(sumState[3], 10);
     this.slotRotationalArea = parseInt(sumState[4], 10);
@@ -121,10 +126,20 @@ class Blind {
       default:
         positionState.setValue(STOPPED);
     }
-    if (oldPosition !== this.position)
-      this.log.debug(
-        `Update position ${this.index} from ${oldPosition} to ${this.position}`
-      );
+    if (oldPosition !== this.position) {
+      if (oldPosition === null) {
+        this.log.debug(`Initialize position ${this.index} to ${this.position}`);
+      } else {
+        this.log.debug(
+          `Update position ${this.index} from ${oldPosition} to ${this.position}`
+        );
+      }
+    }
+    if (oldPosition === null) {
+      this.getService()
+        .getCharacteristic(Characteristic.TargetPosition)
+        .setValue(this.position);
+    }
     this.getService()
       .getCharacteristic(Characteristic.CurrentPosition)
       .setValue(this.position);

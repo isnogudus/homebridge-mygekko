@@ -35,7 +35,7 @@ var Blind = /*#__PURE__*/function () {
     this.log = log;
     this.api = api;
     this.send = send;
-    this.position = 0;
+    this.position = null;
     this.target = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : '0', 10));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : '100', 10));
@@ -112,7 +112,14 @@ var Blind = /*#__PURE__*/function () {
       var sumState = data.sumstate.value.split(';');
       this.state = parseInt(sumState[0], 10);
       var newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
-      this.position = Math.abs(newPosition - this.target) <= TARGET_TRESHOLD ? this.target : newPosition;
+
+      if (this.position === null) {
+        this.position = newPosition;
+        this.target = newPosition;
+      } else {
+        this.position = Math.abs(newPosition - this.target) <= TARGET_TRESHOLD ? this.target : newPosition;
+      }
+
       this.angle = parseFloat(sumState[2]);
       this.sumState = parseInt(sumState[3], 10);
       this.slotRotationalArea = parseInt(sumState[4], 10);
@@ -136,7 +143,18 @@ var Blind = /*#__PURE__*/function () {
           positionState.setValue(STOPPED);
       }
 
-      if (oldPosition !== this.position) this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
+      if (oldPosition !== this.position) {
+        if (oldPosition === null) {
+          this.log.debug("Initialize position ".concat(this.index, " to ").concat(this.position));
+        } else {
+          this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
+        }
+      }
+
+      if (oldPosition === null) {
+        this.getService().getCharacteristic(Characteristic.TargetPosition).setValue(this.position);
+      }
+
       this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
     }
   }, {
