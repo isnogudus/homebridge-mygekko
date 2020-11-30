@@ -100,7 +100,6 @@ class Blind {
 
   setStatus(data) {
     const oldPosition = this.position;
-    const oldState = this.state;
     const sumState = data.sumstate.value.split(';');
     this.state = parseInt(sumState[0], 10);
     const newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
@@ -129,7 +128,7 @@ class Blind {
     const { DECREASING, INCREASING, STOPPED } = positionState;
     if (this.state === 0) {
       positionState.updateValue(STOPPED);
-      if (oldState === 0) {
+      if (oldPosition !== this.position) {
         this.target = this.position;
         this.ignoreTarget = this.target;
         this.getService()
@@ -143,7 +142,7 @@ class Blind {
       positionState.updateValue(INCREASING);
     }
 
-    if (this.state !== 0) {
+    if (oldPosition !== this.position) {
       if (oldPosition === null) {
         this.log.debug(`Initialize position ${this.index} to ${this.position}`);
       } else {
