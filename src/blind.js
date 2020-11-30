@@ -77,7 +77,7 @@ class Blind {
   }
 
   setTargetPosition(position, callback) {
-    if (this.ignoreTarget !== position) {
+    if (this.position !== position) {
       this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
       this.target = position;
@@ -88,7 +88,7 @@ class Blind {
         500
       );
     } else {
-      this.log.debug(`setTargetPosition of ${this.index} ignored ${position}`);
+      this.log.debug(`setTargetPosition of ${this.index} is ${position}`);
       this.ignoreTarget = null;
     }
     callback(null);
@@ -138,12 +138,6 @@ class Blind {
       .getCharacteristic(Characteristic.CurrentPosition)
       .updateValue(this.position);
 
-    this.target = this.position;
-    this.ignoreTarget = this.target;
-    this.getService()
-      .getCharacteristic(Characteristic.TargetPosition)
-      .updateValue(this.target);
-
     const { DECREASING, INCREASING, STOPPED } = positionState;
     switch (this.state) {
       case -2:
@@ -156,6 +150,11 @@ class Blind {
         break;
       default:
         positionState.setValue(STOPPED);
+        this.target = this.position;
+        this.ignoreTarget = this.target;
+        this.getService()
+          .getCharacteristic(Characteristic.TargetPosition)
+          .updateValue(this.target);
     }
     if (oldPosition !== this.position) {
       if (oldPosition === null) {

@@ -92,13 +92,13 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      if (this.ignoreTarget !== position) {
+      if (this.position !== position) {
         this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
         this.target = position;
         clearTimeout(this.blindPostioner);
         this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
       } else {
-        this.log.debug("setTargetPosition of ".concat(this.index, " ignored ").concat(position));
+        this.log.debug("setTargetPosition of ".concat(this.index, " is ").concat(position));
         this.ignoreTarget = null;
       }
 
@@ -148,9 +148,6 @@ var Blind = /*#__PURE__*/function () {
 
       var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
       this.getService().getCharacteristic(Characteristic.CurrentPosition).updateValue(this.position);
-      this.target = this.position;
-      this.ignoreTarget = this.target;
-      this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
@@ -168,6 +165,9 @@ var Blind = /*#__PURE__*/function () {
 
         default:
           positionState.setValue(STOPPED);
+          this.target = this.position;
+          this.ignoreTarget = this.target;
+          this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
       }
 
       if (oldPosition !== this.position) {
