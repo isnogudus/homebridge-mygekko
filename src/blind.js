@@ -146,20 +146,20 @@ class Blind {
         positionState.setValue(DECREASING);
         this.target = this.position;
         this.ignoreTarget = this.target;
-        targetPosition.setValue(this.target);
+        // targetPosition.setValue(this.target);
         break;
       case 1:
         positionState.setValue(INCREASING);
         this.target = this.position;
         this.ignoreTarget = this.target;
-        targetPosition.setValue(this.target);
+        // targetPosition.setValue(this.target);
         break;
       default:
         positionState.setValue(STOPPED);
         if (this.target !== this.position) {
           this.target = this.position;
           this.ignoreTarget = this.target;
-          targetPosition.setValue(this.target);
+          // targetPosition.setValue(this.target);
         }
     }
     if (oldPosition !== this.position) {

@@ -157,15 +157,15 @@ var Blind = /*#__PURE__*/function () {
         case -1:
           positionState.setValue(DECREASING);
           this.target = this.position;
-          this.ignoreTarget = this.target;
-          targetPosition.setValue(this.target);
+          this.ignoreTarget = this.target; // targetPosition.setValue(this.target);
+
           break;
 
         case 1:
           positionState.setValue(INCREASING);
           this.target = this.position;
-          this.ignoreTarget = this.target;
-          targetPosition.setValue(this.target);
+          this.ignoreTarget = this.target; // targetPosition.setValue(this.target);
+
           break;
 
         default:
@@ -173,8 +173,7 @@ var Blind = /*#__PURE__*/function () {
 
           if (this.target !== this.position) {
             this.target = this.position;
-            this.ignoreTarget = this.target;
-            targetPosition.setValue(this.target);
+            this.ignoreTarget = this.target; // targetPosition.setValue(this.target);
           }
 
       }
