@@ -142,6 +142,7 @@ class Blind {
     switch (this.state) {
       case -1:
         positionState.setValue(DECREASING);
+        this.log.debug(`DECREASING ${this.index}`);
         this.target = 100;
         this.ignoreTarget = this.target;
         this.getService()
@@ -149,6 +150,7 @@ class Blind {
           .updateValue(this.target);
         break;
       case 1:
+        this.log.debug(`INCREASING ${this.index}`);
         positionState.setValue(INCREASING);
         this.target = 0;
         this.ignoreTarget = this.target;
@@ -157,6 +159,7 @@ class Blind {
           .updateValue(this.target);
         break;
       default:
+        this.log.debug(`STOPPED ${this.index}`);
         positionState.setValue(STOPPED);
         this.target = this.position;
         this.ignoreTarget = this.target;
