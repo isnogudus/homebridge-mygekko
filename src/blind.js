@@ -139,6 +139,7 @@ class Blind {
       .updateValue(this.position);
 
     const { DECREASING, INCREASING, STOPPED } = positionState;
+    this.log.debug(`STATE ${this.index} ${this.state}`);
     switch (this.state) {
       case -1:
         positionState.setValue(DECREASING);

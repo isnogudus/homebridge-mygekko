@@ -151,6 +151,7 @@ var Blind = /*#__PURE__*/function () {
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
+      this.log.debug("STATE ".concat(this.index, " ").concat(this.state));
 
       switch (this.state) {
         case -1:
