@@ -102,7 +102,7 @@ var Blind = /*#__PURE__*/function () {
         this.ignoreTarget = null;
       }
 
-      callback(position);
+      callback(null);
     }
   }, {
     key: "getPositionState",
