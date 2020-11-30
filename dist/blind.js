@@ -98,10 +98,11 @@ var Blind = /*#__PURE__*/function () {
         clearTimeout(this.blindPostioner);
         this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
       } else {
+        this.log.debug("setTargetPosition of ".concat(this.index, " ignored ").concat(position));
         this.ignoreTarget = null;
       }
 
-      callback(null);
+      callback(position);
     }
   }, {
     key: "getPositionState",

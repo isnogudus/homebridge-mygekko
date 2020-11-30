@@ -88,9 +88,10 @@ class Blind {
         500
       );
     } else {
+      this.log.debug(`setTargetPosition of ${this.index} ignored ${position}`);
       this.ignoreTarget = null;
     }
-    callback(null);
+    callback(position);
   }
 
   getPositionState(callback) {
