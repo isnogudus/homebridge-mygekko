@@ -137,6 +137,9 @@ class Blind {
     const targetPosition = this.getService().getCharacteristic(
       Characteristic.TargetPosition
     );
+    this.getService()
+      .getCharacteristic(Characteristic.CurrentPosition)
+      .setValue(this.position);
     const { DECREASING, INCREASING, STOPPED } = positionState;
     switch (this.state) {
       case -1:
@@ -168,9 +171,6 @@ class Blind {
         );
       }
     }
-    this.getService()
-      .getCharacteristic(Characteristic.CurrentPosition)
-      .setValue(this.position);
   }
 
   callBlindSetPosition() {

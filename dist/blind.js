@@ -148,6 +148,7 @@ var Blind = /*#__PURE__*/function () {
 
       var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
       var targetPosition = this.getService().getCharacteristic(Characteristic.TargetPosition);
+      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
@@ -185,8 +186,6 @@ var Blind = /*#__PURE__*/function () {
           this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
         }
       }
-
-      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
     }
   }, {
     key: "callBlindSetPosition",
