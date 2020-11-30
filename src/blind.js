@@ -100,6 +100,7 @@ class Blind {
 
   setStatus(data) {
     const oldPosition = this.position;
+    const oldState = this.state;
     const sumState = data.sumstate.value.split(';');
     this.state = parseInt(sumState[0], 10);
     const newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
@@ -126,24 +127,23 @@ class Blind {
       .updateValue(this.position);
 
     const { DECREASING, INCREASING, STOPPED } = positionState;
-    switch (this.state) {
-      case -2:
-      case -1:
-        positionState.setValue(DECREASING);
-        break;
-      case 2:
-      case 1:
-        positionState.setValue(INCREASING);
-        break;
-      default:
-        positionState.setValue(STOPPED);
+    if (this.state === 0) {
+      positionState.updateValue(STOPPED);
+      if (oldState === 0) {
         this.target = this.position;
         this.ignoreTarget = this.target;
         this.getService()
           .getCharacteristic(Characteristic.TargetPosition)
           .updateValue(this.target);
+      }
     }
-    if (oldPosition !== this.position) {
+    if (this.state < 0) {
+      positionState.updateValue(DECREASING);
+    } else if (this.state > 0) {
+      positionState.updateValue(INCREASING);
+    }
+
+    if (this.state !== 0) {
       if (oldPosition === null) {
         this.log.debug(`Initialize position ${this.index} to ${this.position}`);
       } else {

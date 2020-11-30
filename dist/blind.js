@@ -113,6 +113,7 @@ var Blind = /*#__PURE__*/function () {
     key: "setStatus",
     value: function setStatus(data) {
       var oldPosition = this.position;
+      var oldState = this.state;
       var sumState = data.sumstate.value.split(';');
       this.state = parseInt(sumState[0], 10);
       var newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
@@ -135,25 +136,23 @@ var Blind = /*#__PURE__*/function () {
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
 
-      switch (this.state) {
-        case -2:
-        case -1:
-          positionState.setValue(DECREASING);
-          break;
+      if (this.state === 0) {
+        positionState.updateValue(STOPPED);
 
-        case 2:
-        case 1:
-          positionState.setValue(INCREASING);
-          break;
-
-        default:
-          positionState.setValue(STOPPED);
+        if (oldState === 0) {
           this.target = this.position;
           this.ignoreTarget = this.target;
           this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
+        }
       }
 
-      if (oldPosition !== this.position) {
+      if (this.state < 0) {
+        positionState.updateValue(DECREASING);
+      } else if (this.state > 0) {
+        positionState.updateValue(INCREASING);
+      }
+
+      if (this.state !== 0) {
         if (oldPosition === null) {
           this.log.debug("Initialize position ".concat(this.index, " to ").concat(this.position));
         } else {
