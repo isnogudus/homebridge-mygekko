@@ -15,7 +15,12 @@ class Blind {
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
-      Characteristic: { CurrentPosition, TargetPosition, PositionState },
+      Characteristic: {
+        CurrentPosition,
+        TargetPosition,
+        PositionState,
+        HoldPosition,
+      },
     } = api.hap;
 
     this.accessory.on('identify', this.identify.bind(this));
@@ -27,6 +32,9 @@ class Blind {
     service
       .getCharacteristic(CurrentPosition)
       .on('get', this.getCurrentPosition.bind(this));
+    service
+      .getCharacteristic(HoldPosition)
+      .on('get', this.holdPosition.bind(this));
     service
       .getCharacteristic(TargetPosition)
       .on('get', this.getTargetPosition.bind(this))
@@ -48,6 +56,13 @@ class Blind {
   identify(paired, callback) {
     this.log(`identify(paired: ${paired})`);
     callback();
+  }
+
+  holdPosition(callback) {
+    this.log.debug(
+      `holdPosition on ${this.index} pos: ${this.position} target: ${this.target}`
+    );
+    callback(null);
   }
 
   getCurrentPosition(callback) {

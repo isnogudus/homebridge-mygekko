@@ -42,10 +42,12 @@ var Blind = /*#__PURE__*/function () {
     var _api$hap$Characterist = api.hap.Characteristic,
         CurrentPosition = _api$hap$Characterist.CurrentPosition,
         TargetPosition = _api$hap$Characterist.TargetPosition,
-        PositionState = _api$hap$Characterist.PositionState;
+        PositionState = _api$hap$Characterist.PositionState,
+        HoldPosition = _api$hap$Characterist.HoldPosition;
     this.accessory.on('identify', this.identify.bind(this));
     var service = this.accessory.getService(api.hap.Service.WindowCovering) || this.accessory.addService(api.hap.Service.WindowCovering, name);
     service.getCharacteristic(CurrentPosition).on('get', this.getCurrentPosition.bind(this));
+    service.getCharacteristic(HoldPosition).on('get', this.holdPosition.bind(this));
     service.getCharacteristic(TargetPosition).on('get', this.getTargetPosition.bind(this)).on('set', this.setTargetPosition.bind(this)); // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
     // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,
     // which is supposed to be :
@@ -60,6 +62,12 @@ var Blind = /*#__PURE__*/function () {
     value: function identify(paired, callback) {
       this.log("identify(paired: ".concat(paired, ")"));
       callback();
+    }
+  }, {
+    key: "holdPosition",
+    value: function holdPosition(callback) {
+      this.log.debug("holdPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
+      callback(null);
     }
   }, {
     key: "getCurrentPosition",
