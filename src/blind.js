@@ -143,7 +143,7 @@ class Blind {
       case -2:
       case -1:
         positionState.setValue(DECREASING);
-        this.target = 100;
+        this.target = 0;
         this.ignoreTarget = this.target;
         this.getService()
           .getCharacteristic(Characteristic.TargetPosition)
@@ -152,7 +152,7 @@ class Blind {
       case 2:
       case 1:
         positionState.setValue(INCREASING);
-        this.target = 0;
+        this.target = 100;
         this.ignoreTarget = this.target;
         this.getService()
           .getCharacteristic(Characteristic.TargetPosition)
