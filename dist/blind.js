@@ -91,9 +91,8 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
-
       if (this.target !== position) {
+        this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
         this.target = position;
         clearTimeout(this.blindPostioner);
         this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
