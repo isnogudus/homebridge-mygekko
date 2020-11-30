@@ -144,6 +144,7 @@ var Blind = /*#__PURE__*/function () {
       var Characteristic = this.api.hap.Characteristic; // set state
 
       var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
+      var targetPosition = this.getService().getCharacteristic(Characteristic.TargetPosition);
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
@@ -151,14 +152,20 @@ var Blind = /*#__PURE__*/function () {
       switch (this.state) {
         case -1:
           positionState.setValue(DECREASING);
+          this.target = this.position;
+          targetPosition.setValue(this.target);
           break;
 
         case 1:
           positionState.setValue(INCREASING);
+          this.target = this.position;
+          targetPosition.setValue(this.target);
           break;
 
         default:
           positionState.setValue(STOPPED);
+          this.target = this.position;
+          targetPosition.setValue(this.target);
       }
 
       if (oldPosition !== this.position) {
