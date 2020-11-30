@@ -71,35 +71,18 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
-      var position;
-
-      switch (this.state) {
-        case -1:
-          position = 0;
-          break;
-
-        case 1:
-          position = 100;
-          break;
-
-        default:
-          position = this.position;
-      }
-
+      var position = this.target;
       this.log.debug("getTargetPosition of ".concat(this.index, ": ").concat(position));
       callback(null, position);
     }
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      if (this.position !== position) {
+      if (this.target !== position) {
         this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
         this.target = position;
         clearTimeout(this.blindPostioner);
         this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
-      } else {
-        this.log.debug("setTargetPosition of ".concat(this.index, " is ").concat(position));
-        this.ignoreTarget = null;
       }
 
       callback(null);

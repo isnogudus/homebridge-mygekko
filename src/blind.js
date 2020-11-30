@@ -60,24 +60,14 @@ class Blind {
   }
 
   getTargetPosition(callback) {
-    let position;
-    switch (this.state) {
-      case -1:
-        position = 0;
-        break;
-      case 1:
-        position = 100;
-        break;
-      default:
-        ({ position } = this);
-    }
+    const position = this.target;
 
     this.log.debug(`getTargetPosition of ${this.index}: ${position}`);
     callback(null, position);
   }
 
   setTargetPosition(position, callback) {
-    if (this.position !== position) {
+    if (this.target !== position) {
       this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
       this.target = position;
@@ -87,9 +77,6 @@ class Blind {
         this.callBlindSetPosition.bind(this),
         500
       );
-    } else {
-      this.log.debug(`setTargetPosition of ${this.index} is ${position}`);
-      this.ignoreTarget = null;
     }
     callback(null);
   }
