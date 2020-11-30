@@ -139,7 +139,7 @@ class Blind {
     );
     this.getService()
       .getCharacteristic(Characteristic.CurrentPosition)
-      .setValue(this.position);
+      .updateValue(this.position);
     const { DECREASING, INCREASING, STOPPED } = positionState;
     switch (this.state) {
       case -1:

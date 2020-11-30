@@ -148,7 +148,7 @@ var Blind = /*#__PURE__*/function () {
 
       var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
       var targetPosition = this.getService().getCharacteristic(Characteristic.TargetPosition);
-      this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);
+      this.getService().getCharacteristic(Characteristic.CurrentPosition).updateValue(this.position);
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
