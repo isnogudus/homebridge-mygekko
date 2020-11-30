@@ -138,33 +138,24 @@ class Blind {
       .getCharacteristic(Characteristic.CurrentPosition)
       .updateValue(this.position);
 
+    this.target = this.position;
+    this.ignoreTarget = this.target;
+    this.getService()
+      .getCharacteristic(Characteristic.TargetPosition)
+      .updateValue(this.target);
+
     const { DECREASING, INCREASING, STOPPED } = positionState;
     switch (this.state) {
       case -2:
       case -1:
         positionState.setValue(DECREASING);
-        this.target = 0;
-        this.ignoreTarget = this.target;
-        this.getService()
-          .getCharacteristic(Characteristic.TargetPosition)
-          .updateValue(this.target);
         break;
       case 2:
       case 1:
         positionState.setValue(INCREASING);
-        this.target = 100;
-        this.ignoreTarget = this.target;
-        this.getService()
-          .getCharacteristic(Characteristic.TargetPosition)
-          .updateValue(this.target);
         break;
       default:
         positionState.setValue(STOPPED);
-        this.target = this.position;
-        this.ignoreTarget = this.target;
-        this.getService()
-          .getCharacteristic(Characteristic.TargetPosition)
-          .updateValue(this.target);
     }
     if (oldPosition !== this.position) {
       if (oldPosition === null) {
