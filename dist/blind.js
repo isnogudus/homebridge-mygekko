@@ -37,6 +37,7 @@ var Blind = /*#__PURE__*/function () {
     this.send = send;
     this.position = null;
     this.target = null;
+    this.ignoreTarget = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : '0', 10));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : '100', 10));
     var _api$hap$Characterist = api.hap.Characteristic,
@@ -91,11 +92,13 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      if (this.target !== position) {
+      if (this.ignoreTarget !== position) {
         this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
         this.target = position;
         clearTimeout(this.blindPostioner);
         this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
+      } else {
+        this.ignoreTarget = null;
       }
 
       callback(null);
@@ -152,19 +155,26 @@ var Blind = /*#__PURE__*/function () {
         case -1:
           positionState.setValue(DECREASING);
           this.target = this.position;
+          this.ignoreTarget = this.target;
           targetPosition.setValue(this.target);
           break;
 
         case 1:
           positionState.setValue(INCREASING);
           this.target = this.position;
+          this.ignoreTarget = this.target;
           targetPosition.setValue(this.target);
           break;
 
         default:
           positionState.setValue(STOPPED);
-          this.target = this.position;
-          targetPosition.setValue(this.target);
+
+          if (this.target !== this.position) {
+            this.target = this.position;
+            this.ignoreTarget = this.target;
+            targetPosition.setValue(this.target);
+          }
+
       }
 
       if (oldPosition !== this.position) {
@@ -173,10 +183,6 @@ var Blind = /*#__PURE__*/function () {
         } else {
           this.log.debug("Update position ".concat(this.index, " from ").concat(oldPosition, " to ").concat(this.position));
         }
-      }
-
-      if (oldPosition === null) {
-        this.getService().getCharacteristic(Characteristic.TargetPosition).setValue(this.position);
       }
 
       this.getService().getCharacteristic(Characteristic.CurrentPosition).setValue(this.position);

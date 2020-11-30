@@ -12,6 +12,7 @@ class Blind {
     this.send = send;
     this.position = null;
     this.target = null;
+    this.ignoreTarget = null;
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
@@ -76,7 +77,7 @@ class Blind {
   }
 
   setTargetPosition(position, callback) {
-    if (this.target !== position) {
+    if (this.ignoreTarget !== position) {
       this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
       this.target = position;
@@ -86,6 +87,8 @@ class Blind {
         this.callBlindSetPosition.bind(this),
         500
       );
+    } else {
+      this.ignoreTarget = null;
     }
     callback(null);
   }
@@ -138,17 +141,22 @@ class Blind {
       case -1:
         positionState.setValue(DECREASING);
         this.target = this.position;
+        this.ignoreTarget = this.target;
         targetPosition.setValue(this.target);
         break;
       case 1:
         positionState.setValue(INCREASING);
         this.target = this.position;
+        this.ignoreTarget = this.target;
         targetPosition.setValue(this.target);
         break;
       default:
         positionState.setValue(STOPPED);
-        this.target = this.position;
-        targetPosition.setValue(this.target);
+        if (this.target !== this.position) {
+          this.target = this.position;
+          this.ignoreTarget = this.target;
+          targetPosition.setValue(this.target);
+        }
     }
     if (oldPosition !== this.position) {
       if (oldPosition === null) {
@@ -158,11 +166,6 @@ class Blind {
           `Update position ${this.index} from ${oldPosition} to ${this.position}`
         );
       }
-    }
-    if (oldPosition === null) {
-      this.getService()
-        .getCharacteristic(Characteristic.TargetPosition)
-        .setValue(this.position);
     }
     this.getService()
       .getCharacteristic(Characteristic.CurrentPosition)
