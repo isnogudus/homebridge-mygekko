@@ -37,7 +37,6 @@ var Blind = /*#__PURE__*/function () {
     this.send = send;
     this.position = null;
     this.target = null;
-    this.ignoreTarget = null;
     this.min = Math.max(0, parseInt((_adjustment$min = adjustment === null || adjustment === void 0 ? void 0 : adjustment.min) !== null && _adjustment$min !== void 0 ? _adjustment$min : '0', 10));
     this.max = Math.min(100, parseInt((_adjustment$max = adjustment === null || adjustment === void 0 ? void 0 : adjustment.max) !== null && _adjustment$max !== void 0 ? _adjustment$max : '100', 10));
     var _api$hap$Characterist = api.hap.Characteristic,
@@ -138,14 +137,11 @@ var Blind = /*#__PURE__*/function () {
       if (this.state === 0) {
         positionState.updateValue(STOPPED);
 
-        if (oldPosition !== this.position) {
+        if (oldPosition === this.position) {
           this.target = this.position;
-          this.ignoreTarget = this.target;
           this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
         }
-      }
-
-      if (this.state < 0) {
+      } else if (this.state < 0) {
         positionState.updateValue(DECREASING);
       } else if (this.state > 0) {
         positionState.updateValue(INCREASING);

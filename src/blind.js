@@ -12,7 +12,6 @@ class Blind {
     this.send = send;
     this.position = null;
     this.target = null;
-    this.ignoreTarget = null;
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
@@ -128,15 +127,13 @@ class Blind {
     const { DECREASING, INCREASING, STOPPED } = positionState;
     if (this.state === 0) {
       positionState.updateValue(STOPPED);
-      if (oldPosition !== this.position) {
+      if (oldPosition === this.position) {
         this.target = this.position;
-        this.ignoreTarget = this.target;
         this.getService()
           .getCharacteristic(Characteristic.TargetPosition)
           .updateValue(this.target);
       }
-    }
-    if (this.state < 0) {
+    } else if (this.state < 0) {
       positionState.updateValue(DECREASING);
     } else if (this.state > 0) {
       positionState.updateValue(INCREASING);
