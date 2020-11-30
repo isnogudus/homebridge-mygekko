@@ -148,9 +148,6 @@ var Blind = /*#__PURE__*/function () {
 
       var positionState = this.getService().getCharacteristic(Characteristic.PositionState);
       this.getService().getCharacteristic(Characteristic.CurrentPosition).updateValue(this.position);
-      this.target = this.position;
-      this.ignoreTarget = this.target;
-      this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
       var DECREASING = positionState.DECREASING,
           INCREASING = positionState.INCREASING,
           STOPPED = positionState.STOPPED;
@@ -158,14 +155,23 @@ var Blind = /*#__PURE__*/function () {
       switch (this.state) {
         case -1:
           positionState.setValue(DECREASING);
+          this.target = 100;
+          this.ignoreTarget = this.target;
+          this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
           break;
 
         case 1:
           positionState.setValue(INCREASING);
+          this.target = 0;
+          this.ignoreTarget = this.target;
+          this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
           break;
 
         default:
           positionState.setValue(STOPPED);
+          this.target = this.position;
+          this.ignoreTarget = this.target;
+          this.getService().getCharacteristic(Characteristic.TargetPosition).updateValue(this.target);
       }
 
       if (oldPosition !== this.position) {
