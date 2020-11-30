@@ -70,7 +70,21 @@ var Blind = /*#__PURE__*/function () {
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
-      var position = this.target === null ? this.position : this.target;
+      var position;
+
+      switch (this.state) {
+        case -1:
+          position = 0;
+          break;
+
+        case 1:
+          position = 100;
+          break;
+
+        default:
+          position = this.position;
+      }
+
       this.log.debug("getTargetPosition of ".concat(this.index, ": ").concat(position));
       callback(null, position);
     }
