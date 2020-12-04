@@ -1,6 +1,8 @@
 import http from 'http';
 import querystring from 'querystring';
 import Blind from './blind';
+import Roomtemp from './roomtemp';
+import sendHttp from './sendHttp';
 
 const PluginName = 'homebridge-mygekko';
 const Name = 'mygekko';
@@ -13,6 +15,7 @@ class Platform {
     this.updater = null;
     this.blindPostioner = null;
     this.blinds = {};
+    this.roomtemps = {};
     this.blindAccessories = {};
     this.targetPositions = {};
     this.blindsTargetPositions = null;
@@ -33,6 +36,8 @@ class Platform {
     this.blindAdjustment = blindAdjustment || {};
     this.url = `http://${this.host}/api/v1/var`;
     this.accessories = {};
+    this.sending = (path, value) =>
+      sendHttp(this.url, user, password, path, value);
 
     this.log('Starting MyGEKKO Platform using homebridge API', api.version);
 
@@ -43,43 +48,15 @@ class Platform {
     });
   }
 
-  sending = (path, value) => {
-    const { url, username, password } = this;
-    const params =
-      value === undefined
-        ? { username, password }
-        : { username, password, value };
-
-    const payload = querystring.stringify(params);
-
-    const uri = `${url}${path ?? ''}?${payload}`;
-    return new Promise((resolve, reject) => {
-      http
-        .get(uri, (response) => {
-          let data = '';
-          response.on('data', (chunk) => {
-            data += chunk;
-          });
-          response.on('end', () => {
-            resolve(data);
-          });
-        })
-        .on('error', (error) => {
-          this.log.error(error);
-          reject(error);
-        });
-    });
-  };
-
   fetchDevices() {
     this.log.debug('Fetch the devices');
     const { uuid: UUIDGen } = this.api.hap;
     const PlatformAccessory = this.api.platformAccessory;
     this.sending()
       .then((response) => {
-        const { blinds } = JSON.parse(response);
-        Object.keys(blinds).forEach((index) => {
-          const blind = blinds[index];
+        const { blinds, roomtemps } = JSON.parse(response);
+        Object.entries(blinds).forEach((index) => {
+          const [key, blind] = index;
           const { name } = blind;
           const uuid = UUIDGen.generate(name);
           const cachedAccessory = this.accessories[uuid];
@@ -87,12 +64,12 @@ class Platform {
           const accessory =
             cachedAccessory ?? new PlatformAccessory(name, uuid);
 
-          this.blinds[index] = new Blind(
+          this.blinds[key] = new Blind(
             accessory,
             name,
-            index,
+            key,
             this.api,
-            this.blindAdjustment[index],
+            this.blindAdjustment[key],
             this.sending,
             this.log
           );
@@ -104,6 +81,10 @@ class Platform {
               [accessory]
             );
         });
+        Object.entries(roomtemps).forEach((item) => {
+          const [key, roomtemp] = item;
+          this.roomtemps[key] = new Roomtemp();
+        });
         this.getStatus();
       })
       .catch((error) => {
@@ -114,9 +95,14 @@ class Platform {
   getStatus() {
     this.sending('/status')
       .then((request) => {
-        const { blinds } = JSON.parse(request);
-        Object.keys(blinds).forEach((item) => {
-          this.blinds[item].setStatus(blinds[item]);
+        const { blinds, roomtemps } = JSON.parse(request);
+        Object.entries(blinds).forEach((item) => {
+          const [key, value] = item;
+          this.blinds[key].setStatus(value);
+        });
+        Object.entries(roomtemps).forEach((item) => {
+          const [key, value] = item;
+          this.roomtemps[key].setStatus(value);
         });
       })
       .catch((error) => {
