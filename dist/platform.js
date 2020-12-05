@@ -68,7 +68,7 @@ var Platform = /*#__PURE__*/function () {
     this.accessories = {};
 
     this.sending = function (path, value) {
-      return (0, _sendHttp["default"])(_this.url, user, password, path, value);
+      return (0, _sendHttp["default"])(_this.url, user, password, log, path, value);
     };
 
     this.log('Starting MyGEKKO Platform using homebridge API', api.version); // if finished loading cache accessories

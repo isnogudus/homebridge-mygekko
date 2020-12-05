@@ -11,9 +11,7 @@ var _querystring = _interopRequireDefault(require("querystring"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function sendHttp(url, username, password, path, value) {
-  var _this = this;
-
+function sendHttp(url, username, password, log, path, value) {
   var params = value === undefined ? {
     username: username,
     password: password
@@ -36,8 +34,7 @@ function sendHttp(url, username, password, path, value) {
         resolve(data);
       });
     }).on('error', function (error) {
-      _this.log.error(error);
-
+      log.error(error);
       reject(error);
     });
   });

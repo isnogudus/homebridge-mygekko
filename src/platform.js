@@ -37,7 +37,7 @@ class Platform {
     this.url = `http://${this.host}/api/v1/var`;
     this.accessories = {};
     this.sending = (path, value) =>
-      sendHttp(this.url, user, password, path, value);
+      sendHttp(this.url, user, password, log, path, value);
 
     this.log('Starting MyGEKKO Platform using homebridge API', api.version);
 

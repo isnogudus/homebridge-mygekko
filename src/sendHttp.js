@@ -1,7 +1,7 @@
 import http from 'http';
 import querystring from 'querystring';
 
-export default function sendHttp(url, username, password, path, value) {
+export default function sendHttp(url, username, password, log, path, value) {
   const params =
     value === undefined
       ? { username, password }
@@ -22,7 +22,7 @@ export default function sendHttp(url, username, password, path, value) {
         });
       })
       .on('error', (error) => {
-        this.log.error(error);
+        log.error(error);
         reject(error);
       });
   });
