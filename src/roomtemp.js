@@ -5,6 +5,10 @@ class Roomtemp {
     this.index = index;
     this.name = name;
     this.temperatureDisplayUnits = 0;
+    this.currentTemperature = 0;
+    this.targetTemperature = 0;
+    this.currentHeatingCoolingState = 0;
+    this.targetHeatingCoolingState = 0;
     this.blindPostioner = null;
     this.log = log;
     this.api = api;
