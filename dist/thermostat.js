@@ -73,7 +73,9 @@ var Thernmostat = /*#__PURE__*/function () {
   }, {
     key: "setStatus",
     value: function setStatus(data) {
-      this.log.debug(data);
+      var sumState = data.sumstate.value.split(';');
+      this.currentTemperature = parseFloat(sumState[0]);
+      this.targetTemperature = parseFloat(sumState[1]);
     }
   }]);
 
