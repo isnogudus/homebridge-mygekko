@@ -120,6 +120,7 @@ var Platform = /*#__PURE__*/function () {
 
           var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
           _this2.roomtemps[key] = new _roomtemp["default"](accessory, name, key, _this2.api, _this2.sending, _this2.log);
+          if (!cachedAccessory) _this2.api.registerPlatformAccessories(PluginName, Name, [accessory]);
         });
 
         _this2.getStatus();

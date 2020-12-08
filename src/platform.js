@@ -98,6 +98,13 @@ class Platform {
             this.sending,
             this.log
           );
+          if (!cachedAccessory)
+            this.api.registerPlatformAccessories(
+              PluginName,
+              Name,
+
+              [accessory]
+            );
         });
         this.getStatus();
       })
