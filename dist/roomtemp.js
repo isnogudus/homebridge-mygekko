@@ -11,11 +11,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var Roomtemp = /*#__PURE__*/function () {
   function Roomtemp(accessory, name, index, api, send, log) {
+    var _this = this;
+
     _classCallCheck(this, Roomtemp);
 
-    log("Creating Blind ".concat(index, " as ").concat(name));
+    _defineProperty(this, "getService", function () {
+      return _this.accessory.getService(_this.api.hap.Service.Thermostat);
+    });
+
+    log("Creating Thermostat ".concat(index, " as ").concat(name));
     this.accessory = accessory;
     this.index = index;
     this.name = name;
@@ -32,6 +40,7 @@ var Roomtemp = /*#__PURE__*/function () {
         CurrentTemperature = _api$hap$Characterist.CurrentTemperature,
         TargetTemperature = _api$hap$Characterist.TargetTemperature,
         TemperatureDisplayUnits = _api$hap$Characterist.TemperatureDisplayUnits;
+    this.accessory.on('identify', this.identify.bind(this));
     var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, name);
     service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('Get TemperatureDisplayUnits', this.temperatureDisplayUnits));
     service.getCharacteristic(CurrentTemperature).on('get', this.getter('Get CurrentTemperature', this.currentTemperature));
@@ -41,12 +50,18 @@ var Roomtemp = /*#__PURE__*/function () {
   }
 
   _createClass(Roomtemp, [{
+    key: "identify",
+    value: function identify(paired, callback) {
+      this.log("identify(paired: ".concat(paired, ")"));
+      if (callback) callback();
+    }
+  }, {
     key: "getter",
     value: function getter(text, value) {
-      var _this = this;
+      var _this2 = this;
 
       return function (callback) {
-        _this.log.debug("".concat(text, ": ").concat(value));
+        _this2.log.debug("".concat(text, ": ").concat(value));
 
         if (callback) callback(null, value);
       };

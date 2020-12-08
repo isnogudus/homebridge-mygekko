@@ -1,6 +1,6 @@
 class Roomtemp {
   constructor(accessory, name, index, api, send, log) {
-    log(`Creating Blind ${index} as ${name}`);
+    log(`Creating Thermostat ${index} as ${name}`);
     this.accessory = accessory;
     this.index = index;
     this.name = name;
@@ -20,6 +20,8 @@ class Roomtemp {
         TemperatureDisplayUnits,
       },
     } = api.hap;
+
+    this.accessory.on('identify', this.identify.bind(this));
 
     const service =
       this.accessory.getService(api.hap.Service.Thermostat) ||
@@ -58,6 +60,14 @@ class Roomtemp {
           this.targetHeatingCoolingState
         )
       );
+  }
+
+  getService = () => this.accessory.getService(this.api.hap.Service.Thermostat);
+
+  identify(paired, callback) {
+    this.log(`identify(paired: ${paired})`);
+
+    if (callback) callback();
   }
 
   getter(text, value) {
