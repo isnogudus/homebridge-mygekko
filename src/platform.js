@@ -1,7 +1,7 @@
 import http from 'http';
 import querystring from 'querystring';
 import Blind from './blind';
-import Roomtemp from './roomtemp';
+import Thermostat from './thermostat';
 import sendHttp from './sendHttp';
 
 const PluginName = 'homebridge-mygekko';
@@ -90,7 +90,7 @@ class Platform {
           const accessory =
             cachedAccessory ?? new PlatformAccessory(name, uuid);
 
-          this.roomtemps[key] = new Roomtemp(
+          this.roomtemps[key] = new Thermostat(
             accessory,
             name,
             key,

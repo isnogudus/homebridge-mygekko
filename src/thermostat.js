@@ -1,4 +1,4 @@
-class Roomtemp {
+class Thernmostat {
   constructor(accessory, name, index, api, send, log) {
     log(`Creating Thermostat ${index} as ${name}`);
     this.accessory = accessory;
@@ -82,7 +82,9 @@ class Roomtemp {
     };
   }
 
-  setStatus() {}
+  setStatus(data) {
+    this.log.debug(data);
+  }
 }
 
-export default Roomtemp;
+export default Thernmostat;
