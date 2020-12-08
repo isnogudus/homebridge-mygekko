@@ -61,38 +61,34 @@ var Blind = /*#__PURE__*/function () {
     key: "identify",
     value: function identify(paired, callback) {
       this.log("identify(paired: ".concat(paired, ")"));
-      callback();
+      if (callback) callback();
     }
   }, {
     key: "holdPosition",
     value: function holdPosition(callback) {
       this.log.debug("holdPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
-      callback(null);
+      if (callback) callback(null);
     }
   }, {
     key: "getCurrentPosition",
     value: function getCurrentPosition(callback) {
       this.log.debug("getCurrentPosition on ".concat(this.index, " pos: ").concat(this.position, " target: ").concat(this.target));
-      callback(null, this.position);
+      if (callback) callback(null, this.position);
     }
   }, {
     key: "getTargetPosition",
     value: function getTargetPosition(callback) {
-      var position = this.target;
-      this.log.debug("getTargetPosition of ".concat(this.index, ": ").concat(position));
-      callback(null, position);
+      this.log.debug("getTargetPosition of ".concat(this.index, ": ").concat(this.target));
+      if (callback) callback(null, this.target);
     }
   }, {
     key: "setTargetPosition",
     value: function setTargetPosition(position, callback) {
-      if (this.target !== position) {
-        this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
-        this.target = position;
-        clearTimeout(this.blindPostioner);
-        this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
-      }
-
-      callback(null);
+      this.log.debug("setTargetPosition of ".concat(this.index, " to ").concat(position));
+      this.target = position;
+      clearTimeout(this.blindPostioner);
+      this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
+      if (callback) callback(null, this.target);
     }
   }, {
     key: "getPositionState",
@@ -102,8 +98,7 @@ var Blind = /*#__PURE__*/function () {
       var DECREASING = PositionState.DECREASING,
           INCREASING = PositionState.INCREASING,
           STOPPED = PositionState.STOPPED;
-
-      switch (this.state) {
+      if (callback) switch (this.state) {
         case -1:
           callback(null, DECREASING);
           break;

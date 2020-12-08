@@ -112,7 +112,14 @@ var Platform = /*#__PURE__*/function () {
               key = _item[0],
               roomtemp = _item[1];
 
-          _this2.roomtemps[key] = new _roomtemp["default"]();
+          var name = roomtemp.name;
+          var uuid = UUIDGen.generate(name);
+          var cachedAccessory = _this2.accessories[uuid];
+
+          _this2.log.debug("Cached : ".concat(!!cachedAccessory));
+
+          var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
+          _this2.roomtemps[key] = new _roomtemp["default"](accessory, name, key, _this2.api, _this2.sending, _this2.log);
         });
 
         _this2.getStatus();

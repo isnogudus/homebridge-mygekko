@@ -83,7 +83,21 @@ class Platform {
         });
         Object.entries(roomtemps).forEach((item) => {
           const [key, roomtemp] = item;
-          this.roomtemps[key] = new Roomtemp();
+          const { name } = roomtemp;
+          const uuid = UUIDGen.generate(name);
+          const cachedAccessory = this.accessories[uuid];
+          this.log.debug(`Cached : ${!!cachedAccessory}`);
+          const accessory =
+            cachedAccessory ?? new PlatformAccessory(name, uuid);
+
+          this.roomtemps[key] = new Roomtemp(
+            accessory,
+            name,
+            key,
+            this.api,
+            this.sending,
+            this.log
+          );
         });
         this.getStatus();
       })

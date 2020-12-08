@@ -55,14 +55,15 @@ class Blind {
 
   identify(paired, callback) {
     this.log(`identify(paired: ${paired})`);
-    callback();
+
+    if (callback) callback();
   }
 
   holdPosition(callback) {
     this.log.debug(
       `holdPosition on ${this.index} pos: ${this.position} target: ${this.target}`
     );
-    callback(null);
+    if (callback) callback(null);
   }
 
   getCurrentPosition(callback) {
@@ -70,29 +71,22 @@ class Blind {
       `getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`
     );
 
-    callback(null, this.position);
+    if (callback) callback(null, this.position);
   }
 
   getTargetPosition(callback) {
-    const position = this.target;
-
-    this.log.debug(`getTargetPosition of ${this.index}: ${position}`);
-    callback(null, position);
+    this.log.debug(`getTargetPosition of ${this.index}: ${this.target}`);
+    if (callback) callback(null, this.target);
   }
 
   setTargetPosition(position, callback) {
-    if (this.target !== position) {
-      this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
+    this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
-      this.target = position;
-      clearTimeout(this.blindPostioner);
+    this.target = position;
+    clearTimeout(this.blindPostioner);
 
-      this.blindPostioner = setTimeout(
-        this.callBlindSetPosition.bind(this),
-        500
-      );
-    }
-    callback(null);
+    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
+    if (callback) callback(null, this.target);
   }
 
   getPositionState(callback) {
@@ -100,16 +94,17 @@ class Blind {
     const { Characteristic: PositionState } = this.hap;
     const { DECREASING, INCREASING, STOPPED } = PositionState;
 
-    switch (this.state) {
-      case -1:
-        callback(null, DECREASING);
-        break;
-      case 1:
-        callback(null, INCREASING);
-        break;
-      default:
-        callback(null, STOPPED);
-    }
+    if (callback)
+      switch (this.state) {
+        case -1:
+          callback(null, DECREASING);
+          break;
+        case 1:
+          callback(null, INCREASING);
+          break;
+        default:
+          callback(null, STOPPED);
+      }
   }
 
   setStatus(data) {
