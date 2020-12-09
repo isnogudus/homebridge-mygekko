@@ -122,10 +122,14 @@ class Platform {
         const { blinds, roomtemps } = JSON.parse(request);
         Object.entries(blinds).forEach((item) => {
           const [key, value] = item;
+          if (!key.startsWith('item')) return;
+
           this.blinds[key].setStatus(value);
         });
         Object.entries(roomtemps).forEach((item) => {
           const [key, value] = item;
+          if (!key.startsWith('item')) return;
+
           this.roomtemps[key].setStatus(value);
         });
       })
