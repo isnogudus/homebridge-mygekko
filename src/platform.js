@@ -1,8 +1,6 @@
-import http from 'http';
-import querystring from 'querystring';
-import Blind from './blind.js';
-import Thermostat from './thermostat.js';
-import sendHttp from './sendHttp.js';
+ Blind  = require('module');('./blind.js');
+ Thermostat = require('./thermostat.js');
+ sendHttp = require('./sendHttp.js');
 
 const PluginName = 'homebridge-mygekko';
 const Name = 'mygekko';

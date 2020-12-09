@@ -1,5 +1,5 @@
-import http from 'http';
-import querystring from 'querystring';
+ http = require( 'http');
+ querystring = require ('querystring');
 
 export default function sendHttp(url, username, password, log, path, value) {
   const params =
