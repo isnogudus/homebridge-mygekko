@@ -36,7 +36,8 @@ class Thernmostat {
       .on('get', this.getter('temperatureDisplayUnits'));
     service
       .getCharacteristic(CurrentTemperature)
-      .on('get', this.getter('currentTemperature'));
+      .on('get', this.getter('currentTemperature'))
+      .setProps({ minStep: 0.1 });
     service
       .getCharacteristic(TargetTemperature)
       .on('get', this.getter('targetTemperature'))
