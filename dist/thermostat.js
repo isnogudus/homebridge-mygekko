@@ -82,6 +82,9 @@ var Thernmostat = /*#__PURE__*/function () {
       var sumState = data.sumstate.value.split(';');
       this.currentTemperature = parseFloat(sumState[0]);
       this.targetTemperature = parseFloat(sumState[1]);
+      var cooling = parseInt(sumState[6], 10);
+      this.log.debug("Cooling: ".concat(cooling));
+      this.currentHeatingCoolingState = cooling === 1 ? 2 : 0;
     }
   }]);
 

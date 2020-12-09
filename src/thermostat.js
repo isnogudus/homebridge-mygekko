@@ -70,6 +70,9 @@ class Thernmostat {
     const sumState = data.sumstate.value.split(';');
     this.currentTemperature = parseFloat(sumState[0]);
     this.targetTemperature = parseFloat(sumState[1]);
+    const cooling = parseInt(sumState[6], 10);
+    this.log.debug(`Cooling: ${cooling}`);
+    this.currentHeatingCoolingState = cooling === 1 ? 2 : 0;
   }
 }
 
