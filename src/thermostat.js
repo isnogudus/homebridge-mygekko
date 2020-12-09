@@ -30,7 +30,7 @@ class Thernmostat {
 
     const service =
       this.accessory.getService(api.hap.Service.Thermostat) ||
-      this.accessory.addService(api.hap.Service.Thermostat, name);
+      this.accessory.addService(api.hap.Service.Thermostat, this.name);
 
     service
       .getCharacteristic(TemperatureDisplayUnits)

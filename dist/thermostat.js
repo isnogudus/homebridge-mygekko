@@ -47,7 +47,7 @@ var Thernmostat = /*#__PURE__*/function () {
         TargetTemperature = _api$hap$Characterist.TargetTemperature,
         TemperatureDisplayUnits = _api$hap$Characterist.TemperatureDisplayUnits;
     this.accessory.on('identify', this.identify.bind(this));
-    var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, name);
+    var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, this.name);
     service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('temperatureDisplayUnits'));
     service.getCharacteristic(CurrentTemperature).on('get', this.getter('currentTemperature'));
     service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature'));
