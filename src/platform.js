@@ -87,7 +87,7 @@ class Platform {
           const name = thermostats[key]?.name ?? roomtemp.name;
           const uuid = UUIDGen.generate(roomtemp.name);
           const cachedAccessory = this.accessories[uuid];
-          this.log.debug(`Cached : ${!!cachedAccessory}`);
+          this.log.debug(`Cached : ${!!cachedAccessory} ${name}`);
           const accessory =
             cachedAccessory ?? new PlatformAccessory(name, uuid);
 

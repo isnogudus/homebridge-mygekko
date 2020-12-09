@@ -123,7 +123,7 @@ var Platform = /*#__PURE__*/function () {
           var uuid = UUIDGen.generate(roomtemp.name);
           var cachedAccessory = _this2.accessories[uuid];
 
-          _this2.log.debug("Cached : ".concat(!!cachedAccessory));
+          _this2.log.debug("Cached : ".concat(!!cachedAccessory, " ").concat(name));
 
           var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
           _this2.roomtemps[key] = new _thermostat["default"](accessory, name, key, _this2.api, _this2.sending, _this2.log);
