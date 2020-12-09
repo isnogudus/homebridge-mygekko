@@ -53,7 +53,7 @@ class Blind {
   getter(attributeName) {
     return (callback) => {
       const value = this[attributeName];
-      this.log.debug(`THERMOSTAT::GET ${attributeName}: ${value}`);
+      this.log.debug(`BLIND::GET ${attributeName}: ${value}`);
 
       if (callback) callback(null, value);
     };
@@ -109,7 +109,7 @@ class Blind {
         if (oldPosition === this.position) {
           this.target = this.position;
           this.getService()
-            .getCharacteristic(Characteristic.TargetPosition)
+            .getCharacteristic(TargetPosition)
             .updateValue(this.target);
         }
     }
