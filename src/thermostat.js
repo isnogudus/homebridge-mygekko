@@ -8,7 +8,7 @@ class Thernmostat {
     this.currentTemperature = 0;
     this.targetTemperature = 0;
     this.currentHeatingCoolingState = 0;
-    this.targetHeatingCoolingState = 0;
+    this.targetHeatingCoolingState = 3;
     this.blindPostioner = null;
     this.log = log;
     this.api = api;
