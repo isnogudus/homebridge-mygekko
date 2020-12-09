@@ -1,7 +1,7 @@
 class Thernmostat {
   constructor(accessory, name, index, api, config, send, log) {
     log(`Creating Thermostat ${index} as ${name}`);
-    log(`config: ${config}`);
+    log(`config: ${config.name}`);
     this.accessory = accessory;
     this.index = index;
     this.name = config.name ?? name;
