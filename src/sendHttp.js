@@ -1,7 +1,7 @@
- http = require( 'http');
- querystring = require ('querystring');
+let  http = require( 'http');
+let querystring = require ('querystring');
 
-export default function sendHttp(url, username, password, log, path, value) {
+module.exports = function sendHttp(url, username, password, log, path, value) {
   const params =
     value === undefined
       ? { username, password }

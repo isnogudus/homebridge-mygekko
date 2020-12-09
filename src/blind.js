@@ -187,4 +187,4 @@ class Blind {
   }
 }
 
-export default Blind;
+module.exports = Blind;

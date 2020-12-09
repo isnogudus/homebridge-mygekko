@@ -1,5 +1,5 @@
-Platform = require( './platform.js');
+let Platform = require( './platform');
 
-export default (api) => {
+module.exports = (api) => {
   api.registerPlatform('homebridge-mygekko', 'mygekko', Platform);
 };

@@ -99,4 +99,4 @@ class Thernmostat {
   }
 }
 
-export default Thernmostat;
+module.exports = Thernmostat;
