@@ -126,7 +126,7 @@ var Platform = /*#__PURE__*/function () {
           _this2.log.debug("Cached : ".concat(!!cachedAccessory));
 
           var accessory = cachedAccessory !== null && cachedAccessory !== void 0 ? cachedAccessory : new PlatformAccessory(name, uuid);
-          _this2.roomtemps[key] = new _thermostat["default"](accessory, name, key, _this2.api, thermostats[key], _this2.sending, _this2.log);
+          _this2.roomtemps[key] = new _thermostat["default"](accessory, name, key, _this2.api, _this2.sending, _this2.log);
           if (!cachedAccessory) _this2.api.registerPlatformAccessories(PluginName, Name, [accessory]);
         });
 

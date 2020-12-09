@@ -96,7 +96,6 @@ class Platform {
             name,
             key,
             this.api,
-            thermostats[key],
             this.sending,
             this.log
           );
