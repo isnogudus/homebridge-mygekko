@@ -1,8 +1,8 @@
 import http from 'http';
 import querystring from 'querystring';
-import Blind from './blind';
-import Thermostat from './thermostat';
-import sendHttp from './sendHttp';
+import Blind from './blind.mjs';
+import Thermostat from './thermostat.mjs';
+import sendHttp from './sendHttp.mjs';
 
 const PluginName = 'homebridge-mygekko';
 const Name = 'mygekko';
