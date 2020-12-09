@@ -48,7 +48,11 @@ var Thernmostat = /*#__PURE__*/function () {
     var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, this.name);
     service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('temperatureDisplayUnits'));
     service.getCharacteristic(CurrentTemperature).on('get', this.getter('currentTemperature'));
-    service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature'));
+    service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature')).setProps({
+      minValue: 10.0,
+      maxValue: 30.0,
+      minStep: 0.5
+    });
     service.getCharacteristic(CurrentHeatingCoolingState).on('get', this.getter('currentHeatingCoolingState'));
     service.getCharacteristic(TargetHeatingCoolingState).on('get', this.getter('targetHeatingCoolingState'));
   }

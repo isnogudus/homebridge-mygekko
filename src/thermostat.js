@@ -39,7 +39,8 @@ class Thernmostat {
       .on('get', this.getter('currentTemperature'));
     service
       .getCharacteristic(TargetTemperature)
-      .on('get', this.getter('targetTemperature'));
+      .on('get', this.getter('targetTemperature'))
+      .setProps({ minValue: 10.0, maxValue: 30.0, minStep: 0.5 });
     service
       .getCharacteristic(CurrentHeatingCoolingState)
       .on('get', this.getter('currentHeatingCoolingState'));
