@@ -36,11 +36,7 @@ class Thernmostat {
       .on('get', this.getter('temperatureDisplayUnits'));
     service
       .getCharacteristic(CurrentTemperature)
-      .on('get', this.getter('currentTemperature'))
-      .setProps({ minStep: 0.1 });
-    this.log(
-      `minStep: ${service.getCharacteristic(CurrentTemperature).minStep}`
-    );
+      .on('get', this.getter('currentTemperature'));
     service
       .getCharacteristic(TargetTemperature)
       .on('get', this.getter('targetTemperature'))
@@ -90,7 +86,6 @@ class Thernmostat {
   }
 
   setStatus(data) {
-    if (this.index == 'item1') this.log(data);
     const sumState = data.sumstate.value.split(';');
     this.currentTemperature = parseFloat(sumState[0]);
     this.targetTemperature = parseFloat(sumState[1]);
