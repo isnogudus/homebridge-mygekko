@@ -25,6 +25,7 @@ var Thernmostat = /*#__PURE__*/function () {
     });
 
     log("Creating Thermostat ".concat(index, " as ").concat(name));
+    log("config: ".concat(config));
     this.accessory = accessory;
     this.index = index;
     this.name = (_config$name = config.name) !== null && _config$name !== void 0 ? _config$name : name;
