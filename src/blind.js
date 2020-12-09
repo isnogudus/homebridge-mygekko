@@ -18,10 +18,10 @@ class Blind {
       Characteristic: {
         CurrentPosition,
         TargetPosition,
-        PositionState,
-        HoldPosition,
+        PositionState
       },
     } = api.hap;
+    this.positionState = PositionState.STOPPED;
 
     this.accessory.on('identify', this.identify.bind(this));
 
@@ -31,23 +31,14 @@ class Blind {
 
     service
       .getCharacteristic(CurrentPosition)
-      .on('get', this.getCurrentPosition.bind(this));
-    service
-      .getCharacteristic(HoldPosition)
-      .on('get', this.holdPosition.bind(this));
+      .on('get', this.getter("position"));
     service
       .getCharacteristic(TargetPosition)
-      .on('get', this.getTargetPosition.bind(this))
+      .on('get', this.getter("target"))
       .on('set', this.setTargetPosition.bind(this));
-
-    // Note: iOS's Home App subtracts CurrentPosition from TargetPosition to determine if it's
-    // opening, closing or idle. It absolutely doesn't care about Characteristic.PositionState,
-    // which is supposed to be :
-    // PositionState.INCREASING = 1, PositionState.DECREASING = 0 or PositionState.STOPPED = 2
-    // But in any case, let's still implement it
     service
       .getCharacteristic(PositionState)
-      .on('get', this.getPositionState.bind(this));
+      .on('get', this.getter("positionState"));
   }
 
   getService = () =>
@@ -59,24 +50,13 @@ class Blind {
     if (callback) callback();
   }
 
-  holdPosition(callback) {
-    this.log.debug(
-      `holdPosition on ${this.index} pos: ${this.position} target: ${this.target}`
-    );
-    if (callback) callback(null);
-  }
+  getter(attributeName) {
+    return (callback) => {
+      const value = this[attributeName];
+      this.log.debug(`THERMOSTAT::GET ${attributeName}: ${value}`);
 
-  getCurrentPosition(callback) {
-    this.log.debug(
-      `getCurrentPosition on ${this.index} pos: ${this.position} target: ${this.target}`
-    );
-
-    if (callback) callback(null, this.position);
-  }
-
-  getTargetPosition(callback) {
-    this.log.debug(`getTargetPosition of ${this.index}: ${this.target}`);
-    if (callback) callback(null, this.target);
+      if (callback) callback(null, value);
+    };
   }
 
   setTargetPosition(position, callback) {
@@ -87,24 +67,6 @@ class Blind {
 
     this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
     if (callback) callback(null, this.target);
-  }
-
-  getPositionState(callback) {
-    this.log.debug(`getPositionSate of ${this.index}`);
-    const { Characteristic: PositionState } = this.hap;
-    const { DECREASING, INCREASING, STOPPED } = PositionState;
-
-    if (callback)
-      switch (this.state) {
-        case -1:
-          callback(null, DECREASING);
-          break;
-        case 1:
-          callback(null, INCREASING);
-          break;
-        default:
-          callback(null, STOPPED);
-      }
   }
 
   setStatus(data) {
@@ -125,29 +87,33 @@ class Blind {
     this.sumState = parseInt(sumState[3], 10);
     this.slotRotationalArea = parseInt(sumState[4], 10);
 
-    const { Characteristic } = this.api.hap;
+    const { Characteristic: {CurrentPosition, TargetPosition, PositionState} } = this.api.hap;
     // set state
     const positionState = this.getService().getCharacteristic(
-      Characteristic.PositionState
+      PositionState
     );
     this.getService()
-      .getCharacteristic(Characteristic.CurrentPosition)
+      .getCharacteristic(CurrentPosition)
       .updateValue(this.position);
 
     const { DECREASING, INCREASING, STOPPED } = positionState;
-    if (this.state === 0) {
-      positionState.updateValue(STOPPED);
-      if (oldPosition === this.position) {
-        this.target = this.position;
-        this.getService()
-          .getCharacteristic(Characteristic.TargetPosition)
-          .updateValue(this.target);
-      }
-    } else if (this.state < 0) {
-      positionState.updateValue(DECREASING);
-    } else if (this.state > 0) {
-      positionState.updateValue(INCREASING);
+    switch (this.state) {
+      case -1:
+        this.positionState = PositionState.DECREASING;
+        break;
+      case 1:
+        this.positionState = PositionState.INCREASING;
+        break;
+      default:
+        this.positionState = PositionState.STOPPED;
+        if (oldPosition === this.position) {
+          this.target = this.position;
+          this.getService()
+            .getCharacteristic(Characteristic.TargetPosition)
+            .updateValue(this.target);
+        }
     }
+    positionState.updateValue(this.positionState)
 
     if (oldPosition !== this.position) {
       if (oldPosition === null) {

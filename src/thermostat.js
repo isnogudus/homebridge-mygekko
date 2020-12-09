@@ -62,7 +62,7 @@ class Thernmostat {
   getter(attributeName) {
     return (callback) => {
       const value = this[attributeName];
-      this.log.debug(`GET ${attributeName}: ${value}`);
+      this.log.debug(`THERMOSTAT::GET ${attributeName}: ${value}`);
 
       if (callback) callback(null, value);
     };
