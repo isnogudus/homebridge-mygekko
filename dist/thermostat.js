@@ -61,11 +61,13 @@ var Thernmostat = /*#__PURE__*/function () {
     }
   }, {
     key: "getter",
-    value: function getter(text, value) {
+    value: function getter(attributeName) {
       var _this2 = this;
 
       return function (callback) {
-        _this2.log.debug("".concat(text, ": ").concat(value));
+        var value = _this2[attributeName];
+
+        _this2.log.debug("GET ".concat(attributeName, ": ").concat(value));
 
         if (callback) callback(null, value);
       };

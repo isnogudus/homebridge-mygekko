@@ -74,9 +74,10 @@ class Thernmostat {
     if (callback) callback();
   }
 
-  getter(text, value) {
+  getter(attributeName) {
     return (callback) => {
-      this.log.debug(`${text}: ${value}`);
+      const value = this[attributeName];
+      this.log.debug(`GET ${attributeName}: ${value}`);
 
       if (callback) callback(null, value);
     };
