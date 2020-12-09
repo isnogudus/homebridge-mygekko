@@ -59,7 +59,7 @@ class Platform {
           if (!key.startsWith('item')) return;
 
           const { name } = blind;
-          const uuid = UUIDGen.generate(`BLIND:${name}`);
+          const uuid = UUIDGen.generate(`${this.name}_BLIND_${name}`);
           const cachedAccessory = this.accessories[uuid];
           this.log.debug(`Cached : ${!!cachedAccessory}`);
           const accessory =
@@ -87,7 +87,7 @@ class Platform {
           if (!key.startsWith('item')) return;
 
           const name = thermostats[key]?.name ?? roomtemp.name;
-          const uuid = UUIDGen.generate(`THERMOSTAT:${roomtemp.name}`);
+          const uuid = UUIDGen.generate(`${this.name}_THERMOSTAT_${roomtemp.name}`);
           const cachedAccessory = this.accessories[uuid];
           this.log.debug(`Cached : ${!!cachedAccessory} ${name}`);
           const accessory =
