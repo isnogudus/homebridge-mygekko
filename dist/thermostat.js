@@ -14,8 +14,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var Thernmostat = /*#__PURE__*/function () {
-  function Thernmostat(accessory, name, index, api, send, log) {
-    var _this = this;
+  function Thernmostat(accessory, name, index, api, config, send, log) {
+    var _this = this,
+        _config$name;
 
     _classCallCheck(this, Thernmostat);
 
@@ -26,7 +27,7 @@ var Thernmostat = /*#__PURE__*/function () {
     log("Creating Thermostat ".concat(index, " as ").concat(name));
     this.accessory = accessory;
     this.index = index;
-    this.name = name;
+    this.name = (_config$name = config.name) !== null && _config$name !== void 0 ? _config$name : name;
     this.temperatureDisplayUnits = 0;
     this.currentTemperature = 0;
     this.targetTemperature = 0;
