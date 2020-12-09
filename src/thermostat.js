@@ -51,7 +51,8 @@ class Thernmostat {
       .on('get', this.getter('currentHeatingCoolingState'));
     service
       .getCharacteristic(TargetHeatingCoolingState)
-      .on('get', this.getter('targetHeatingCoolingState'));
+      .on('get', this.getter('targetHeatingCoolingState'))
+      .on('set', this.setTargetHeatingCoolingState.bind(this));
   }
 
   getService = () => this.accessory.getService(this.api.hap.Service.Thermostat);
@@ -72,11 +73,18 @@ class Thernmostat {
   }
 
   setTargetTemperature(value, callback) {
-    this.send();
     this.log.debug(
       `THERMOSTAT::setTargetTemperature ${this.index} to ${value}`
     );
     this.send(`/roomtemps/${this.index}/scmd/set`, `S${value}`);
+
+    callback(null);
+  }
+
+  setTargetHeatingCoolingState(value, callback) {
+    this.log.debug(
+      `THERMOSTAT::setTargetHeatingCoolingState ${this.index} to ${value}`
+    );
 
     callback(null);
   }

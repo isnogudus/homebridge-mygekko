@@ -57,7 +57,7 @@ var Thernmostat = /*#__PURE__*/function () {
       minStep: 0.5
     });
     service.getCharacteristic(CurrentHeatingCoolingState).on('get', this.getter('currentHeatingCoolingState'));
-    service.getCharacteristic(TargetHeatingCoolingState).on('get', this.getter('targetHeatingCoolingState'));
+    service.getCharacteristic(TargetHeatingCoolingState).on('get', this.getter('targetHeatingCoolingState')).on('set', this.setTargetHeatingCoolingState.bind(this));
   }
 
   _createClass(Thernmostat, [{
@@ -82,9 +82,14 @@ var Thernmostat = /*#__PURE__*/function () {
   }, {
     key: "setTargetTemperature",
     value: function setTargetTemperature(value, callback) {
-      this.send();
       this.log.debug("THERMOSTAT::setTargetTemperature ".concat(this.index, " to ").concat(value));
       this.send("/roomtemps/".concat(this.index, "/scmd/set"), "S".concat(value));
+      callback(null);
+    }
+  }, {
+    key: "setTargetHeatingCoolingState",
+    value: function setTargetHeatingCoolingState(value, callback) {
+      this.log.debug("THERMOSTAT::setTargetHeatingCoolingState ".concat(this.index, " to ").concat(value));
       callback(null);
     }
   }, {
