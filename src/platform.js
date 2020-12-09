@@ -84,8 +84,8 @@ class Platform {
         });
         Object.entries(roomtemps).forEach((item) => {
           const [key, roomtemp] = item;
-          const { name } = roomtemp;
-          const uuid = UUIDGen.generate(name);
+          const name = thermostats[key]?.name ?? roomtemp.name;
+          const uuid = UUIDGen.generate(roomtemp.name);
           const cachedAccessory = this.accessories[uuid];
           this.log.debug(`Cached : ${!!cachedAccessory}`);
           const accessory =

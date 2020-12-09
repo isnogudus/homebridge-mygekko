@@ -28,7 +28,6 @@ var Thernmostat = /*#__PURE__*/function () {
     this.accessory = accessory;
     this.index = index;
     this.name = (_config$name = config.name) !== null && _config$name !== void 0 ? _config$name : name;
-    log("config: ".concat(this.name));
     this.temperatureDisplayUnits = 0;
     this.currentTemperature = 0;
     this.targetTemperature = 0;

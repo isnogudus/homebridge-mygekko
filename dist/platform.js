@@ -113,12 +113,14 @@ var Platform = /*#__PURE__*/function () {
           if (!cachedAccessory) _this2.api.registerPlatformAccessories(PluginName, Name, [accessory]);
         });
         Object.entries(roomtemps).forEach(function (item) {
+          var _thermostats$key$name, _thermostats$key;
+
           var _item = _slicedToArray(item, 2),
               key = _item[0],
               roomtemp = _item[1];
 
-          var name = roomtemp.name;
-          var uuid = UUIDGen.generate(name);
+          var name = (_thermostats$key$name = (_thermostats$key = thermostats[key]) === null || _thermostats$key === void 0 ? void 0 : _thermostats$key.name) !== null && _thermostats$key$name !== void 0 ? _thermostats$key$name : roomtemp.name;
+          var uuid = UUIDGen.generate(roomtemp.name);
           var cachedAccessory = _this2.accessories[uuid];
 
           _this2.log.debug("Cached : ".concat(!!cachedAccessory));
