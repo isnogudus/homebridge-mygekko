@@ -49,8 +49,8 @@ var Thernmostat = /*#__PURE__*/function () {
     service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('temperatureDisplayUnits'));
     service.getCharacteristic(CurrentTemperature).on('get', this.getter('currentTemperature'));
     service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature')).on('set', this.setTargetTemperature.bind(this)).setProps({
-      minValue: 10.0,
-      maxValue: 30.0,
+      minValue: 14.0,
+      maxValue: 26.0,
       minStep: 0.5
     });
     service.getCharacteristic(CurrentHeatingCoolingState).on('get', this.getter('currentHeatingCoolingState'));
