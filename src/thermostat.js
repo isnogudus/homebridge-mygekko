@@ -33,37 +33,19 @@ class Thernmostat {
 
     service
       .getCharacteristic(TemperatureDisplayUnits)
-      .on(
-        'get',
-        this.getter('Get TemperatureDisplayUnits', this.temperatureDisplayUnits)
-      );
+      .on('get', this.getter('temperatureDisplayUnits'));
     service
       .getCharacteristic(CurrentTemperature)
-      .on(
-        'get',
-        this.getter('Get CurrentTemperature', this.currentTemperature)
-      );
+      .on('get', this.getter('currentTemperature'));
     service
       .getCharacteristic(TargetTemperature)
-      .on('get', this.getter('Get TargetTemperature', this.targetTemperature));
+      .on('get', this.getter('targetTemperature'));
     service
       .getCharacteristic(CurrentHeatingCoolingState)
-      .on(
-        'get',
-        this.getter(
-          'Get CurrentHeatingCoolingState',
-          this.currentHeatingCoolingState
-        )
-      );
+      .on('get', this.getter('currentHeatingCoolingState'));
     service
       .getCharacteristic(TargetHeatingCoolingState)
-      .on(
-        'get',
-        this.getter(
-          'Get TargetHeatingCoolingState',
-          this.targetHeatingCoolingState
-        )
-      );
+      .on('get', this.getter('targetHeatingCoolingState'));
   }
 
   getService = () => this.accessory.getService(this.api.hap.Service.Thermostat);

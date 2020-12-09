@@ -46,11 +46,11 @@ var Thernmostat = /*#__PURE__*/function () {
         TemperatureDisplayUnits = _api$hap$Characterist.TemperatureDisplayUnits;
     this.accessory.on('identify', this.identify.bind(this));
     var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, name);
-    service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('Get TemperatureDisplayUnits', this.temperatureDisplayUnits));
-    service.getCharacteristic(CurrentTemperature).on('get', this.getter('Get CurrentTemperature', this.currentTemperature));
-    service.getCharacteristic(TargetTemperature).on('get', this.getter('Get TargetTemperature', this.targetTemperature));
-    service.getCharacteristic(CurrentHeatingCoolingState).on('get', this.getter('Get CurrentHeatingCoolingState', this.currentHeatingCoolingState));
-    service.getCharacteristic(TargetHeatingCoolingState).on('get', this.getter('Get TargetHeatingCoolingState', this.targetHeatingCoolingState));
+    service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('temperatureDisplayUnits'));
+    service.getCharacteristic(CurrentTemperature).on('get', this.getter('currentTemperature'));
+    service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature'));
+    service.getCharacteristic(CurrentHeatingCoolingState).on('get', this.getter('currentHeatingCoolingState'));
+    service.getCharacteristic(TargetHeatingCoolingState).on('get', this.getter('targetHeatingCoolingState'));
   }
 
   _createClass(Thernmostat, [{
