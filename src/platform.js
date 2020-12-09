@@ -52,6 +52,7 @@ class Platform {
     this.log.debug('Fetch the devices');
     const { uuid: UUIDGen } = this.api.hap;
     const PlatformAccessory = this.api.platformAccessory;
+    const { blindAdjustment = {} } = this.config;
     this.sending()
       .then((response) => {
         const { blinds, roomtemps } = JSON.parse(response);
@@ -69,7 +70,7 @@ class Platform {
             name,
             key,
             this.api,
-            this.blindAdjustment[key],
+            blindAdjustment[key],
             this.sending,
             this.log
           );
