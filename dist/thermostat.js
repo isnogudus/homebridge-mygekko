@@ -48,7 +48,7 @@ var Thernmostat = /*#__PURE__*/function () {
     var service = this.accessory.getService(api.hap.Service.Thermostat) || this.accessory.addService(api.hap.Service.Thermostat, this.name);
     service.getCharacteristic(TemperatureDisplayUnits).on('get', this.getter('temperatureDisplayUnits'));
     service.getCharacteristic(CurrentTemperature).on('get', this.getter('currentTemperature'));
-    service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature')).setProps({
+    service.getCharacteristic(TargetTemperature).on('get', this.getter('targetTemperature')).on('set', this.setTargetTemperature.bind(this)).setProps({
       minValue: 10.0,
       maxValue: 30.0,
       minStep: 0.5
@@ -77,13 +77,20 @@ var Thernmostat = /*#__PURE__*/function () {
       };
     }
   }, {
+    key: "setTargetTemperature",
+    value: function setTargetTemperature(value, callback) {
+      this.send();
+      this.log.debug("THERMOSTAT::setTargetTemperature ".concat(this.index, " to ").concat(value));
+      this.send("/roomtemps/".concat(this.index, "/scmd/set"), "S".concat(value));
+      callback(null);
+    }
+  }, {
     key: "setStatus",
     value: function setStatus(data) {
       var sumState = data.sumstate.value.split(';');
       this.currentTemperature = parseFloat(sumState[0]);
       this.targetTemperature = parseFloat(sumState[1]);
       var cooling = parseInt(sumState[6], 10);
-      this.log.debug("Cooling: ".concat(cooling));
       this.currentHeatingCoolingState = cooling === 1 ? 2 : 0;
     }
   }]);

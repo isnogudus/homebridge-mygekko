@@ -40,6 +40,7 @@ class Thernmostat {
     service
       .getCharacteristic(TargetTemperature)
       .on('get', this.getter('targetTemperature'))
+      .on('set', this.setTargetTemperature.bind(this))
       .setProps({ minValue: 10.0, maxValue: 30.0, minStep: 0.5 });
     service
       .getCharacteristic(CurrentHeatingCoolingState)
@@ -66,12 +67,21 @@ class Thernmostat {
     };
   }
 
+  setTargetTemperature(value, callback) {
+    this.send();
+    this.log.debug(
+      `THERMOSTAT::setTargetTemperature ${this.index} to ${value}`
+    );
+    this.send(`/roomtemps/${this.index}/scmd/set`, `S${value}`);
+
+    callback(null);
+  }
+
   setStatus(data) {
     const sumState = data.sumstate.value.split(';');
     this.currentTemperature = parseFloat(sumState[0]);
     this.targetTemperature = parseFloat(sumState[1]);
     const cooling = parseInt(sumState[6], 10);
-    this.log.debug(`Cooling: ${cooling}`);
     this.currentHeatingCoolingState = cooling === 1 ? 2 : 0;
   }
 }
