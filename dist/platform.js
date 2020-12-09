@@ -102,6 +102,7 @@ var Platform = /*#__PURE__*/function () {
               key = _index[0],
               blind = _index[1];
 
+          if (!key.startsWith('item')) return;
           var name = blind.name;
           var uuid = UUIDGen.generate(name);
           var cachedAccessory = _this2.accessories[uuid];
@@ -119,6 +120,7 @@ var Platform = /*#__PURE__*/function () {
               key = _item[0],
               roomtemp = _item[1];
 
+          if (!key.startsWith('item')) return;
           var name = (_thermostats$key$name = (_thermostats$key = thermostats[key]) === null || _thermostats$key === void 0 ? void 0 : _thermostats$key.name) !== null && _thermostats$key$name !== void 0 ? _thermostats$key$name : roomtemp.name;
           var uuid = UUIDGen.generate(roomtemp.name);
           var cachedAccessory = _this2.accessories[uuid];

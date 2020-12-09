@@ -58,6 +58,8 @@ class Platform {
         const { blinds, roomtemps } = JSON.parse(response);
         Object.entries(blinds).forEach((index) => {
           const [key, blind] = index;
+          if (!key.startsWith('item')) return;
+
           const { name } = blind;
           const uuid = UUIDGen.generate(name);
           const cachedAccessory = this.accessories[uuid];
@@ -84,6 +86,8 @@ class Platform {
         });
         Object.entries(roomtemps).forEach((item) => {
           const [key, roomtemp] = item;
+          if (!key.startsWith('item')) return;
+
           const name = thermostats[key]?.name ?? roomtemp.name;
           const uuid = UUIDGen.generate(roomtemp.name);
           const cachedAccessory = this.accessories[uuid];
