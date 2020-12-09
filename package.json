@@ -4,6 +4,7 @@
   "description": "Homebridge <-> MyGEKKO platform",
   "main": "src/index.js",
   "author": "Markus Teichmann",
+  "type": "module",
   "license": "MIT",
   "engines": {
     "homebridge": ">=1.1.0",
