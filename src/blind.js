@@ -1,4 +1,5 @@
 const TARGET_TRESHOLD = 3;
+const TARGET_TIME_TRESHOLD_IN_MS = 60000;
 
 class Blind {
   constructor(accessory, name, index, api, adjustment, send, log) {
@@ -12,6 +13,7 @@ class Blind {
     this.send = send;
     this.position = null;
     this.target = null;
+    this.targetTimestamp = 0;
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
@@ -60,6 +62,7 @@ class Blind {
   }
 
   setTargetPosition(position, callback) {
+    this.targetTimestamp = Date.now();
     this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
     this.target = position;
@@ -71,10 +74,11 @@ class Blind {
 
   setStatus(data) {
     const oldPosition = this.position;
-    const sumState = data.sumstate.value.split(';');
-    this.state = parseInt(sumState[0], 10);
-    const newPosition = this.gekko2homebridge(parseFloat(sumState[1]));
-    if (this.position === null) {
+    const timestamp = Date.now();
+    let rawPosition;
+    [this.state,rawPosition,this.angle,this.sumState,this.slotRotationalArea] = data.sumstate.value;
+    const newPosition = this.gekko2homebridge(rawPosition);
+    if (this.timestamp === 0) {
       this.position = newPosition;
       this.target = newPosition;
     } else {
@@ -83,9 +87,6 @@ class Blind {
           ? this.target
           : newPosition;
     }
-    this.angle = parseFloat(sumState[2]);
-    this.sumState = parseInt(sumState[3], 10);
-    this.slotRotationalArea = parseInt(sumState[4], 10);
 
     const { Characteristic: {CurrentPosition, TargetPosition, PositionState} } = this.api.hap;
     // set state
@@ -96,7 +97,6 @@ class Blind {
       .getCharacteristic(CurrentPosition)
       .updateValue(this.position);
 
-    const { DECREASING, INCREASING, STOPPED } = positionState;
     switch (this.state) {
       case -1:
         this.positionState = PositionState.DECREASING;
@@ -106,17 +106,17 @@ class Blind {
         break;
       default:
         this.positionState = PositionState.STOPPED;
-        if (oldPosition === this.position) {
+        if (this.target !== this.position && this.targetTimestamp + TARGET_TIME_TRESHOLD_IN_MS < timestamp) {
           this.target = this.position;
           this.getService()
             .getCharacteristic(TargetPosition)
             .updateValue(this.target);
         }
     }
-    positionState.updateValue(this.positionState)
+    positionState.updateValue(this.positionState);
 
-    if (oldPosition !== this.position) {
-      if (oldPosition === null) {
+    if (this.positionState !== PositionState.STOPPED) {
+      if (this.targetTimestamp === 0) {
         this.log.debug(`Initialize position ${this.index} to ${this.position}`);
       } else {
         this.log.debug(

@@ -1,11 +1,11 @@
-let  http = require( 'http');
-let querystring = require ('querystring');
+const  http = require( 'http');
+const querystring = require ('querystring');
 
 module.exports = function sendHttp(url, username, password, log, path, value) {
   const params =
     value === undefined
-      ? { username, password }
-      : { username, password, value };
+      ? { username, password, format: "array" }
+      : { username, password, value, format: "array" };
 
   const payload = querystring.stringify(params);
 
@@ -26,4 +26,4 @@ module.exports = function sendHttp(url, username, password, log, path, value) {
         reject(error);
       });
   });
-}
+};

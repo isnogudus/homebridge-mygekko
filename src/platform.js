@@ -1,6 +1,6 @@
- let Blind  = require('./blind');
- let Thermostat = require('./thermostat');
- let sendHttp = require('./sendHttp');
+ const Blind  = require('./blind');
+ const Thermostat = require('./thermostat');
+ const sendHttp = require('./sendHttp');
 
 const PluginName = 'homebridge-mygekko';
 const Name = 'mygekko';
