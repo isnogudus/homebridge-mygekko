@@ -72,22 +72,22 @@ class Thernmostat {
     };
   }
 
-  setTargetTemperature(value, callback) {
-    this.log.debug(
-      `THERMOSTAT::setTargetTemperature ${this.index} to ${value}`
-    );
-    this.send(`/roomtemps/${this.index}/scmd/set`, `S${value}`);
+  // setTargetTemperature(value, callback) {
+  //   this.log.debug(
+  //     `THERMOSTAT::setTargetTemperature ${this.index} to ${value}`
+  //   );
+  //   this.send(`/roomtemps/${this.index}/scmd/set`, `S${value}`);
 
-    callback(null);
-  }
+  //   callback(null);
+  // }
 
-  setTargetHeatingCoolingState(value, callback) {
-    this.log.debug(
-      `THERMOSTAT::setTargetHeatingCoolingState ${this.index} to ${value}`
-    );
+  // setTargetHeatingCoolingState(value, callback) {
+  //   this.log.debug(
+  //     `THERMOSTAT::setTargetHeatingCoolingState ${this.index} to ${value}`
+  //   );
 
-    callback(null);
-  }
+  //   callback(null);
+  // }
 
   setStatus(data) {
     const sumState = data.sumstate.value;
