@@ -27,28 +27,32 @@ class Thernmostat {
 
     this.accessory.on('identify', this.identify.bind(this));
 
-    const service =
-      this.accessory.getService(api.hap.Service.Thermostat) ||
-      this.accessory.addService(api.hap.Service.Thermostat, this.name);
+    // const service =
+    //   this.accessory.getService(api.hap.Service.Thermostat) ||
+    //   this.accessory.addService(api.hap.Service.Thermostat, this.name);
 
-    service
-      .getCharacteristic(TemperatureDisplayUnits)
-      .on('get', this.getter('temperatureDisplayUnits'));
+    const service =
+      this.accessory.getService(api.hap.Service.TemperatureSensor) ||
+      this.accessory.addService(api.hap.Service.TemperatureSensor, this.name);
+
+    // service
+    //   .getCharacteristic(TemperatureDisplayUnits)
+    //   .on('get', this.getter('temperatureDisplayUnits'));
     service
       .getCharacteristic(CurrentTemperature)
       .on('get', this.getter('currentTemperature'));
-    service
-      .getCharacteristic(TargetTemperature)
-      .on('get', this.getter('targetTemperature'))
-      .on('set', this.setTargetTemperature.bind(this))
-      .setProps({ minValue: 14.0, maxValue: 26.0, minStep: 0.5 });
-    service
-      .getCharacteristic(CurrentHeatingCoolingState)
-      .on('get', this.getter('currentHeatingCoolingState'));
-    service
-      .getCharacteristic(TargetHeatingCoolingState)
-      .on('get', this.getter('targetHeatingCoolingState'))
-      .on('set', this.setTargetHeatingCoolingState.bind(this));
+    // service
+    //   .getCharacteristic(TargetTemperature)
+    //   .on('get', this.getter('targetTemperature'))
+    //   .on('set', this.setTargetTemperature.bind(this))
+    //   .setProps({ minValue: 14.0, maxValue: 26.0, minStep: 0.5 });
+    // service
+    //   .getCharacteristic(CurrentHeatingCoolingState)
+    //   .on('get', this.getter('currentHeatingCoolingState'));
+    // service
+    //   .getCharacteristic(TargetHeatingCoolingState)
+    //   .on('get', this.getter('targetHeatingCoolingState'))
+    //   .on('set', this.setTargetHeatingCoolingState.bind(this));
   }
 
   getService = () => this.accessory.getService(this.api.hap.Service.Thermostat);
