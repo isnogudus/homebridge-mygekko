@@ -17,11 +17,7 @@ class Blind {
     this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
     this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
-      Characteristic: {
-        CurrentPosition,
-        TargetPosition,
-        PositionState
-      },
+      Characteristic: { CurrentPosition, TargetPosition, PositionState },
     } = api.hap;
     this.positionState = PositionState.STOPPED;
 
@@ -33,14 +29,14 @@ class Blind {
 
     service
       .getCharacteristic(CurrentPosition)
-      .on('get', this.getter("position"));
+      .on('get', this.getter('position'));
     service
       .getCharacteristic(TargetPosition)
-      .on('get', this.getter("target"))
-      .on('set', this.setTargetPosition.bind(this));
+      .on('get', this.getter('target'))
+      .onSet(this.setTargetPosition.bind(this));
     service
       .getCharacteristic(PositionState)
-      .on('get', this.getter("positionState"));
+      .on('get', this.getter('positionState'));
   }
 
   getService = () =>
@@ -61,7 +57,7 @@ class Blind {
     };
   }
 
-  setTargetPosition(position, callback) {
+  setTargetPosition(position) {
     this.targetTimestamp = Date.now();
     this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
 
@@ -69,16 +65,21 @@ class Blind {
     clearTimeout(this.blindPostioner);
 
     this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
-    if (callback) callback(null, this.target);
   }
 
   setStatus(data) {
     const oldPosition = this.position;
     const timestamp = Date.now();
     let rawPosition;
-    [this.state,rawPosition,this.angle,this.sumState,this.slotRotationalArea] = data.sumstate.value;
+    [
+      this.state,
+      rawPosition,
+      this.angle,
+      this.sumState,
+      this.slotRotationalArea,
+    ] = data.sumstate.value;
     const newPosition = this.gekko2homebridge(rawPosition);
-    if (this.timestamp === 0) {
+    if (this.targetTimestamp === 0) {
       this.position = newPosition;
       this.target = newPosition;
     } else {
@@ -88,11 +89,11 @@ class Blind {
           : newPosition;
     }
 
-    const { Characteristic: {CurrentPosition, TargetPosition, PositionState} } = this.api.hap;
+    const {
+      Characteristic: { CurrentPosition, TargetPosition, PositionState },
+    } = this.api.hap;
     // set state
-    const positionState = this.getService().getCharacteristic(
-      PositionState
-    );
+    const positionState = this.getService().getCharacteristic(PositionState);
     this.getService()
       .getCharacteristic(CurrentPosition)
       .updateValue(this.position);
@@ -106,7 +107,10 @@ class Blind {
         break;
       default:
         this.positionState = PositionState.STOPPED;
-        if (this.target !== this.position && this.targetTimestamp + TARGET_TIME_TRESHOLD_IN_MS < timestamp) {
+        if (
+          this.target !== this.position &&
+          this.targetTimestamp + TARGET_TIME_TRESHOLD_IN_MS < timestamp
+        ) {
           this.target = this.position;
           this.getService()
             .getCharacteristic(TargetPosition)
