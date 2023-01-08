@@ -1,159 +1,97 @@
-const TARGET_TRESHOLD = 3;
-const TARGET_TIME_TRESHOLD_IN_MS = 60000;
+const TARGET_THRESHOLD = 3;
+const TARGET_TIME_THRESHOLD_IN_MS = 60000;
 
 class Blind {
-  constructor(accessory, name, index, api, adjustment, send, log) {
-    log(`Creating Blind ${index} as ${name}`);
-    this.accessory = accessory;
-    this.index = index;
+  constructor(platform, accessory, name, key) {
+    platform.log(`Creating Blind ${key} as ${name}`);
+    this.api = platform.api;
+    this.key = key;
     this.name = name;
-    this.blindPostioner = null;
-    this.log = log;
-    this.api = api;
-    this.send = send;
-    this.position = null;
-    this.target = null;
+    this.log = platform.log;
+    this.sender = platform.sender;
     this.targetTimestamp = 0;
-    this.min = Math.max(0, parseInt(adjustment?.min ?? '0', 10));
-    this.max = Math.min(100, parseInt(adjustment?.max ?? '100', 10));
     const {
       Characteristic: { CurrentPosition, TargetPosition, PositionState },
-    } = api.hap;
-    this.positionState = PositionState.STOPPED;
+      Service,
+    } = platform.api.hap;
 
-    this.accessory.on('identify', this.identify.bind(this));
+    this.target = 0;
+    this.current = 0;
+    this.position = PositionState.STOPPED;
 
-    const service =
-      this.accessory.getService(api.hap.Service.WindowCovering) ||
-      this.accessory.addService(api.hap.Service.WindowCovering, name);
+    this.service =
+      accessory.getService(Service.WindowCovering) ||
+      accessory.addService(Service.WindowCovering, name);
 
-    service
-      .getCharacteristic(CurrentPosition)
-      .on('get', this.getter('position'));
-    service
+    this.service.getCharacteristic(CurrentPosition).onGet(() => this.current);
+
+    this.service
       .getCharacteristic(TargetPosition)
-      .on('get', this.getter('target'))
-      .onSet(this.setTargetPosition.bind(this));
-    service
-      .getCharacteristic(PositionState)
-      .on('get', this.getter('positionState'));
+      .onGet(() => this.target)
+      .onSet(this.setTargetPosition);
+
+    this.service.getCharacteristic(PositionState).onGet(() => this.position);
   }
 
-  getService = () =>
-    this.accessory.getService(this.api.hap.Service.WindowCovering);
+  setTargetPosition = (position) => {
+    if (position === undefined || position === null) return;
 
-  identify(paired, callback) {
-    this.log(`identify(paired: ${paired})`);
-
-    if (callback) callback();
-  }
-
-  getter(attributeName) {
-    return (callback) => {
-      const value = this[attributeName];
-      this.log.debug(`BLIND::GET ${attributeName}: ${value}`);
-
-      if (callback) callback(null, value);
-    };
-  }
-
-  setTargetPosition(position) {
     this.targetTimestamp = Date.now();
-    this.log.debug(`setTargetPosition of ${this.index} to ${position}`);
-
+    this.log.debug(`setTargetPosition of ${this.key} to ${position}`);
     this.target = position;
-    clearTimeout(this.blindPostioner);
 
-    this.blindPostioner = setTimeout(this.callBlindSetPosition.bind(this), 500);
-  }
+    this.sender(`blinds/${this.key}/scmd/set`, `P${100 - position}`).catch(
+      (reason) =>
+        reason === 'REPLACED' ? this.log.debug(reason) : this.log.error(reason)
+    );
+  };
 
-  setStatus(data) {
-    const oldPosition = this.position;
-    const timestamp = Date.now();
-    let rawPosition;
-    [
-      this.state,
-      rawPosition,
-      this.angle,
-      this.sumState,
-      this.slotRotationalArea,
-    ] = data.sumstate.value;
-    const newPosition = this.gekko2homebridge(rawPosition);
-    if (this.targetTimestamp === 0) {
-      this.position = newPosition;
-      this.target = newPosition;
-    } else {
-      this.position =
-        Math.abs(newPosition - this.target) <= TARGET_TRESHOLD
-          ? this.target
-          : newPosition;
-    }
-
+  setStatus(data, initial) {
     const {
       Characteristic: { CurrentPosition, TargetPosition, PositionState },
     } = this.api.hap;
-    // set state
-    const positionState = this.getService().getCharacteristic(PositionState);
-    this.getService()
-      .getCharacteristic(CurrentPosition)
-      .updateValue(this.position);
 
-    switch (this.state) {
-      case -1:
-        this.positionState = PositionState.DECREASING;
-        break;
-      case 1:
-        this.positionState = PositionState.INCREASING;
-        break;
-      default:
-        this.positionState = PositionState.STOPPED;
-        if (
-          this.target !== this.position &&
-          this.targetTimestamp + TARGET_TIME_TRESHOLD_IN_MS < timestamp
-        ) {
-          this.target = this.position;
-          this.getService()
-            .getCharacteristic(TargetPosition)
-            .updateValue(this.target);
-        }
-    }
-    positionState.updateValue(this.positionState);
+    const sumState = data.sumstate.value.split(';');
+    const state = parseInt(sumState[0], 10);
+    const rawPosition = Math.round(parseFloat(sumState[1]));
 
-    if (this.positionState !== PositionState.STOPPED) {
-      if (this.targetTimestamp === 0) {
-        this.log.debug(`Initialize position ${this.index} to ${this.position}`);
-      } else {
-        this.log.debug(
-          `Update position ${this.index} from ${oldPosition} to ${this.position}`
-        );
-      }
-    }
-  }
+    this.current = 100 - rawPosition;
 
-  callBlindSetPosition() {
-    const target = this.homebridge2gekko(this.target);
-    this.log.debug(`_callBlindSetPosition ${this.index} to ${target}`);
-    this.send(`/blinds/${this.index}/scmd/set`, `P${target}`);
-  }
+    if (state === 0) this.position = PositionState.STOPPED;
+    else if (state < 0) this.position = PositionState.DECREASING;
+    else this.position = PositionState.INCREASING;
 
-  homebridge2gekko(position) {
-    return Math.max(this.min, Math.min(this.max, 100 - position));
-  }
+    if (initial) {
+      this.target = this.current;
 
-  gekko2homebridge(position) {
-    let pos;
-    if (position < 10.0) {
-      pos = Math.floor(position);
-    } else if (position > 90.0) {
-      pos = Math.ceil(position);
-    } else {
-      pos = Math.round(position);
+      this.log.debug(
+        `Initialize ${this.key} to ${this.current} ${this.target} ${this.position}`
+      );
+      this.service.getCharacteristic(CurrentPosition).updateValue(this.current);
+      this.service.getCharacteristic(TargetPosition).updateValue(this.target);
+      this.service.getCharacteristic(PositionState).updateValue(this.position);
+
+      return;
     }
 
-    if (pos <= this.min) pos = 0;
-    if (pos >= this.max) pos = 100;
+    if (state !== 0)
+      this.log.debug(
+        `Update position ${this.key} to ${this.current} with target ${this.target}`
+      );
 
-    return 100 - pos;
+    if (this.current !== this.target) {
+      if (Math.abs(this.current - this.target) <= TARGET_THRESHOLD)
+        this.current = this.target;
+      else if (
+        this.position === PositionState.STOPPED &&
+        this.targetTimestamp + TARGET_TIME_THRESHOLD_IN_MS < Date.now()
+      )
+        this.target = this.current;
+    }
+
+    this.service.getCharacteristic(CurrentPosition).updateValue(this.current);
+    this.service.getCharacteristic(TargetPosition).updateValue(this.target);
+    this.service.getCharacteristic(PositionState).updateValue(this.position);
   }
 }
 

@@ -1,5 +1,5 @@
-let Platform = require( './platform');
+const { PluginName, Name, Platform } = require('./platform');
 
 module.exports = (api) => {
-  api.registerPlatform('homebridge-mygekko', 'mygekko', Platform);
+  api.registerPlatform(PluginName, Name, Platform);
 };
