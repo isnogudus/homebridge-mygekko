@@ -25,7 +25,7 @@ class Thermostat {
       Characteristic: { CurrentTemperature },
     } = this.api.hap;
     const sumState = data.sumstate.value.split(';');
-    this.current = parseInt(sumState[0], 10);
+    this.current = parseFloat(sumState[0]);
 
     this.service
       .getCharacteristic(CurrentTemperature)
